@@ -1,0 +1,7 @@
+parameters:
+#    ipc_configuration.example.class: Ipc\ConfigurationBundle\Example
+
+services:
+#    ipc_configuration.example:
+#        class: %ipc_configuration.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

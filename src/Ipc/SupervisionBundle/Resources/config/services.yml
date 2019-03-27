@@ -1,0 +1,7 @@
+parameters:
+#    ipc_supervision.example.class: Ipc\SupervisionBundle\Example
+
+services:
+#    ipc_supervision.example:
+#        class: %ipc_supervision.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

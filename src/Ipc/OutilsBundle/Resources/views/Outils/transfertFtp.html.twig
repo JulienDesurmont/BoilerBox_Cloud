@@ -1,0 +1,50 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/transfertFtp.html.twig #}
+
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Transfert ftp{% endblock title %}
+
+{% block title_header %}
+    <h1>Transfert ftp</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+		{% if is_granted('ROLE_SUPERVISEUR') %}
+	    	<form name='MyForm' method='post' action="{{ path('ipc_transfertFtp') }}">
+				<input type='hidden' name='typeAction' value='transfertFtp' />
+		    	<textarea disabled rows="2" cols="150">{{ texte_logs }}</textarea>
+	    	</form>
+		{% endif %}
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.transferer"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+
+		function validationFormulaire() {
+		    attente();
+		    setTimeout(function() {
+		        document.forms['MyForm'].submit();
+		    },200);
+		}
+    </script>
+{% endblock %}
+

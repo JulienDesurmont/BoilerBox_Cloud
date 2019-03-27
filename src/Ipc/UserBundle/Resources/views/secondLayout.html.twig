@@ -1,0 +1,19 @@
+{# src/Ipc/UserBundle/Resources/views/secondLayout.html.twig #}
+
+{% extends "::loginLayout.html.twig" %}
+
+{# Suppression des menus #}
+{% block right_menu %}
+{% endblock right_menu %}
+
+{% block left_menu %}
+{% endblock left_menu %}
+
+
+{% block body %}
+        {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+        {% block fos_user_content %}
+        {% endblock fos_user_content %}
+{% endblock %}
+
+

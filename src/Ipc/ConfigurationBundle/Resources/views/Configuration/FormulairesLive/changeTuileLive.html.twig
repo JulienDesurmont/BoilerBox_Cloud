@@ -1,0 +1,135 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/changeTuileLive.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='changeLiveField'>
+		<h1>Modification de {% if form.vars.value.placement|lower == 'entete' %}l'en-tête{% else %}la tuile {% endif %}</h1>
+		<div id='addDonneeLive'>
+			{{ form_start(form,{method:"post", action:path('ipc_change_tuileLive'), 'attr': {'id':'formulaire_donnees_live'} }) }}
+				{{ form_errors(form) }}
+				<table class='tableMoyenne'>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.categorie) }} : </td>
+					<td>{{ form_widget(form.categorie,{'attr':{'class':'widgetMoyen'}}) }}</td>
+					<td><span>{{ form_errors(form.categorie) }}</span></td>
+				</tr>
+	        	<tr {% if form.vars.value.placement|lower == 'entete' %}style="pointer-events:none;"{% endif %}>
+					<td>{{ form_label(form.famille) }} : </td>
+					<td>{{ form_widget(form.famille,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+					<td><span>{{ form_errors(form.famille) }}</span></td>
+				</tr>
+	        	<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.icone) }} : </td>
+					<td>{{ form_widget(form.icone,{'attr':{'class':'widgetMoyen'}}) }}</td>
+					<td><span>{{ form_errors(form.icone) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="pointer-events:none;"{% endif %}>
+					<td>{{ form_label(form.label) }} : </td>
+					<td>{{ form_widget(form.label,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+					<td><span>{{ form_errors(form.label) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.type) }} : </td>
+					<td>{{ form_widget(form.type,{'attr':{'class':'widgetMoyen'}}) }}</td>
+					<td><span>{{ form_errors(form.type) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="pointer-events:none;"{% endif %}>
+					<td>{{ form_label(form.adresse) }} : </td>
+					<td>{{ form_widget(form.adresse,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+					<td><span>{{ form_errors(form.adresse) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.unite) }} : </td>
+					<td>{{ form_widget(form.unite,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+					<td><span>{{ form_errors(form.unite) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.valeurEntreeVrai) }} : </td>
+					<td>{{ form_widget(form.valeurEntreeVrai,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+					<td><span>{{ form_errors(form.valeurEntreeVrai) }}</span></td>
+				</tr>
+				<tr style="display:none;">
+					<td>{{ form_label(form.couleur) }} : </td>
+					<td>{{ form_widget(form.couleur,{'attr':{'class':'widgetMoyen jscolor'}}) }}</td>
+					<td><span>{{ form_errors(form.couleur) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.valeurSortieVrai) }} : </td>
+					<td>{{ form_widget(form.valeurSortieVrai,{'attr':{'class':'widgetMessage inputText'}}) }}	</td>
+					<td><span>{{ form_errors(form.valeurSortieVrai) }}</span></td>
+				</tr>
+				<tr {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>
+					<td>{{ form_label(form.valeurSortieFaux) }} : </td>
+					<td>{{ form_widget(form.valeurSortieFaux,{'attr':{'class':'widgetMessage inputText'}}) }}	</td>
+					<td><span>{{ form_errors(form.valeurSortieFaux) }}</span></td>
+				</tr>
+				<tr>
+					<td colspan='3'>
+						<div class='validationbouton'>
+							<div>
+								<span {% if form.vars.value.placement|lower == 'entete' %}style="display:none;"{% endif %}>{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}</span>
+	            				<a href='#' style="height:10px;" onClick='supprimer("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton red'><div class='bgbouton'>Supprimer</div></div></a>
+	            				<a href='#' style="height:10px;" onClick='annuler("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton blue'><div class='bgbouton'>Retour</div></div></a>
+	    					</div>
+						</div>
+					</td>
+				</tr>
+				</table>
+				<div class='cacher'>
+					{{ form_widget(form.localisation) }} {{ form_widget(form.id) }} {{ form_widget(form.placement) }} {{ form_widget(form.suppression) }}
+				</div>
+				{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+		function annuler(url) {
+			attente();
+			window.location.href = url;
+		}
+
+		function supprimer() {
+			var $valid = confirm('Suppression demandée');
+			if ($valid == true) {
+				attente();
+				$('#DonneeLive_suppression').attr('checked','checked');
+				/* Validation / Envoi du formulaire */
+				/* document.DonneeLive.submit(); */
+				submitConfigurationForm('DonneeLive');
+			}
+		}
+
+		$(function() {
+        	/* Le formulaire ne peut pas être soumis pour un en tête */
+        	$('#formulaire_donnees_live').submit(function(event){
+        	    {% if form.vars.value.placement|lower == 'entete' %}
+        	        event.preventDefault();
+        	    {% endif %}
+        	});
+
+		    var $select = $('#DonneeLive_icone').html();
+		    var $newSelect = "";
+		    var $arraySelect = $select.split('</option>');
+		    $.each($arraySelect, function($key, $option) {
+		        var $tabUrl = $option.split('>');
+		        if (typeof($tabUrl[1]) !== 'undefined') {
+		            var $tabChampsUrl = $tabUrl[1].split('__');
+		            $newSelect = $newSelect + $tabUrl[0] + ' alt="' + $tabChampsUrl[1] + '"' + " style='background-image:url(../../../../../../../web/" + $tabChampsUrl[0] + ");background-repeat:no-repeat;background-position:right;background-size:30px 30px;'  >" + $tabChampsUrl[1] + '</option>';
+		        }
+		    });
+		    $('#DonneeLive_icone').html($newSelect);
+		});
+	</script>
+{% endblock bodyjavascript %}
+
+

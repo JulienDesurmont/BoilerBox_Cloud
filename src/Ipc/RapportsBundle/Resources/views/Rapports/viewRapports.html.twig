@@ -1,0 +1,267 @@
+{# /src/Ipc/RapportsBundle/Resources/views/Rapports/viewRapports.html.twig #}
+
+{% extends "IpcRapportsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapports d'interventions{% endblock title %}
+
+{% block title_header %}
+    <h1>{{ 'label.titre.vue_rapport'|trans }}</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='intervention'>
+    	<div id='interventionVueListe'>
+    	    <div id='listeInterRapportsTitre'>
+    	        <table>
+    	            <tr><td class='smallTd'><a href='#' onclick="trieRapport('date');return false ;">{{ 'label.horodatage'|trans }}</a></td>
+    	                <td class='smallTd'><a href='#' onclick="trieRapport('site');return false ;">{{ 'label.site'|trans }}</a></td>
+    	                <td class='smallTd'><a href='#' onclick="trieRapport('localisation');return false ;">{{ 'label.localisation'|trans }}</a></td>
+    	                <td class='smallTd'><a href='#' onclick="trieRapport('auteur');return false ;">{{ 'label.rapport.intervenant'|trans }}</a></td>
+    	                <td class='noWrapTitle'><a href='#' onclick="trieRapport('titre');return false ;">{{ 'label.rapport.titre'|trans }}</a></td>
+    	            </tr>
+    	        </table>
+    	    </div>
+    	    <div id='listeInterRapports' class='mCustomScrollbar' data-mcs-theme="dark">
+    	        <div id='listecache' class='cacher'>
+    	            <table>
+    	                {% for key,rapport in tabInterventions %}
+    	                    <tr id="{{ rapport.id }}">
+				    			<td class='smallTd'>{{ rapport.dateRapport|date('d/m/Y à H:i:s') }}</td>
+    	                        <td class='smallTd'>{{ rapport.site }}</td>
+    	                        <td class='smallTd'>{% if rapport.localisation %}{{ rapport.localisation }}{% endif %}</td>
+    	                        <td class='smallTd'>{{ rapport.nomTechnicien }}</td>
+    	                        <td class='noWrap'><a href="#" onclick="getRapport({{ rapport.id }});return false;"><span>{{ rapport.titre }}</span></a></td>
+    	                    </tr>
+    	                {% endfor %}
+    	            </table>
+    	        </div>
+    	    </div>
+    	</div>
+    	<div id='interventionVueKeyWords'>
+    	    <p>{{ 'label.rapport.recherche'|trans }} : <input type='text' class='inputText' maxlength='100' id='txtMotsCles' /><button onClick="rechercheMotsCles();" >{{ 'bouton.rechercher'|trans }}</button></p>
+    	</div>
+    	<div id='interventionVueRapport' class='nonVisible'>
+    		<div id='interventionVueGauche'>
+		    	<h2 id='viewTitre'></h2>
+		    	<h3><span id='titreRapport'></span></h3>
+		    	<textarea name='viewRapport' id='viewRapport' readonly></textarea>
+    		</div>
+    		<div id='interventionVueDroite'>
+			    <h2>{{ 'label.rapport.fichiers_inclus'|trans }}</h2>
+			    <div id='viewFichiers'></div>
+    		</div>
+    	</div>
+
+		<input type='hidden' name='url_redirect' id='url_redirect' value="{{ path('ipc_modify_intervention') }}" />
+    	{{ form_start(form,{'method':'POST'}) }}
+    	{{ form_end(form) }}
+	</div>
+{% endblock body %}
+
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton green'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+        <a href='#' class='right nonVisible' id='interventionChangeRapport' onClick="redirection();return false;"><div class='bouton blue'><div class='bgbouton'>{{ 'bouton.modifier'|trans }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+	<script type='text/javascript'>
+		closeFooter();
+
+    	var champsDeTri;
+    	$(document).ready(function(){
+			setTimeout(function(){
+		   		$('#listecache').removeClass('cacher');
+			},100);
+    	})
+
+    	function rechercheMotsCles() {
+			attente();
+			setTimeout(function(){
+	    		/* Récupération du texte à rechercher */
+	    		var $texte = $('#txtMotsCles').val();
+	    		/* Appel AJAX pour retouver les identifiants des rapports contenant le texte recherché */
+            	$.ajax({
+	    			url: "{{ path('ipc_intervention_keywords') }}",
+	    			method: "get",
+	    			data: {texte:$texte}
+	    		}).done(function(msg){
+	    			//	Récupération du tableau JSON
+	    			var $tabMotsTrouves = JSON.parse(msg);
+	    			//	Création d'un tableau non associatif
+	    			var $tabMots = [];
+	    			$.each($tabMotsTrouves, function(index2, value2){
+                    	$tabMots.push(parseInt(value2));
+            		});
+	    			//	Création de la variable Javascript à partir du tableau des rapports
+	    			var $tabIntervention = ({{ tabInterventions|json_encode|raw }});
+	    			$.each($tabIntervention, function(index, value){
+		    			/* On met tous les mots en noir (en retirant les éventuelles classes de couleurs associées) */
+		    			$('#' + value['id']).removeClass();
+		    			$('#' + value['id'] + ' span').removeClass();
+		    			//	Ajout des classes rouges aux rapports contenant les mots clés
+		    			if($.inArray(value['id'],$tabMots) != -1) {
+                    		$('#' + value['id']).addClass('red gras');
+		    				$('#' + value['id'] + ' span').addClass('red gras');
+		    			}
+	    			});
+					fin_attente();
+	    		});
+			},50);
+    	}
+
+    	function trieRapport(champsPourTri) {
+        	// Si le tri se fait sur un nouveau champs : Champs par ordre croissant
+        	// Sinon tri par ordre décroissant
+        	if (champsPourTri == champsDeTri && champsDeTri.substr(-2,2) != '_1') {
+            	champsDeTri = champsPourTri + '_i';
+        	} else {
+            	champsDeTri = champsPourTri;
+        	}
+ 			var tabInterventions = {{ tabInterventions|json_encode|raw }};
+			tabInterventions.sort(triTitre);
+			// Creation du nouveau tableau html
+			var tabHtml = "<table>";
+			var indiceKey = 0;
+			$.each(tabInterventions, function(index,value) {
+	    		tabHtml = tabHtml + "<tr><td class='smallTd'>" + formatDate(tabInterventions[index]['dateRapport']['date']) + "</td><td class='smallTd'>" + tabInterventions[index]['site'] + "</td><td class='smallTd'>" + tabInterventions[index]['localisation'] + "</td><td class='smallTd'>" + tabInterventions[index]['nomTechnicien'] + "</td><td><a href='#' onclick=\"getRapport(" + tabInterventions[index]['id'] + ");return false;\">" + tabInterventions[index]['titre'] + "</a></td></td></tr>";
+	    		indiceKey ++;
+			});
+			tabHtml = tabHtml + "</table>";
+			$('#listecache').html(tabHtml);
+    	}
+
+    	function formatDate(dateAFormater) {
+			dateFormate = dateAFormater.match(/(\d+)-(\d+)-(\d+) (\d+:\d+:\d+)/);	
+			nouvelleDate = dateFormate[3] + '/' + dateFormate[2] + '/' + dateFormate[1] + ' à ' + dateFormate[4];
+			return(nouvelleDate);		
+    	}
+
+    	function triTitre(a,b) {
+			switch(champsDeTri) {
+	    	case 'site':
+				return (a.site < b.site)?-1:1;
+				break;
+	    	case 'localisation':
+				return (a.localisation < b.localisation)?-1:1;
+				break;
+	    	case 'titre':
+				return (a.titre < b.titre)?-1:1;
+				break;
+	    	case 'auteur':
+				return (a.nomTechnicien < b.nomTechnicien)?-1:1;
+				break;
+	    	case 'date':
+				return (a.dateRapport.date < b.dateRapport.date)?-1:1;
+				break;
+            case 'site_i':
+                return (a.site > b.site)?-1:1;
+                break;
+            case 'localisationi':
+                return (a.localisation > b.localisation)?-1:1;
+                break;
+            case 'titre_i':
+                return (a.titre > b.titre)?-1:1;
+                break;
+            case 'auteur_i':
+                return (a.nomTechnicien > b.nomTechnicien)?-1:1;
+                break;
+            case 'date_i':
+                return (a.dateRapport.date > b.dateRapport.date)?-1:1;
+                break;
+			}
+    	}
+
+
+    	// Affichage du rapport dans l'onglet correspondant
+    	function getRapport(indiceKeyRapport) {
+			attente();
+			// Récupération de l'url du chemin vers l'action du controller qui modifie le rapport
+        	var url = {{ path('ipc_modify_intervention')|json_encode|raw }};
+			// Ajout de l'identifiant du rapport à modifier à l'url
+			url = url + '/' + indiceKeyRapport;
+			// Modification du champs caché indiquant l'url à atteindre en cas de modification
+			$('#url_redirect').val(url);
+			var tabInterventions = {{ tabInterventions|json_encode|raw }};
+			$.each(tabInterventions, function(indexIntervention,valueIntervention) {
+	    		if (indiceKeyRapport == valueIntervention['id']) {
+					/* Appel ajax pour traduction du titre du rapport à afficher */
+					var auteur = valueIntervention['nomTechnicien'];
+					var dateRapport = formatDate(valueIntervention['dateRapport']['date']);
+					var titreRapport = '';
+					$.ajax({
+                    	url: "{{ path('ipc_traduitVars') }}",
+                    	method: "get",
+						timeout: 5000,
+                    	data: {"label":"label.rapport.titre_vue", "auteur":auteur, "horodatage":dateRapport}
+                	}).done(function(msg){
+						titreRapport = titreRapport + msg + ' ';
+						if (valueIntervention['localisation']) {
+                    	    $.ajax({
+                    	        url: "{{ path('ipc_traduitVars') }}",
+                    	        method: "get",
+								timeout: 5000,
+                    	        data: {"label":"label.rapport.titre_vue_equipement", "equipement":valueIntervention['localisation']}
+                    	    }).done(function(msg){
+                    	        titreRapport = titreRapport + msg;
+								$('#titreRapport').html(titreRapport);
+								$('#viewTitre').html(valueIntervention['titre']);
+								$('#viewRapport').html(valueIntervention['rapport']);
+								fin_attente();
+                    	    }).fail(function(xhr,status,error){
+								fin_attente();
+							});
+                    	} else {
+                    	    $.ajax({
+                    	        url: "{{ path('ipc_traduitVars') }}",
+                    	        method: "get",
+								timeout: 5000,
+                    	        data: {"label":"label.rapport.titre_vue_tousEquipements"}
+                    	    }).done(function(msg){
+                    	        titreRapport = titreRapport + msg;
+								$('#titreRapport').html(titreRapport);
+								$('#viewTitre').html(valueIntervention['titre']);
+                                $('#viewRapport').html(valueIntervention['rapport']);
+								fin_attente();
+                    	    }).fail(function(xhr,status,error){
+                                fin_attente();
+                            });
+                    	}
+					}).fail(function(xhr,status,error){
+                        fin_attente();
+                    });
+        			var fichiersRapport = "";
+        			$.each(valueIntervention['fichiers'], function(index,value) {
+        	    		fichiersRapport = fichiersRapport + "<a href='#' onclick='downloadFile(\"" + value + "\",\"" + valueIntervention['id'] + "\");return false;'>" + value + '</a><br />';
+        			});
+        			$('#viewFichiers').html(fichiersRapport);
+        			$('#interventionVueRapport').removeClass('nonVisible');	
+					$('#interventionChangeRapport').removeClass('nonVisible');
+					return true;
+	    		}
+			});
+    	}
+
+    	function downloadFile(fichierATelecharger,idRapport) {
+			$('#ipc_configurationbundle_fichierrapport_nom').attr('value',fichierATelecharger);
+			$('#ipc_configurationbundle_fichierrapport_idRapport').attr('value',idRapport);
+			document.forms['ipc_configurationbundle_fichierrapport'].submit();
+    	}
+
+    	function redirection() {
+        	attente();
+        	setTimeout(function() {
+            	var url_intervention = $('#url_redirect').val();
+            	window.location.href = url_intervention;
+        	},100);
+    	}
+</script>
+{% endblock bodyjavascript %}
+

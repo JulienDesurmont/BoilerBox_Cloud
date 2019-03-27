@@ -1,0 +1,69 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/gestionGenres.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Genres{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des genres</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+    <div id='menu_configuration'>
+		<div class='gestion_infosGenres'>
+		    <form method='get' action="{{ path('ipc_gestionCouleurGenres') }}" name="myForm" >
+			    <input type='hidden' name='formGet' value='formGet' />
+			    <table class='table_gestion_genres'>
+					<tr>    <th class='nom_genre'>Genre</th><th class='numero_genre'>Numéro</th><th>Couleur</th></tr>
+                	{% for entity_genre in entities_genre %}
+                    	<tr>
+                        	<td class='intitule_genre'>{{ entity_genre.intituleGenre }}</td>
+							<td class='numero_genre'>{{ entity_genre.numeroGenre }}</td>
+							<td class='couleur'><input class='cacher' id="valueGenre{{ entity_genre.id }}" name="valueGenre{{ entity_genre.id }}" onChange="changeColor({{ entity_genre.id }},this.value);" value="{{ entity_genre.couleur }}" /><input disabled type='text' id="styleGenre{{ entity_genre.id }}" value='{{ entity_genre.couleur }}' />
+							<button class="jscolor {closable:true,closeText:'Fermer',valueElement:'valueGenre{{ entity_genre.id }}', styleElement:'styleGenre{{ entity_genre.id }}'}">modifier</button></td>
+		    			</tr>
+	        		{% endfor %}
+	    		</table>
+	    		Réinitialiser les couleurs <button onClick="reinitialiseCouleur();return false;">.</button>
+	    	</form>
+		</div>
+    </div>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="validFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.enregistrer"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+    <script type='text/javascript'>
+     	function goBack() {
+        	var url_intervention = $('#Configurations').attr('href');
+        	window.location.href = url_intervention;
+    	} 
+        function changeColor(id,color) {
+            $('#styleGenre'+id).val(color);
+        }
+
+        function validFormulaire() {
+            document.forms['myForm'].submit();
+        }
+
+        function reinitialiseCouleur() {
+            attente();
+            $.ajax({
+                url: "{{ path('ipc_ajaxReinitColorGenre') }}",
+                method: "get"
+            }).done(function($msg) {
+            	document.location.href = document.location.href;
+            });
+        }
+    </script>
+{% endblock bodyjavascript %}

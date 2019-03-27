@@ -1,0 +1,6 @@
+ipc_prog_homepage:
+    path: /
+    defaults: { _controller: IpcProgBundle:Prog:index }
+ipc_prog_get_enTete:
+    path: /getEnTete
+    defaults: { _controller: IpcProgBundle:Prog:getEnTete }

@@ -1,0 +1,32 @@
+{# src/Ipc/ConfigurationBundle/Resources/views/secondLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Configuration - {% endblock %}
+
+{% block body %}
+    <span id="pageConfiguration" class="cacher"></span>
+{% endblock body %}
+
+
+{# Suppression des menus #}
+{% block left_menu %}
+{% endblock left_menu %}
+
+	
+{% block progJavascript %}
+{% endblock progJavascript %}
+
+
+{% block bodyjavascript %}
+    {# Supprime l'espace alloué au menu de gauche sur les medias de petite largeur #}
+    <script type='text/javascript'>
+        $('page').addClass('noLeftMenus');
+    </script>
+
+    {% javascripts output='js/configuration.js'
+        'bundles/ipcconfiguration/js/configurationfunctions.js'
+		'bundles/ipcprog/js/jscolor.min.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  bodyjavascript %}

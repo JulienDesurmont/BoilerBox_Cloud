@@ -1,0 +1,77 @@
+<?php
+
+namespace Ipc\UserBundle\Entity;
+
+use FOS\UserBundle\Entity\User as BaseUser;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * User
+ * @ORM\Entity
+ * @ORM\Table(name="t_user")
+ */
+class User extends BaseUser
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+    */
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255)
+    */
+    protected $nom;
+
+    /**
+     * @var string
+     * @ORM\Column(name="prenom", type="string", length=50)
+     */
+    protected $prenom;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function __construct()
+    {
+	parent::__construct();
+    }
+
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     * @return User
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string 
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+}

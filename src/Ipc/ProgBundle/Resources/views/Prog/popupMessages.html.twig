@@ -1,0 +1,253 @@
+{% block popup %}
+	{% if page_appelante == 'listing' %}
+		<form name="MyForm" method="post" action="{{ path('ipc_accueilListing') }}">
+	{% elseif page_appelante == 'graphique' or page_appelante == 'etat' %}
+		<form name="MyForm" method="post" action="{{ path('ipc_graphAnalyse') }}">
+	{% endif %}
+    	<div id='ajoutRequetePopup'>
+    	    <input type="hidden" name="choixSubmit" id="choixSubmit_add" />
+		    <input type="hidden" name="modificationRequete" id='modificationRequete' />
+			{% if page_appelante == 'listing' %}
+				<h2>{{ 'label.popup.titre.listing'|trans|upper }}</h2>
+    		{% elseif page_appelante == 'graphique' %}
+				<h2>{{ 'label.popup.titre.courbe'|trans|upper }}</h2>
+			{% elseif page_appelante == 'etat'  %}
+				<input type="hidden" name="typePopup" id="typePopup" />
+				<h2>AJOUTER UN NOUVEL ETAT</h2>
+    		{% endif %}
+		    {# On affiche la liste déroulante des localisations si il y a plus d'une localisation sur le site #}
+    	    <div id='selectLocalisation'>
+    	        <label for='localisations'>{{ 'label.localisation'|trans }} :</label>
+            	{% if page_appelante == 'listing' %}
+                	<select name="listeLocalisations" 
+							id="localisations" 
+							size=1 
+							style="width:290px" 
+							OnChange="ajaxSetChoixLocalisation(); selection('listing', 'genre', false);" 
+							data-url="{{ path('ipc_ajax_choixLocalisation') }}"
+					>
+            	{% elseif page_appelante == 'graphique' %}
+            	    <select name="listeLocalisations" 
+							id="localisations" 
+							size=1 
+							style="width:290px" 
+							OnChange="ajaxSetChoixLocalisation(); selection('graphique', 'genre', false);" 
+							data-url="{{ path('ipc_ajax_choixLocalisation') }}"
+					>
+				{% elseif page_appelante == 'etat'  %}
+					<select disabled 
+							name="listeLocalisations" 
+							id="localisations" 
+							size=1 
+							style="width:290px" 
+							OnChange="ajaxSetChoixLocalisation();selection('graphique', 'genre', false);" 
+							data-url="{{ path('ipc_ajax_choixLocalisation') }}"
+					>
+            	{% endif %}
+    	        	{% for localisation in liste_localisations %}
+            			{% if page_appelante == 'listing' %}
+							<option value="{{ localisation['id'] }}" 
+									{% if localisation['id'] == last_loc_id %}selected{% endif %}
+							>
+								{{ localisation['numero_localisation'] ~ " - " ~ localisation['designation'] }}
+							</option>
+            			{% elseif page_appelante == 'graphique' %}
+                			<option value="{{ localisation['id'] }}" 
+									{% if localisation['id'] == last_loc_graph_id %}selected{% endif %}
+							>
+								{{ localisation['numero_localisation'] ~ " - " ~ localisation['designation'] }}
+							</option>
+						{% elseif page_appelante == 'etat' %}
+							<option value="{{ localisation['id'] }}">
+								{{ localisation['numero_localisation'] ~ " - " ~ localisation['designation'] }}
+							</option>
+            			{% endif %}
+    	        	{% endfor %}
+    	        </select>
+    	    </div>
+    	    <div class='Pleft right'>
+    			<h3>{{ 'label.popup.titre.selection_message'|trans }}</h3>
+    	    	<label for='genres'>{{ 'label.genre'|trans }} :</label>
+            	{% if page_appelante == 'listing' %}
+            	    <select name='listeGenres' 
+							id='genres' 
+							size=1 
+							OnChange="selection('listing', 'genre', false);"
+					>
+            	{% elseif page_appelante == 'graphique' or page_appelante == 'etat' %}
+            	    <select name='listeGenres' 
+							id='genres' 
+							size=1 
+							OnChange="selection('graphique', 'genre', false);" 
+							OnMouseDown="recupSelection('genre');"
+					>
+            	{% endif %}
+    	    	    <option value='all' selected>{{ 'select.popup.tous_genres'|trans }}</option>
+    	            {% for genre in liste_genres %}
+						<option value="{{ genre.id }}">{{ genre.intitule_genre }}</option>
+    	            {% endfor %}
+    	    	</select>
+				<br>
+    	        <label for='modules'>{{ 'label.module'|trans }} :</label>
+                {% if page_appelante == 'listing' %}
+                    <select name='listeModules' 
+							id='modules' 
+							size=1 OnChange="selection('listing', 'module', false);"
+					>
+                {% elseif page_appelante == 'graphique' or page_appelante == 'etat' %}
+                    <select name='listeModules' 
+							id='modules' 
+							size=1 
+							OnChange="selection('graphique', 'module', false);" 
+							OnMouseDown="recupSelection('module');" 
+					>
+                {% endif %}
+    	            <option value='all' selected>{{ 'select.popup.tous_modules'|trans }}</option>
+    	            {% for intitule in liste_nomsModules %}
+    	                <option value="{{ intitule }}">{{ intitule }}</option>
+    	            {% endfor %}
+    	        </select>
+		    </div>
+	    	<div class='Pcenter'>
+ 				<div class='line'></div>
+				<div class='circle'><div>{{ 'label.ou'|trans|upper }}</div></div>
+        		<div class='line'></div>
+    	    </div>
+	    	<div class='Pright center'>
+                {% if page_appelante == 'listing' %}
+                    <input 	class='inputText' 
+							type='text' 
+							id='codeModule' 
+							name='codeModule' 
+							value="" 
+							maxlength='24'
+ 							onkeyup="selectionMessage('ipc_listing', 'listing');" 
+							style="text-transform:uppercase" 
+							placeholder="{{ 'label.popup.titre.mots_cle'|trans }}" 
+					/>
+                {% elseif page_appelante == 'graphique' or page_appelante == 'etat' %}
+                    <input type='text' class='inputText' id='codeModule' name='codeModule' value="" maxlength='24' onkeyup="selectionMessage('ipc_graphiques', 'graphique');" style="text-transform:uppercase"  placeholder="{{ 'label.popup.titre.mots_cle'|trans }}" />
+                {% endif %}
+    	    </div>
+			<p id='messageDeLaListe'></p>
+	    	<div id='popupMessage'>
+				<div>
+					<label>{{ 'label.message'|trans }} :</label>
+				</div>
+				<div id='popupDivMessage' onmouseenter="changeListeMessagesSize('in');" onmouseleave="changeListeMessagesSize('out');">
+					<select name='listeIdModules' size=1 id='messages' onkeypress='return false;' onChange="afficheListeMessage();">
+                    	<option value='all' selected>{{ 'select.popup.tous_messages'|trans }}</option>
+                    	{% for id,message in liste_messagesModules %}
+                    	    <option value="{{ id }}">{{ message }}</option>
+                    	{% endfor %}
+                	</select>
+				</div>
+				<div>
+                {% if page_appelante == 'listing' %}
+                    <input type='checkbox' name='maxListe' id='maxListe' data-url="{{ path('ipc_ajax_change_listePopup') }}" onClick="changeTypeListe('listing');" {% if popup_simplifiee == 1 %}checked {% endif %}><label for='maxListe'>Liste réduite</label>
+                {% elseif page_appelante == 'graphique' or page_appelante == 'etat' %}
+                    <input type='checkbox' name='maxListe' id='maxListe' data-url="{{ path('ipc_ajax_change_listePopup') }}" onClick="changeTypeListe('graphique');" {% if popup_simplifiee == 1 %} checked {% endif %}><label for='maxListe'>Liste réduite</label>
+                {% endif %}
+				</div>
+	    	</div>
+    	</div>
+    	<div id='exclure' class='cacher'>
+            <h2>{{ 'label.popup.titre.filtre'|trans }}</h2>
+            <div class='Pleft'>
+            	<div class='off' id='buttons1'>
+                    <h3>
+                        {{ 'label.valeur1'|trans }}
+                        <div class='on_off' onclick="buttonSlides('buttons1', 'codeVal1', 'Inf');"><div class='background'><div class='slideur'><div class='pastille'></div></div></div></div>
+                    </h3>
+                    <div class='schema'>
+						{# Par défaut aucun hachage n'est affiché sur le graphique #}
+                        <div class='schemabox'></div>
+						{# Par défaut aucun text n'est affiché #}
+                        <div class='txt'></div>
+                    </div>
+                    <div class='selection'>
+                        <p>
+							<input type="radio" id='radio_codeVal1Min' name="codeVal1" value="Inf" onClick="switch_schemabox(this.id, 'buttons1', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal1Min' onClick="switch_from_label('radio_codeVal1Min');" >{{ 'label.popup.filtre.superieur.designation'|trans }} :</label></span><br />
+							{{ 'label.popup.filtre.superieur.description'|trans({'%numero%':'1'}) }} 
+							<input type='text' class="saisie" id='codeVal1Min' name='codeVal1Min' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal1Min');" onChange="switch_txt('buttons1', 'codeVal1', 'Inf');" disabled />
+						</p>
+                        <p>
+							<input type="radio" id='radio_codeVal1Int' name="codeVal1" value="Int" onClick="switch_schemabox(this.id, 'buttons1', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal1Int' onClick="switch_from_label('radio_codeVal1Int');" >{{ 'label.popup.filtre.compris.designation'|trans }} :</label></span>
+							<br /> 
+							{{ 'label.popup.filtre.compris.description'|trans({'%numero%':'1'}) }}
+							<input type='text' class="saisie" id='codeVal1IntMin' name='codeVal1IntMin' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal1Int');" onChange="switch_txt('buttons1', 'codeVal1', 'Int');" disabled />
+							{{ 'label.et'|trans }}
+							<input type='text' class="saisie" id='codeVal1IntMax' name='codeVal1IntMax' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal1Int');" onChange="switch_txt('buttons1', 'codeVal1', 'Int');" disabled />
+						</p>
+                        <p>
+							<input type="radio" id='radio_codeVal1Max' name="codeVal1" value="Sup" onClick="switch_schemabox(this.id, 'buttons1', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal1Max' onClick="switch_from_label('radio_codeVal1Max');" >{{ 'label.popup.filtre.inferieur.designation'|trans }} :</label></span>
+							<br />
+							{{ 'label.popup.filtre.inferieur.description'|trans({'%numero%':'1'}) }}
+							<input type='text' class="saisie" id='codeVal1Max' name='codeVal1Max' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal1Max');" onChange="switch_txt('buttons1', 'codeVal1', 'Sup');" disabled />
+						</p>
+                    </div>
+            	</div>
+    	    </div>
+     	    <div class='Pcenter'>
+                <div class='line'  style='height:220px;'></div>
+            </div>
+	   		<div class='Pright'>
+            	<div class='off' id='buttons2'>
+            	    <h3>
+						{{ 'label.valeur2'|trans }}
+            	        <div class='on_off' onclick="buttonSlides('buttons2', 'codeVal2', 'Inf');"><div class='background'><div class='slideur'><div class='pastille'></div></div></div></div>
+            	    </h3>
+            	    <div class='schema'>
+		    	    	{# Par défaut aucun hachage n'est affiché sur le graphique #}
+            	        <div class='schemabox'></div>
+            	        {# Par défaut aucun text n'est affiché #}
+            	        <div class='txt'></div>
+            	    </div>
+            	    <div class="selection">
+            	        <p>
+							<input type="radio" id='radio_codeVal2Min' name="codeVal2" value="Inf" onClick="switch_schemabox(this.id, 'buttons2', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal2Min' onClick="switch_from_label('radio_codeVal2Min');" >{{ 'label.popup.filtre.superieur.designation'|trans }} :</label></span>
+							<br />
+							{{ 'label.popup.filtre.superieur.description'|trans({'%numero%':'2'}) }}
+							<input type='text' class="saisie" id='codeVal2Min' name='codeVal2Min' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal2Min');" onChange="switch_txt('buttons2', 'codeVal2', 'Inf');" disabled />
+						</p>
+            	        <p>
+							<input type="radio" id='radio_codeVal2Int' name="codeVal2" value="Int" onClick="switch_schemabox(this.id, 'buttons2', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal2Int' onClick="switch_from_label('radio_codeVal2Int');" >{{ 'label.popup.filtre.compris.designation'|trans }} :</label></span>
+							<br />
+							{{ 'label.popup.filtre.compris.description'|trans({'%numero%':'2'}) }}
+							<input type='text' class="saisie" id='codeVal2IntMin' name='codeVal2IntMin' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal2Int');" onChange="switch_txt('buttons2', 'codeVal2', 'Int');" disabled />
+							{{ 'label.et'|trans }}
+							<input type='text' class="saisie" id='codeVal2IntMax' name='codeVal2IntMax' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal2Int');" onChange="switch_txt('buttons2', 'codeVal2', 'Int');" disabled />
+						</p>
+            	        <p>
+							<input type="radio" id='radio_codeVal2Max' name="codeVal2" value="Sup" onClick="switch_schemabox(this.id, 'buttons2', this.name, this.value);" disabled />
+							<span><label for='radio_codeVal2Max' onClick="switch_from_label('radio_codeVal2Max');" >{{ 'label.popup.filtre.inferieur.designation'|trans }} :</label></span>
+							<br />
+							{{ 'label.popup.filtre.inferieur.description'|trans({'%numero%':'2'}) }}
+							<input type='text' class="saisie" id='codeVal2Max' name='codeVal2Max' value='0' maxlength='6' size='21' onFocus="switch_from_text('radio_codeVal2Max');" onChange="switch_txt('buttons2', 'codeVal2', 'Sup');" disabled />i
+						</p>
+            	    </div>
+          		</div>
+            </div>
+   		</div>
+        <div class='option'>
+            <input name='afficheroptions' id='afficheroptions' type='checkbox' value='afficher les options' onClick="switch_exclusion_message(this.id);" /><label for='afficheroptions' onClick="switch_exclusion_message('afficheroptions');" >{{'label.popup.titre.filtre'|trans }}</label>
+        </div>
+        <div class='actions' id='submitPopup'>
+            {% if page_appelante == 'listing' %}
+                <a href='#' id="fermerPopup" onclick="razUpdate(); reinitialise_popup_liste(); selection('listing', 'reinitModule', true); closeLightBox(); return false;"><div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div></a>
+				<a href='#' id="validPopup" onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('listing');checkValidationPopup();return false;" ><div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div></a>
+            {% elseif page_appelante == 'graphique' %}
+                <a href='#' id="fermerPopup" onClick="razUpdate(); reinitialise_popup_liste(); selection('graphique', 'reinitModule', true); closeLightBox(); return false;"><div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div></a>
+				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('graphique');checkValidationPopup();return false;" ><div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div></a>
+			{% elseif page_appelante == 'etat' %}
+				<a href='#' id="fermerPopup" onClick="closeLightBox();razUpdate();reinitialise_popup_liste();selection('graphique', null, true); return false;"><div class='bouton red'><div class='bgbouton'>FERMER</div></div></a>
+				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';etatSendAjaxForm('etat');return false;" ><div class='bouton green'><div class='bgbouton'>VALIDER</div></div></a>
+            {% endif %}
+       	</div>
+	</form>
+{% endblock popup %}

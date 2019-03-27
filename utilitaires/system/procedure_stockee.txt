@@ -1,0 +1,30 @@
+
+DROP PROCEDURE MajHasDonneesProcedure;
+DELIMITER |
+
+CREATE PROCEDURE MajHasDonneesProcedure()
+BEGIN
+DECLARE v_nombre_de_donnees INT DEFAULT 0;
+DECLARE v_offset INT DEFAULT 0;
+DECLARE v_module_id INT;
+
+CREATE TEMPORARY TABLE TMP_Module_id (
+	id INT UNSIGNED PRIMARY KEY
+) ENGINE=InnoDB
+SELECT DISTINCT module_id as id 
+FROM t_donnee;
+
+SELECT COUNT(*) INTO v_nombre_de_donnees FROM TMP_Module_id;
+
+while1: WHILE v_offset < v_nombre_de_donnees DO
+	SELECT * FROM TMP_Module_id LIMIT 1 OFFSET v_offset INTO v_module_id;
+	UPDATE t_module SET has_donnees = 1 WHERE id = v_module_id;
+    SET v_offset = v_offset + 1;
+END WHILE;
+END |
+
+DELIMITER ;
+
+
+
+call MajHasDonneesProcedure();

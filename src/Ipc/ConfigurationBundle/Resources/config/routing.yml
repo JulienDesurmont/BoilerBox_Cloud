@@ -1,0 +1,231 @@
+ipc_check_max_requetes:
+    path: /getMaxRequetes
+    defaults: { _controller: IpcConfigurationBundle:Configuration:getMaxRequetes }
+
+ipc_get_messages:
+    path: /getMessages
+    defaults: { _controller: IpcConfigurationBundle:Configuration:getMessages }
+
+ipc_get_infos_periode:
+    path: /getInfosPeriode
+    defaults: { _controller: IpcConfigurationBundle:Configuration:getInfosPeriode }
+
+ipc_modbus_cloture_ftp:
+    path: /modbusClotureFtp
+    defaults: { _controller: IpcConfigurationBundle:Configuration:modbusClotureFtp }
+
+ipc_read_modbus:
+    path: /readModbus
+    defaults: { _controller: IpcConfigurationBundle:Configuration:readModbus }
+
+ipc_get_date:
+    path: /getDate
+    defaults: { _controller: IpcConfigurationBundle:Configuration:ajaxGetDate }
+    requirements:
+        _method: POST
+
+ipc_conf_ajax_get_lat_data:
+    path: /ajax/getLastData
+    defaults: { _controller: IpcConfigurationBundle:Configuration:ajaxGetLastData }
+
+ipc_prog_newPeriode:
+    path: /periode/nouvelle
+    defaults: { _controller: IpcProgBundle:Prog:newPeriode }
+
+ipc_define_dates:
+    path: /definedates
+    defaults: { _controller: IpcConfigurationBundle:Configuration:defineDate }
+
+ipc_conf:
+    path: /
+    defaults: { _controller: IpcConfigurationBundle:Configuration:configuration }
+
+ipc_infos_loc:
+    path: /infosLocalisations
+    defaults: { _controller: IpcConfigurationBundle:Configuration:infosLocalisation }
+
+ipc_conf_majPeriodeAnalyse:
+    path: /majPeriodeAnalyse
+    defaults: { _controller: IpcConfigurationBundle:Configuration:majPeriodeAnalyse }
+
+ipc_confChangeMaxExecTime:
+    path: /changeMaxExecTime
+    defaults: { _controller: IpcConfigurationBundle:Configuration:changeMaxExecTime }
+
+ipc_autorisationClient:
+    path: /autorisationClient
+    defaults: { _controller: IpcConfigurationBundle:Configuration:autorisationClient }
+
+ipc_import_bdd:
+    path: /importbdd
+    defaults: { _controller: IpcConfigurationBundle:Configuration:import }
+
+ipc_voiripc:
+    path: /voiripc/{id}
+    defaults: { _controller: IpcConfigurationBundle:Configuration:voiripc }
+
+ipc_param_ipc:
+    path: /parametresipc
+    defaults: { _controller: IpcConfigurationBundle:Configuration:parametresipc }
+
+ipc_new_conf_ipc:
+    path: /newconfiguration
+    defaults: { _controller: IpcConfigurationBundle:Configuration:nouvelleconf }
+
+ipc_define_page_active:
+    path: /definePageActive
+    defaults: { _controller: IpcConfigurationBundle:Configuration:definePageActive }
+
+ipc_recup_page_courante:
+    path: /recupPageCourante
+    defaults: { _controller: IpcConfigurationBundle:Configuration:recupPageCourante }
+
+ipc_createSite:
+    path: /createSite/{numfresh}
+    defaults: { _controller: IpcConfigurationBundle:Configuration:creationSite, numfresh:'1' }
+
+ipc_createUser:
+    path: /createUser
+    defaults: { _controller: IpcConfigurationBundle:Configuration:creationUser }
+
+ipc_export_tableEchange:
+    path: /exportTableEchange
+    defaults: { _controller: IpcConfigurationBundle:Configuration:exportationTable }
+
+ipc_configSelect:
+    path: /selection/{type}{withAll}
+    defaults: { _controller: IpcConfigurationBundle:Configuration:selection, type:'all', withAll:false }
+    requirements:
+        type: genre|module|all
+        withAll: 1|0
+
+ipc_configGet:
+   path: /getEntity/
+   defaults: { _controller: IpcConfigurationBundle:Configuration:getEntity }
+
+ipc_add_donnee_live:
+    path: /nouvelleDonneeLive
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addDonneeLive }
+
+ipc_add_tuile_live:
+    path: /nouvelleTuileLive
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addTuileLive }
+
+ipc_createTypeGenerateur:
+    path: /addTypeGenerateur
+    defaults: { _controller: IpcConfigurationBundle:Configuration:addTypeGenerateur }
+
+ipc_gestionCouleurGenres:
+    path: /gestionGenres
+    defaults: { _controller: IpcConfigurationBundle:Configuration:gestionGenres }
+
+ipc_ajaxReinitColorGenre:
+    path: /ajax/reinitColorGenre
+    defaults: { _controller: IpcConfigurationBundle:Ajax:reinitColorGenres }
+
+ipc_ajax_change_session:
+    path: /ajax/changeSession
+    defaults: { _controller: IpcConfigurationBundle:Ajax:changeSession }
+
+ipc_set_script:
+    path: /ajax/setScript
+    defaults: { _controller: IpcConfigurationBundle:Ajax:setScript }
+
+ajaxGetTypeGenerateur:
+    path: /ajax/getTypeGenerateur
+    defaults: { _controller: IpcConfigurationBundle:Ajax:getTypeGenerateur }
+
+addFormExploitationGen:
+    path: /enTete/addFormExploitationGen
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addFormExploitationGen }
+
+addFormBruleur:
+    path: /enTete/addFormBruleur
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addFormBruleur }
+
+addFormBase:
+    path: /enTete/addFormBase
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addFormBase }
+
+addFormCombustible:
+    path: /enTete/addFormCombustible
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addFormCombustible }
+
+addFormEtatGen:
+    path: /enTete/addFormEtatGen
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:addFormEtatGen }
+
+ajaxGetTuileLive:
+    path: /ajax/getTuileLive
+    defaults: { _controller: IpcConfigurationBundle:Ajax:getTuileLive }
+
+ipc_change_tuileLive:
+    path: /changeTuileLive
+    defaults: { _controller: IpcConfigurationBundle:ConfSupervision:changeTuileLive }    
+
+ipc_ajax_set_sitec:
+    path: /ajax/setSiteCourant
+    defaults: { _controller: IpcConfigurationBundle:Ajax:setSiteCourant }
+
+ipc_ajax_choixLocalisation:
+    path: /ajax/setAndGetChoixLocalisation
+    defaults: { _controller: IpcConfigurationBundle:Ajax:setAndGetChoixLocalisation }
+
+ipc_ajax_change_listePopup:
+    path: /ajax/changeListePopup
+    defaults: { _controller: IpcConfigurationBundle:Ajax:changeListePopup }
+
+ipc_saveRequest:
+    path: /ajax/saveRequest/{page}
+    defaults: { _controller: IpcConfigurationBundle:Ajax:saveRequest }
+    requirements:
+        page: listing|graphique
+
+ipc_deleteRequest:
+    path: /ajax/deleteRequest/{page}
+    defaults: { _controller: IpcConfigurationBundle:Ajax:deleteRequest }
+    requirements:
+        page: listing|graphique
+
+ipc_selectRequest:
+    path: /ajax/selectRequest/{page}
+    defaults: { _controller: IpcConfigurationBundle:Ajax:selectRequest }
+    requirements:
+        page: listing|graphique
+
+ipc_saveSessionDate:
+    path: /ajax/saveSessionDate
+    defaults: { _controller: IpcConfigurationBundle:Ajax:saveSessionDate }
+
+ipc_restoreSessionDate:
+    path: /ajax/restoreSessionDate
+    defaults: { _controller: IpcConfigurationBundle:Ajax:restoreSessionDate }
+
+ipc_traduitVars:
+    path: /ajax/traduitVars
+    defaults: { _controller: IpcConfigurationBundle:Ajax:traduction }
+
+
+ipc_get_infos_session:
+    path: /anonym/configuration/getInfosSession
+    defaults: { _controller: IpcConfigurationBundle:AnonymConfiguration:getInfosSession }
+
+ipc_setSessionVars:
+    path: /anonym/configuration/ajax/setSessionVars
+    defaults: { _controller: IpcConfigurationBundle:AnonymAjax:setSessionVars }
+
+ipc_selectLangue:
+    path: /anonym/configuration/selectLangue/{langue}/{site}
+    defaults: { _controller: IpcConfigurationBundle:AnonymConfiguration:selectLangue, langue: fr}
+    requirements:
+        langue: fr|en|de|es
+        site: boilerbox|boilerboxlive
+
+ipc_getRequetePerso:
+    path: /ajax/getRequetesPerso
+    defaults: { _controller: IpcConfigurationBundle:Ajax:getRequetesPerso }
+
+ipc_traduire:
+    path: /ajax/traduire
+    defaults: { _controller: IpcConfigurationBundle:Ajax:traduire }
+

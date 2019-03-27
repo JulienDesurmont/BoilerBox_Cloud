@@ -1,0 +1,245 @@
+<div id="boutontitre" class='notToBePrinted' style='padding-right:50px;'>
+    <ul>
+        <li>
+            <a href="#" onClick="newTitle('Analyse de marche chaudière'); impressionTitre(); return false;">
+                <img src="{{ asset('bundles/ipcgraphique/images/impression.png') }}" alt='impression' />
+                <div class='boutonTitrePrint'></div>
+                <span>{{ 'label.info.impression'|trans }}</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id='etat1Affichage'>
+	{% spaceless %}
+	
+ 	<div id='etatHeader'>
+		<h1>{{ titre }}</h1>
+    	<h2>{{ periode }}</h2>
+ 	</div>
+
+ 	<div id='etatBody'>
+        <div class='etatPage'>
+    		<h1>Durée de fonctionnement</h1>
+			<div id='etatPartieFonctionnement'>
+	    	<p><span>Durée de la période</span><span>{{ tempsTotal }}</span></p>
+	    	<p><span>Durée {{ designation1 }}</span><span>{{ tempsModule1 }}</span></p>
+	    	<p><span>Durée {{ designation2 }}</span><span>{{ tempsModule2 }}</span></p>
+	    	{% if foyer == 'bifoyer' %}
+	      		<p><span>Durée {{ designation3 }}</span><span>{{ tempsModule3 }}</span></p>
+	      		<p><span>Durée {{ designation2 }} & {{ designation3 }}</span><span>{{ tempsModulesC }}</span></p>
+	    	{% endif %}
+			</div>
+    	    <div class='etatContainer'>
+        		<table class='etatContainer'>
+	    	   		<tr><td><div id="containerCT"></div></td></tr>
+				</table>
+    	    </div>
+			<div class='etatContainer'>
+				<table class='etatContainer'>
+    	    		{% if foyer == 'monofoyer' %}
+            	   		<tr>
+							<td><div id="containerB1T"></div></td>
+							<td><div id="containerB1C"></div></td>
+						</tr>
+						
+					{% else %}
+                        <tr>
+                            <td><div id="containerB1T"></div></td>
+                            <td><div id="containerB2T"></div></td>
+                        </tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+		<div class='etatFinPage'></div>
+
+		{% if foyer == 'bifoyer' %}
+			<div class='etatPage'>
+				<div class='etatContainer'>
+					<table class='etatContainer'>
+           				<tr>
+							<td><div id="containerB1C"></div></td>
+           					<td><div id="containerB2C"></div></td>
+           				</tr>
+        			</table>
+					<table class='etatContainer'>
+           				<tr><td><div id="containerCC"></div></td>
+					</table>
+				</div>
+       		</div>
+        	<div class='etatFinPage'></div>
+		{% endif %}
+
+		{% if tabCombustiblesB1 is not empty %}
+			<div class='etatPage'>
+        		<h1>Analyse des combustibles</h1>
+				<h2>Sur fonctionnement du brûleur 1</h2>
+				<div class='etatFonctionnementBruleur'>
+					{% for key, combustible in tabCombustiblesB1 %}
+						{% if loop.index0 != 0 %}
+							<p><span>{{ combustible['messageCombustible'] }}</span><span>{{ combustible['periodeTexte'] }}</span></p>		
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div id="containerCB1"></div>
+				{% if foyer == 'bifoyer' %}
+					<hr />
+					<div class='etatFonctionnementBruleur'>
+						<h2>Sur fonctionnement du brûleur 2</h2>
+						{% for key, combustible in tabCombustiblesB2 %}
+							{% if loop.index0 != 0 %}
+								<p><span>{{ combustible['messageCombustible'] }}</span><span>{{ combustible['periodeTexte'] }}</span></p>
+							{% endif %}
+						{% endfor %}
+					</div>
+					<div id="containerCB2"></div>
+				{% endif %}
+    	    </div>
+			<div class='etatFinPage'></div>
+		{% endif %}
+
+		<div class='etatPage'>
+        	{% if messageRearmementMax != null %}
+                <h1>Réarmements</h1>
+                <p><span>{{ messageRearmementMoy }}</span></p>
+        	    <p><span>{{ messageRearmementMax }}</span></p>
+            {% endif %}
+
+		 	<h1>Report des défauts</h1>
+		   	<h2>Défauts de chaine de sécurité</h2>
+		 	{% for defaut in tabDefautsTitre %}
+    			<p><span class='etatNombre'>{{ defaut.y }}: </span><span>{{ defaut.code }}</span><span>{{ defaut.designation }}</span></p>
+    		{% endfor %}
+			<h2>Défauts diagnostiqués:</h2>
+			<p><span>Nombre de défauts: {{ occurencesDefauts }}</span></p>
+			{% if occurencesDefauts != 0 %}
+    			<h3>{{ titreDefauts }}</h3>
+   	        	{% for defaut in tabDefauts %}
+	 				{% if loop.index != tabDefauts|length %}
+           	  			<p><span class='etatNombre'>{{ defaut.y }}: </span><span>{{ defaut.code }}</span><span>{{ defaut.designation }}</span></p>
+					{% endif %}
+   				{% endfor %}
+			{% endif %}
+   			<div class='etatContainer'>
+   			    <div id="containerDefauts" class='largeContainer'></div>
+   			</div>
+		</div>
+
+		<div class='etatFinPage'></div>
+
+		<div class='etatPage'>
+ 			<h1>Report des alarmes</h1>
+    		<h2>Avertisseur d'alarmes:</h2>
+  			{% for alarme in tabAlarmesTitre %}
+    		  	<p><span class='etatNombre'>{{ alarme.y }}: </span><span>{{ alarme.code }}</span><span>{{ alarme.designation }}</span></p>
+			{% endfor %}
+			<h2>Alarmes diagnostiquées :</h2>
+			<p><span>Nombre d'alarmes : {{ occurencesAlarmes }}</p></span>
+			{% if occurencesAlarmes != 0 %}
+    			<h3>{{ titreAlarmes }}</h3>
+       			{% for alarme in tabAlarmes %}
+					{% if loop.index != tabAlarmes|length %}
+        	   			<p><span class='etatNombre'>{{ alarme.y }}: </span><span>{{ alarme.code }}</span><span>{{ alarme.designation }}</span></p>
+					{% endif %}
+       			{% endfor %}
+			{% endif %}
+			<div class='etatContainer'>
+       			<div id="containerAlarmes" class='largeContainer'></div>
+       		</div>
+		</div>
+		
+		<div class='etatFinPage'></div>
+
+		{% if occurencesAnomaliesR != 0  %}
+		<div class='etatPage'>
+            <h1>Report des anomalies de régulation</h1>
+            <h2>Anomalies diagnostiquées :</h2>
+            <p><span>Nombre d'anomalies : {{ occurencesAnomaliesR }}</span></p>
+          	<h3>{{ titreAnomaliesR }}</h3>
+            {% for anomaliesR in tabAnomaliesR %}
+               	{% if loop.index != tabAnomaliesR|length %}
+              		<p><span class='etatNombre'>{{ anomaliesR.y }}: </span><span>{{ anomaliesR.code }}</span><span>{{ anomaliesR.designation }}</span></p>
+               	{% endif %}
+            {% endfor %}
+           	<div class='etatContainer'>
+           	    <div id="containerAnomaliesR" class='largeContainer'></div>
+           	</div>
+		</div>
+		<div class='etatFinPage'></div>
+		{% endif %}
+
+    	{% if tabCompteurs|length != 0 %}
+			<div class='etatPage'>
+     			<h1>Analyse des compteurs</h1>
+     			{% for key,compteur in tabCompteurs %}
+					{% if loop.index is divisibleby(6) %}
+						</div>
+						<div class='etatFinPage'></div>
+						<div class='etatPage'>
+					{% endif %}
+					<h3>{{ compteur['message'] }}</h3>
+					<div class='etatCompteur'>
+            			<p><span>Valeur de début</span>			<span class='etatNombre'>{{ compteur['valDebut'] }}</span>			<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Valeur de fin</span>			<span class='etatNombre'>{{ compteur['valFin'] }}</span>			<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Comptage sur la période</span>	<span class='etatNombre'>{{ compteur['compteur'] }}</span>			<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Moyenne par heure</span>		<span class='etatNombre'>{{ compteur['moyenneHeure'] }}</span>		<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Moyenne par jour</span>		<span class='etatNombre'>{{ compteur['moyenneJour'] }}</span>		<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Moyenne par heure '{{ designation1 }}'</span>	<span class='etatNombre'>{{ compteur['moyenneHeureAB'] }}</span>	<span>{{ compteur['unite'] }}</span></p>
+            			<p><span>Moyenne par jour '{{ designation1 }}'</span>	<span class='etatNombre'>{{ compteur['moyenneJourAB'] }}</span>	<span>{{ compteur['unite'] }}</span></p>
+					</div>
+        			{% if loop.index != tabCompteurs|length %}
+         				<div class='separation2'></div>
+        			{% endif %}
+     			{% endfor %}
+			</div>
+			
+			<div class='etatFinPage'></div>
+    	{% endif %}
+
+		
+    	{% if tabTests|length != 0 %}
+			<div class='etatPage'>
+     			<h1>Analyse des tests</h1>
+     			{% for key,test in tabTests %}
+					{% if loop.index is divisibleby(12) %}
+						</div>
+						<div class='etatFinPage'></div>
+						<div class='etatPage'>
+					{% endif %}
+       				<h3>{{ test['message'] }}</h3>
+					<div class='etatCompteur'>
+            			<p><span>Nombre d'occurences: </span><span>{{ test['occurences'] }}</span></p>
+		 				<p><span>Ecart max entre 2 tests: </span><span>{{ test['ecartMax'] }}</span></p>
+					</div>
+      				{% if loop.index != tabTests|length %}
+        				<div class='separation2'></div>
+             		{% endif %}
+     			{% endfor %}
+			</div>
+
+			<div class='etatFinPage'></div>
+    	{% endif %}
+
+		
+    	{% if tabForcages|length != 0 %}
+			<div class='etatPage'>
+     			<h1>Analyse des forçages</h1>
+     			{% for key,forcage in tabForcages %}
+					{% if loop.index is divisibleby(12) %}
+						</div>
+						<div class='etatFinPage'></div>
+						<div class='etatPage'>
+                    {% endif %}
+        			<h3>{{ forcage['message'] }}</h3>
+            		<p><span>Nombre d'occurences</span><span>{{ forcage['occurences'] }}</span></p>
+        			{% if loop.index != tabForcages|length %}
+        		 		<div class='separation2'></div>
+        			{% endif %}
+     			{% endfor %}
+			</div>
+			
+			<div class='etatFinPage'></div>
+    	{% endif %}
+ 	</div>
+	{% endspaceless %}
+</div>

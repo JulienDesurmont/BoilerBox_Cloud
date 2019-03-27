@@ -1,0 +1,182 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/addTuileLive.html.twig #}
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='newLiveField'>
+	    {% spaceless %}
+		    <div id='addDonneeLive' class='newTuile'>
+		        <h1>Nouvelle tuile live</h1>
+		        {{ form_start(form,{method:"post",action:path('ipc_add_tuile_live')}) }}
+		            {{ form_errors(form) }}
+            		<table>
+            		<tr><td>{{ form_label(form.categorie) }} :</td>
+                		<td>{{ form_widget(form.categorie,{'attr':{'class':'widgetMoyen'}}) }}</td>
+                		<td><span>{{ form_errors(form.categorie) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.typeFamille) }} :</td>
+                		<td>{{ form_widget(form.typeFamille,{'attr':{'class':'widgetMoyen'}}) }}</td>
+                		<td><span>{{ form_errors(form.typeFamille) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.famille) }} :</td>
+                		<td>{{ form_widget(form.famille,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.famille) }}</span></td>
+					</tr>
+            		<tr><td>{{ form_label(form.label) }} :</td>
+                		<td>{{ form_widget(form.label,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.label) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.type) }} :</td>
+                		<td>{{ form_widget(form.type,{'attr':{'class':'widgetMoyen'}}) }}</td>
+                		<td><span>{{ form_errors(form.type) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.adresse) }} :</td>
+                		<td>{{ form_widget(form.adresse,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.adresse) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.unite) }} :</td>
+                		<td>{{ form_widget(form.unite,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.unite) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.valeurEntreeVrai) }} :</td>
+                		<td>{{ form_widget(form.valeurEntreeVrai,{'attr':{'class':'widgetMoyen inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.valeurEntreeVrai) }}</span>  </td>
+            		</tr>
+            		<tr><td>{{ form_label(form.couleur) }} :</td>
+                		<td>{{ form_widget(form.couleur,{'attr':{'class':'widgetMoyen jscolor inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.couleur) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.valeurSortieVrai) }} :</td>
+                		<td>{{ form_widget(form.valeurSortieVrai,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.valeurSortieVrai) }}</span></td>
+            		</tr>
+            		<tr><td>{{ form_label(form.valeurSortieFaux) }} :</td>
+                		<td>{{ form_widget(form.valeurSortieFaux,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+                		<td><span>{{ form_errors(form.valeurSortieFaux) }}</span></td>
+            		</tr>
+                    <tr><td>{{ form_label(form.icone) }} : <div id='divImgIcone' style='position:relative; top:-10px;'>&nbsp</div></td>
+                        <td>{{ form_widget(form.icone,{'attr':{'class':'widgetIcone'}}) }}</td>
+                        <td><span>{{ form_errors(form.icone) }}</span></td>
+                    </tr>
+            		<tr><td colspan='3'>
+                			<div class='validationbouton'>
+                    			<div>
+                        			{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}
+                    			</div>
+                			</div>
+            			</td>
+					</tr>
+            		</table>
+            		<div class='cacher'>
+            	    	{{ form_widget(form.placement) }} {{ form_widget(form.localisation) }}
+           		 	</div>
+           			{{ form_rest(form) }}
+        		{{ form_end(form) }}
+    		</div>
+    		<div id='donneesLiveExistantes'>
+        		<h1>{% if tabDonneesLive|length > 1 %}Liste des {{ tabDonneesLive|length }} mots {% else %}Mot {% endif %}sur {{ localisationCourante.designation }}</h1>
+        		<div class='scrollable'>
+        			{% for donneeLive in tabDonneesLive %}
+        	    		{% if donneeLive.placement|lower != 'entete' %}
+        	        		<div class='tableInfoDonneeLive'>
+                    			<table>
+                    			<tr><td><span class='labelmoyen'>Localisation : </span>
+                            			<span class='valField'>{{ donneeLive.localisation.designation|capitalize }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Valeur en entrée OK : </span>
+                            			<span class='valField'>{{ donneeLive.valeurEntreeVrai }}</span>
+                        			</td>
+                    			</tr>
+                    			<tr><td><span class='labelmoyen'>Catégorie : </span>
+                            			<span class='valField'>{{ donneeLive.categorie.designation|capitalize }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Valeur en sortie OK : </span>
+                            			<span class='valField'>{{ donneeLive.valeurSortieVrai|capitalize }}</span>
+                        			</td>
+                    			</tr>
+                    			<tr><td><span class='labelmoyen'>Label : </span>
+                            			<span class='valField'>{{ donneeLive.label|capitalize }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Valeur en sortie NOK : </span>
+                            			<span class='valField'>{{ donneeLive.valeurSortieFaux|capitalize }}</span>
+                        			</td>
+                    			</tr>
+                    			<tr><td><span class='labelmoyen'>Famille : </span>
+                            			<span class='valField'>{{ donneeLive.famille|capitalize }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Type de la famille : </span>
+                            			<span class='valField'>{{ donneeLive.typeFamille.designation|capitalize }}</span>
+                        			</td>
+                    			</tr>
+                    			<tr>
+                        			<td><span class='labelmoyen'>Unité : </span>
+                            			<span class='valField'>{{ donneeLive.unite }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Placement : </span>
+                            			<span class='valField'>{{ donneeLive.placement|capitalize }}</span>
+                       	 			</td>
+                    			</tr>
+                    			<tr><td><span class='labelmoyen'>Adresse : </span>
+                            			<span class='valField'>{{ donneeLive.adresse }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Type : </span>
+                            			<span class='valField'>{{ donneeLive.type|capitalize }}</span>
+                        			</td>
+                    			</tr>
+                    			<tr><td><span class='labelmoyen'>Couleur : </span>
+                            			<span class='valField'>{{ donneeLive.couleur|upper }}</span>
+                        			</td>
+                        			<td><span class='labelgrand'>Icone : </span>
+                            			<span class='valField'>{{ donneeLive.icone.designation|capitalize }}</span>
+                        			</td>
+                    			</tr>
+                    			</table>
+                			</div>
+            			{% endif %}
+        			{% endfor %}
+				</div>
+    		</div>
+    		<br /><br />
+    		<div class='validationbouton'>
+        		<div class='right'>
+            		<a href='#' style="height:30px;" onClick='annuler("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton blue'><div class='bgbouton'>Retour</div></div></a>
+        		</div>
+    		</div>
+    	{% endspaceless %}
+	</div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+   		function annuler(url) {
+        	attente();
+        	window.location.href = url;
+   		}
+
+		$(function() {
+			var $selectForm = $('#DonneeLive_icone').html();
+			var $newSelect = "<select id='DonneeLive_icone' name='DonneeLive[icone]' class='widgetIcone' size='5'>";
+			var $arraySelect = $selectForm.split('</option>');
+			var $compteur = 0;
+        	$.each($arraySelect, function($key, $option) {
+            	var $tabUrl = $option.split('>');
+            	if (typeof($tabUrl[1]) !== 'undefined') {
+            	    var $tabChampsUrl = $tabUrl[1].split('__');
+					if($compteur === 0) {
+						$newSelect = $newSelect + $tabUrl[0] + ' alt="' + $tabChampsUrl[1] + '"' + " data-url='" + $tabChampsUrl[0] + "' selected style='background-image:url(../../../../../../../web/" + $tabChampsUrl[0] + ");background-repeat:no-repeat;background-position:right;background-size:30px 30px;'  >" + $tabChampsUrl[1] + '</option>';
+					} else {
+            	    	$newSelect = $newSelect + $tabUrl[0] + ' alt="' + $tabChampsUrl[1] + '"' + " data-url='" + $tabChampsUrl[0] + "' style='background-image:url(../../../../../../../web/" + $tabChampsUrl[0] + ");background-repeat:no-repeat;background-position:right;background-size:30px 30px;'  >" + $tabChampsUrl[1] + '</option>';
+					}
+					$compteur = $compteur + 1;
+            	}
+        	});
+			$newSelect = $newSelect + '</select>';
+			$('#DonneeLive_icone').parent().html($newSelect);
+		});
+	</script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,37 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/formulairesLive/formBase.html.twig #}
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='formulaireEntete'>
+	    <h1>Formulaire : {{ label }}</h1>
+	    {{ form_start(form, {'method':'POST', 'action':path('addFormBase')}) }}
+			<div class='cacher'>{{ form_widget(form.familleBase) }}</div>
+			<table>
+			    <tr><td>{{ labelAdresse }}</td><td>{{ form_widget(form.adBase,{'attr':{'class':'adresse inputText'}}) }}</td><td>{{ form_errors(form.adBase) }}</td></tr>
+			    <tr><td>Label</td><td>{{ form_widget(form.labelBase,{'attr':{'class':'label inputText'}}) }}</td><td>{{ form_errors(form.labelBase) }}</td></tr>
+			</table>
+			{{ form_widget(form.idLocalisation) }}
+			{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}
+	    {{ form_end(form) }}
+	    <div class='validationbouton'>
+	        <div class='center'>
+	            <a href='#' style="height:30px;" onClick='annuler("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton blue'><div class='bgbouton'>Retour</div></div></a>
+	        </div>
+	    </div>
+	</div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+    	function annuler(url) {
+    	    attente();
+    	    window.location.href = url;
+    	}
+    </script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,119 @@
+{# /src/Ipc/RapportsBundle/Resources/views/Rapports/addRapport.html.twig #}
+
+{% extends "IpcRapportsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}{{ 'label.titre.rapport'|trans }}{% endblock title %}
+
+	
+{% block title_header %}
+	<h1>{{ 'label.titre.rapport'|trans }}</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='intervention'>
+   		{{ form_start(form, {'attr': {'class': 'form-horizontal','id': 'formCreerRapport'} }) }}
+   			{# Les erreurs générales du formulaire. #}
+   			{{ form_errors(form) }}
+   			<div id='interventionGauche'>
+				<div class='semi'><span class='label'>{{ form_label(form.dateRapport) }}</span><span class='fieldError'>{{ form_errors(form.dateRapport) }}</span></div>
+				<div class='semi'><span class='label'>{{ form_label(form.nomTechnicien) }}</span><span class='fieldError'>{{ form_errors(form.nomTechnicien) }}</span></div><br />
+				<div class='semi'>{{ form_widget(form.dateRapport,{'attr':{'class':'intervWidget intervWidgetDate inputText'}}) }}</div>
+				<div class='semi'>{{ form_widget(form.nomTechnicien,{'attr':{'class':'intervWidget intervWidgetFill inputText'}}) }}</div><br /><br />
+				<div><span class='label'>{{ form_label(form.titre) }}</span><span class='fieldError'>{{ form_errors(form.titre) }}</span></div><br />
+				<div>{{ form_widget(form.titre,{'attr':{'class':'intervWidget intervWidgetFill inputText'}}) }}</div><br /><br />
+				<div class='flexh'><span class='flexlabel'>{{ form_label(form.site) }} : </span><span class='ouinon'>{{ form_widget(form.site) }}</span><span class='localisation'>{{ form_widget(form.localisation,{'attr':{'class':'nonVisible'}}) }}</span></div><br />
+				<div><span class='label'>{{ form_label(form.rapport) }}</span><span class='fieldError'>{{ form_errors(form.rapport) }}</span></div><br />	
+				<div>{{ form_widget(form.rapport,{'attr':{'class':'inputText'}}) }}</div>
+   			</div>
+   			<div id='interventionDroite'>
+				<div><span class='label'>{{ form_label(form.fichiersrapport) }} {{ "(max " ~ maxUploadedFileSize ~ ")" }}</span></div><br />
+				<div>{{ form_widget(form.fichiersrapport) }}</div>
+   			</div>
+   			<div id='interventionSave'>
+   				{{ form_label(form.enregistrer) }}{{ form_widget(form.enregistrer,{'attr':{'class':'intervButton intervGreen'}}) }}
+   			</div>
+   			{{ form_rest(form) }}
+   		{{ form_end(form) }}
+	</div>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton green'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+	<script type="text/javascript">
+        closeFooter();
+
+  		$(document).ready(function() {
+    		$('#formCreerRapport').submit(function(){ $(':visible').addClass('cursor_wait'); });
+    		//	Fonction permettant d'afficher ou de cacher le champ localisation en fonction du choix de la checkbox 'Intervention sur automate'
+    		$('#Rapport_site').on("change",function(){
+        		$('#Rapport_localisation').toggleClass('nonVisible');
+    		});
+    		//	Vérification du choix de la checkbox 'Intervention sur automate' : utilisé lors du rafraichissement pour afficher le champs localisation lorsque la checkbox est cochée
+    		if ($('#Rapport_site_0').is(':checked')) {
+				$('#Rapport_localisation').removeClass('nonVisible');
+    		}
+    		// On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+    		var $container = $('div#Rapport_fichiersrapport');
+    		// On ajoute un lien pour ajouter une nouvelle catégorie
+    		var $addLink = $('<div><a href="#" id="add_category">' + traduire('lien.ajout_fichier') + '</a></div>');
+    		$container.append($addLink);
+    		// On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+    		$addLink.click(function(e) {
+      			addCategory($container);
+      			e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+      			return false;
+    		});
+    		// On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+    		var index = $container.find(':input').length;
+    		// On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+    		if (index == 0) {
+        		addCategory($container);
+    		} else {
+      			// Pour chaque catégorie déjà existante, on ajoute un lien de suppression
+      			$container.children('div').each(function() {
+        			addDeleteLink($(this));
+      			});
+    		}
+	
+	    	// La fonction qui ajoute un formulaire Categorie
+	    	function addCategory($container) {
+	      		// Dans le contenu de l'attribut « data-prototype », on remplace :
+	      		// - le texte "__name__label__" qu'il contient par le label du champ
+	      		// - le texte "__name__" qu'il contient par le numéro du champ
+	      		var $prototype = $("<div class='divNouvFichierRapport'>"+$container.attr('data-prototype').replace(/__name__label__/g,'').replace(/__name__/g, index)+"</div>");
+	      		// On ajoute au prototype un lien pour pouvoir supprimer la catégorie
+	      		addDeleteLink($prototype);
+	      		// On ajoute le prototype modifié à la fin de la balise <div>
+	      		$container.prepend($prototype);
+	      		// Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
+	      		index++;
+	    	}
+
+	    	// La fonction qui ajoute un lien de suppression d'une catégorie
+	    	function addDeleteLink($prototype) {
+	      		// Création du lien
+	      		$deleteLink = $('<a href="#" class="remove_category" class="btn btn-danger">' + traduire('lien.supprimer') + '</a>');
+	      		// Ajout du lien
+	      		$prototype.append($deleteLink);
+	      		// Ajout du listener sur le clic du lien
+	      		$deleteLink.click(function(e) {
+	        		$prototype.remove();
+	        		e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+	        		return false;
+	      		});
+	    	}
+	  	});
+	</script>
+{% endblock bodyjavascript %}

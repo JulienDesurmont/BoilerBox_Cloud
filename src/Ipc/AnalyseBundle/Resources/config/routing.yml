@@ -1,0 +1,14 @@
+ipc_analyse_bruleurs:
+    path: /analyse/bruleurs/index
+    defaults: { _controller: IpcAnalyseBundle:Analyse:index}
+    requirements:
+        _method: GET
+
+ipc_analyse_getDefautsBruleurs:
+    path: /analyse/ajax/getDefautBruleur
+    defaults: { _controller: IpcAnalyseBundle:Ajax:getDefautsBruleurs }
+
+ipc_prog_logout:
+    path: /gestion_logout
+    defaults: { _controller: IpcProgBundle:Prog:gestionLogout }
+

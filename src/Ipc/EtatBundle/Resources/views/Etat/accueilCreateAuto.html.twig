@@ -1,0 +1,48 @@
+{# EtatBundle/Resources/views/Etat/accueilCreateAuto.html.twig #}
+
+{% extends 'IpcEtatBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block title_header %}
+    <h1>Création d'un état par fichier csv</h1>
+{% endblock title_header %}
+
+
+
+{# Suppression des menus #}
+{% block left_menu %}
+{% endblock left_menu %}
+
+
+
+{% block body %}
+	<div id='etatAuto'>
+		{{ form_start(form, {'method':'POST', 'action':path('ipc_createEtatAuto') }) }}
+			<div class='champs_etat'><span class='titre1'>{{ form_label(form.calcul) }}</span><span class='titre2'>{{ form_widget(form.calcul) }}</span></div>
+			<div class='champs_etat'><span class='titre1'>{{ form_label(form.file) }}</span><span class='titre2'>{{ form_widget(form.file) }}</span></div>
+			{{ form_rest(form) }}
+		{{ form_end(form) }}
+	</div>
+{% endblock body %}
+
+{% block choix_validation %}
+        <div id='validation'>
+            <a href='#' class='right' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.enregistrer"|trans|upper }}</div></div></a>
+            <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+        </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+<script type='text/javascript'>
+    function validationFormulaire() {
+		 document.forms['Etat_automatique'].submit();
+	}
+
+	function goBack() {
+        var url_intervention = $('#Configurations').attr('href');
+        window.location.href = url_intervention;
+	}
+</script>
+{% endblock bodyjavascript %}
+

@@ -1,0 +1,21 @@
+ipc_rapports_conf:
+    path: /
+    defaults: { _controller: IpcRapportsBundle:Rapports:index }
+
+ipc_modify_intervention:
+    path: /interventions/{idIntervention}
+    defaults: { _controller: IpcRapportsBundle:Rapports:interventions,idIntervention:0 }
+    requirements:
+        idIntervention: \d*
+
+ipc_view_interventions:
+    path: /interventions/view
+    defaults: { _controller: IpcRapportsBundle:Rapports:viewInterventions }
+
+ipc_intervention_keywords:
+    path: /interventions/search
+    defaults: { _controller: IpcRapportsBundle:Rapports:searchInterventions }
+
+ipc_export_rapports:
+    path: /export
+    defaults: { _controller: IpcRapportsBundle:Rapports:exportRapports }

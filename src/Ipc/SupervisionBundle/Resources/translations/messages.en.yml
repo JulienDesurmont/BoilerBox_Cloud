@@ -1,0 +1,27 @@
+# /src/Ipc/SupervisionBundle/Resources/translations/messages.en.yml
+live:
+    label:
+        titre:
+            principal: Operating data
+        evenements: Events
+        alarmes: Alarms
+        defauts: Defects
+        aucun_message: No data found
+        dernier_fichier_importe: Last imported file
+        derniere_donnee_importee: Last imported data
+        serveur_actif: Active server
+        serveur_inactif: Inactive server
+        serveur_occupe: Busy server
+    lien:
+        label:
+            rapatrier_messages: Repatriate the last messages
+        etat: State
+        graphique: Chart
+    bouton:
+        afficher_evenements: Show events
+        masquer_evenements: Hide events
+        reset: Reset
+    checkbox:
+        label:
+            masquer_infobulles: Hide tooltips
+            afficher_titretuiles: Show tiles titles

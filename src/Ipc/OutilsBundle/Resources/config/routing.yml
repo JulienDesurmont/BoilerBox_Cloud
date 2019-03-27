@@ -1,0 +1,35 @@
+ipc_outils_conf:
+    path: /
+    defaults: { _controller: IpcOutilsBundle:Outils:index }
+
+ipc_import_errorsdonnees:
+    path: /errorsdonnees
+    defaults: { _controller: IpcOutilsBundle:Outils:importErrorsDonnees }
+
+ipc_search_value:
+    path: /rechercheValeurs
+    defaults: { _controller: IpcOutilsBundle:Outils:rechercheValeurs }
+
+ipc_gestionRapport:
+    path: /gestionRapport
+    defaults: { _controller: IpcOutilsBundle:Outils:gestionRapport }
+
+ipc_transfertFtp:
+    path: /transfertFtp
+    defaults: { _controller: IpcOutilsBundle:Outils:transfertFtp }
+
+ipc_forcageFtpVides:
+    path: /suppressionFtpVides
+    defaults: { _controller: IpcOutilsBundle:Outils:suppressionFtpVides }
+
+ipc_getParamSystem:
+    path: /getParamSystem
+    defaults: { _controller: IpcOutilsBundle:Outils:getParametresSystem }
+
+ipc_gestionScripts:
+    path: /gestionScripts
+    defaults: { _controller: IpcOutilsBundle:Outils:gestionScripts }
+
+ipc_moveDoublons:
+    path: /moveDoublons
+    defaults: { _controller: IpcOutilsBundle:Outils:moveDoublons }

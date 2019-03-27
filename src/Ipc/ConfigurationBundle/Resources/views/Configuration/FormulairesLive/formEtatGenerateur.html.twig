@@ -1,0 +1,40 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/formulairesLive/formExploitationGenerateur.html.twig #}
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='formulaireEntete'>
+	    <h1>Formulaire : Etat du Générateur</h1>
+	    {{ form_start(form, {'method':'POST', 'action':path('addFormEtatGen')}) }}
+			<table>
+				<tr><td>{{ form_label(form.label) }}</td><td>{{ form_widget(form.label,{'attr':{'class':'label inputText'}}) }}</td><td>{{ form_errors(form.label) }}</td></tr>
+				<tr><td>{{ form_label(form.adNbEvenements) }}</td><td>{{ form_widget(form.adNbEvenements,{'attr':{'class':'entier inputText'}}) }}</td><td>{{ form_errors(form.adNbEvenements) }}</td></tr>
+				<tr><td>{{ form_label(form.adNbAlarmes) }}</td><td>{{ form_widget(form.adNbAlarmes,{'attr':{'class':'entier inputText'}}) }}</td><td>{{ form_errors(form.adNbAlarmes) }}</td></tr>
+	            <tr><td>{{ form_label(form.adNbDefauts) }}</td><td>{{ form_widget(form.adNbDefauts,{'attr':{'class':'entier inputText'}}) }}</td><td>{{ form_errors(form.adNbDefauts) }}</td></tr>
+			</table>
+			{{ form_widget(form.idLocalisation) }}
+			{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}
+	    {{ form_end(form) }}
+
+	    <div class='validationbouton'>
+	        <div class='center'>
+	            <a href='#' style="height:30px;" onClick='annuler("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton blue'><div class='bgbouton'>Retour</div></div></a>
+	        </div>
+	    </div>
+	</div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+    	function annuler(url) {
+	        attente();
+	        window.location.href = url;
+	    }
+    </script>
+{% endblock bodyjavascript %}
+

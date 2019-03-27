@@ -1,0 +1,40 @@
+# /web
+
+# BEGIN Expire headers
+<ifModule mod_expires.c>
+ExpiresActive On
+#ExpiresDefault "access plus 7500 seconds"
+ExpiresByType image/gif "access plus 11 months"
+ExpiresByType image/jpg "access plus 11 months"
+ExpiresByType image/png "access plus 11 minutes"
+</ifModule>
+# END Expire headers
+
+
+# BEGIN Cache-Control Headers
+<IfModule mod_headers.c>
+ <FilesMatch "\\.(gif|jp?g|png|svg)$">
+	Header set Cache-control "public, max-age=31536000"
+ </FilesMatch>
+ <FilesMatch "\\.(css|js)$">
+	Header set Cache-Control "max-age=0, must-revalidate"
+ </FilesMatch>
+ #<FilesMatch "\\.(js)$">
+	#Header set Cache-Control "public, max-age=2592000"
+ #</FilesMatch>
+</ifModule>
+# END Cache-Control Headers
+
+# KILL THEM ETAGS
+#Header unset ETag
+#Header unset Last-Modified
+#FileETag none
+
+# protect the htaccess file
+<files .htaccess>
+order allow,deny
+deny from all
+</files>
+
+# protection de la lecture des répertoires
+Options -Indexes

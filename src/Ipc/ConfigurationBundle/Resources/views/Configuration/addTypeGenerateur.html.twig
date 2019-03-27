@@ -1,0 +1,103 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/addTypeGenerateur.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Module Générateur{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des modes d'exploitation</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+    	<div id='modeExploitation'>
+    		{{ form_start(form,{method:'post',action:path('ipc_createTypeGenerateur')}) }}
+    			{{ form_errors(form) }}
+				<table class='tableMoyenne'>
+	    		<tr>
+            		<td>{{ form_label(form.mode) }}</td>
+	    			<td>{{ form_label(form.description) }}</td>
+	    		</tr>
+            	<tr>
+            		<td id='modeExploitation'>{{ form_widget(form.mode,{'attr':{'class':'widgetMin inputText'}}) }}</td>
+	    			<td id='descriptionExploitation'>{{ form_widget(form.description,{'attr':{'class':'widgetMessage inputText'}}) }}</td>
+            	</tr>
+            	<tr class='errors'>
+            		<td><span>{{ form_errors(form.mode) }}</span></td>
+            		<td><span>{{ form_errors(form.description) }}</span></td>
+            	</tr>
+				</table>
+				{{ form_label(form.modulesEnteteLive) }}
+				<section id='sectionModeExploitation'>
+	    			{% for enTete in form.modulesEnteteLive %}
+						<div class='column'>
+							{% set index = enTete.vars.value %}
+							{% set entity = form.modulesEnteteLive.vars.choices[index].data %}
+            	        	{{ form_widget(enTete) }}
+		    				{{ entity.description }}
+						</div>
+	    			{% endfor %}
+	    			{# form_widget(form.modulesEnteteLive) #}
+				</section>
+    			{{ form_rest(form) }}
+    		{{ form_end(form) }}
+    	</div>
+    	<h2>Les générateurs</h2>
+        <section class='generateursExistants'>
+			{% for typeGenerateur in entitiesTypeGenerateur %}
+          		<div class='column'><p>{{ typeGenerateur.description }} [{{ typeGenerateur.mode }}]</p></div>
+			{% endfor %}
+       	</section>
+
+       	<section class='generateursExistants'>
+       		{% for typeGenerateur in entitiesTypeGenerateur %}
+	   			<div class='column'>
+               		<ul>
+                   		{% for moduleEntete in typeGenerateur.modulesEnteteLive %}
+                       		<li>{{ moduleEntete.description }}</li>
+                   		{% endfor %}
+               		</ul>
+	   			</div>
+       		{% endfor %}
+       	</section>
+
+        <section class='generateursExistants'>
+        	{% for typeGenerateur in entitiesTypeGenerateur %}
+	    		<div class='column'>
+					<div><a href='#' onclick="changeAssociation('{{ typeGenerateur.mode }}','{{ typeGenerateur.description }}','{{ typeGenerateur.modulesEnteteLive|json_encode() }}');return false;">Modifier</a></div>
+            	</div>
+			{% endfor %}	
+        </section>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+
+    	function changeAssociation($mode,$description,$enTete) {
+			$('#ipc_progbundle_typegenerateur_mode').val($mode);
+			$('#ipc_progbundle_typegenerateur_description').val($description);
+			$('input[type=checkbox]').each(function () {
+    	        if (this.checked) {
+					this.checked = false;
+    	        }
+			});
+    	}
+	</script>
+{% endblock bodyjavascript %}
+

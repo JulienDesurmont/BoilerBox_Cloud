@@ -1,0 +1,101 @@
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Tables d'échanges{% endblock title %}
+
+
+{% block title_header %}
+    <h1>Importation d'une nouvelle table</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+	<input type='hidden' name='choixFormulaire' id='choixFormulaire' value='MyForm' />
+    <section id='menu_general'>
+    	<section_titre>
+	    	{% if choixSection == 'choixLocalisation' %}
+				<h3>Mise en service du nouveau programme</h3>
+	    	{% endif %}
+            {% if choixSection == 'choixFichier' %}
+                <h3>Sélection du fichier : Table échange Ipc</h3>
+            {% endif %}
+		</section_titre>
+		<br />
+		<div id='choixLocalisation' class='cacher gestion_modif_site'>
+	    	<form name='MyForm' action={{ path('ipc_import_bdd') }} method='post'>
+	    		<div id='choixProgramme'>
+					<table>
+		    			<tr><td>Mise à jour du programme</td><td><input type='radio' name='choixProg' value='maj' checked /></td></tr>
+		    			<tr><td>Nouveau programme</td><td><input type='radio' name='choixProg' value='nouveau' /></td></tr>
+					</table>
+	    		</div>
+	    		<div id='choixDate' class='cacher'>
+					<table>
+                    	<tr><th>Date de mise en service</th></tr>
+		    			<tr><td><input type="date" class='inputText' name="date_deb_mode" /></td></tr>
+       	        	</table>
+					<input type='hidden' name="valider" value='Valider' />
+	    		</div>
+	    		<div id='choixDescription'>
+					<textarea id='description' name='description' class='inputText' placeholder='Information de mise à jour' rows='4' cols='58'></textarea>
+	    		</div>
+	    	</form>
+		</div>
+		<br />
+        <div id='choixFichier' class='cacher'>
+	    	<form action={{ path('ipc_import_bdd') }} method="post" {{ form_enctype(form) }} name='MyForm2'>
+	        	{{ form_errors(form) }}
+	        	{{ form_label(form.file) }} : {{ form_widget(form.file) }}
+	        	{{ form_rest(form) }}
+	    	</form>
+		</div>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="submitMyForm();return false;" ><div class='bouton blue'><div class='bgbouton'>IMPORTER</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+
+		function submitMyForm(){
+			var $nomFormulaire = $('#choixFormulaire').val();
+			submitConfigurationForm($nomFormulaire);
+		}
+
+		var choixSection={{ choixSection | json_encode | raw }};
+		$(document).ready(function() {
+		    if(choixSection == 'choixLocalisation') {
+				$('#choixLocalisation').removeClass('cacher');
+		    } else {
+				$('#choixFormulaire').val('MyForm2');	
+				$('#choixFichier').removeClass('cacher');
+		    }
+		    $('#menu_configuration').removeClass('cacher');
+		    $('input[type=radio][name=choixProg]').click(function() {
+				var valeur = $(this).val();
+				if (valeur == 'maj') {
+			    	if (! $('#choixDate').hasClass('cacher')) {
+						$('#choixDate').addClass('cacher');
+						$('#description').attr('placeholder','Ajouter une information à la description');
+			    	}
+				} else {
+			    	$('#choixDate').removeClass('cacher');
+			    	$('#description').attr('placeholder','Nouvelle description');
+				}
+		    });
+		});
+    </script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,110 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/importErrorDonnees.html.twig #}
+
+{% extends 'IpcOutilsBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }}Gestion des données erronées{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des données erronées</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+    <div id='menu_configuration'>
+		<p>Nombre de données en erreurs : {{ nb_error }}</p>
+		<p>Liste des fichiers : page {{ page }}</p>
+        {% if nb_error != 0 %}
+	    	<form method='post' name="MyForm" id="MyForm"  action={{ path('ipc_import_errorsdonnees') }}>
+				<input type='hidden' name='nb_error' value='{{ nb_error }}' />
+				<input type='hidden' name='choixSubmit' id='_submit' />
+				<input type='hidden' name='page' value="{{ page }}" />
+				<table class='table_errors'>
+		    		<tr>
+						<td>
+			    			<div class='validationbouton'>
+			        			{% if page > 1 %}
+			            			<a href='#' style="height:10px;" onClick="validationFormulaire('PrevPage');return false;" ><div class='bouton'><div class='bgbouton'><img src="{{ asset('images/icones/prev_page.png') }}"/></div></div></a>
+			        			{% else %}
+				    				<a href='#' style="height:10px;" onClick="return false;" ><div class='bouton'><div class='bgbouton'><img src="{{ asset('images/icones/prev_page.png') }}"/></div></div></a>
+			        			{% endif %}
+			    			</div>
+						</td>
+                        <td>
+                            <select name="FileList[]" size="4" class='select_multiple' multiple>
+                                {% for key, liste_erreurs in liste_fichiers %}
+                                    {% set nboccurences = loop.index %}
+                                    {% for key2,erreur in liste_erreurs %}
+                                        {% if (nboccurences == 1) and (loop.index == 1) %}
+                                            <option value="{{ key }};{{ erreur }}" selected>{{ key }} ; {{ erreur }}</option>
+                                        {% else %}
+                                            <option value="{{ key }};{{ erreur }}">{{ key }} ; {{ erreur }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                        </td>
+						<td>
+			    			<div class='validationbouton'>
+			        			{% if liste_fichiers|length != 0 %}
+				    				<a href='#' style="height:10px;" onClick="validationFormulaire('NextPage');return false;" ><div class='bouton'><div class='bgbouton'><img src="{{ asset('images/icones/next_page.png') }}"/></div></div></a>
+			        			{% else %}
+				    				<a href='#' style="height:10px;" onClick="return false;" disabled ><div class='bouton'><div class='bgbouton'><img src="{{ asset('images/icones/next_page.png') }}"/></div></div></a>
+			        			{% endif %}
+			    			</div>
+						</td>
+		    		</tr>
+				</table>
+	    	</form>
+		{% else %}
+		    <p><span style='color:green;'>Aucune erreur n'est à signaler</span></p>	
+		{% endif %}
+		{% if texte_log != "" %}
+		    <textarea cols='150' rows='10' readonly>{{ texte_log }}</textarea>
+		{% endif %}
+    </div>
+{% endblock body %}
+
+{% block footer %}
+    <div class='gestion_parametres_foot'>
+        <div class='validationbouton'>
+            {% if liste_fichiers|length != 0 %}
+                <div class='center'>
+                    {#
+					<a href='#' style="height:30px;" onClick="validationFormulaire('Supprimer');return false;" ><div class='bouton red'><div class='bgbouton'>Suppression des données</div></div></a>
+                    <a href='#' style="height:30px;" onClick="validationFormulaire('PurgeDD');return false;" ><div class='bouton red'><div class='bgbouton'>Purge des doublons</div></div></a>
+                    <a href='#' style="height:30px;" onClick="validationFormulaire('DetailsE');return false;" ><div class='bouton blue'><div class='bgbouton'>Détails des erreurs</div></div></a>
+                    <a href='#' style="height:30px;" onClick="validationFormulaire('DetailsI');return false;" ><div class='bouton blue'><div class='bgbouton'>Détails de l'importation</div></div></a>
+                    <a href='#' style="height:30px;" onClick="validationFormulaire('Valider');return false;" ><div class='bouton green'><div class='bgbouton'>Réimport des données</div></div></a>
+					#}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock footer %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+
+		function validationFormulaire(choix) {
+		    attente();
+		    setTimeout(function() {
+		        $('#_submit').val(choix);
+		    	$('#MyForm').submit();
+		    }, 100);
+		}
+    </script>
+{% endblock %}
+

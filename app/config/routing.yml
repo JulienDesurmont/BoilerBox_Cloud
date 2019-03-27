@@ -1,0 +1,82 @@
+ipc_analyse_routes:
+    resource: "@IpcAnalyseBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/analyse
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_configuration_routes:
+    resource: "@IpcConfigurationBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/configuration
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_etat_routes:
+    resource: "@IpcEtatBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/etat
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_graphique_routes:
+    resource: "@IpcGraphiqueBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/graphique
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_listing_routes:
+    resource: "@IpcListingBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/listing
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_outils_routes:
+    resource: "@IpcOutilsBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/outils
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_prog_routes:
+    resource: "@IpcProgBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/prog
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_rapports_routes:
+    resource: "@IpcRapportsBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerbox/rapports
+    requirements:
+        _locale: fr|en|de|es
+
+ipc_supervision_routes:
+    resource: "@IpcSupervisionBundle/Resources/config/routing.yml"
+    prefix: /{_locale}/boilerboxlive/
+    requirements:
+        _locale: fr|en|de|es
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /profile
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /{_locale}/register
+    requirements:
+        _locale: fr|en|de|es
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix: /profile
+
+ipc_boilerbox_accueil:
+    path:  /
+    defaults: { _controller: IpcProgBundle:Prog:redirectionAccueil }
+
+ipc_prog_logout:
+    path: /gestion_logout
+    defaults: { _controller: IpcProgBundle:Prog:gestionLogout }

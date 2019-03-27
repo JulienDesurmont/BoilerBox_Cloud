@@ -1,0 +1,103 @@
+Recherche et Analyse des données en erreur
+
+Nombre d'erreur de chaque type
+SELECT erreur, count(*) FROM `t_donneetmp` GROUP BY erreur
+
+
+Nombre d'erreur pour chaque message
+SELECT CONCAT(categorie, RIGHT(CONCAT('00', numero_module), 2), RIGHT(CONCAT('00', numero_message), 2)) as Code, numero_genre as Genre, count(*) as Nombre  FROM t_donneetmp GROUP BY categorie, numero_module, numero_message, numero_genre ORDER BY Code
+
+
+
+ ----------------------------------------------------------- ERREURS DGMNF -----------------------------------------------------
+
+
+Recherche du module ZA4107 associé à la localisation de la donnée en erreur
+1 Récupérer l'affaire et le numéro de la localisation de la donnée en erreur.
+2 Retrouver l'id de la localisation
+3 Retrouver le mode_id de la localisation
+4 Recupérer le code module de la donnée en erreur.
+5 Rechercher parmi la liste des modules, celui dont le code = à celui récupéré (4). Et dont le mode_id est = à celui retrouvé (3)
+-> Si le module n'existe pas : Erreur 1
+6 Vérifier si le module et la localisation sont associés (table localisation_module)
+-> Si il ne sont pas associé : Erreur 2
+7 Vérifier si le genre du module = le genre de la donnée en erreur 
+-> Si pas le même genre : Erreur3
+
+SELECT 	CONCAT(t_donneetmp.categorie, RIGHT(CONCAT('00', t_donneetmp.numero_module), 2), RIGHT(CONCAT('00', t_donneetmp.numero_message), 2)) AS DonneeErronee_Code, 
+		t_donneetmp.numero_genre AS DonneeErronee_Genre,
+		CONCAT(t_module.categorie, RIGHT(CONCAT('00', t_module.numero_module), 2), RIGHT(CONCAT('00', t_module.numero_message), 2)) AS Module_Code,
+		t_genre.numero_genre as Module_Genre,
+		t_module.message AS Module_Message,
+		localisation_module.module_id AS Lien_ModuleId,
+		localisation_module.localisation_id AS Lien_LocalisationId
+FROM t_donneetmp
+INNER JOIN t_site 
+USING (affaire)
+INNER JOIN t_localisation 
+ON t_donneetmp.numero_localisation = t_localisation.numero_localisation AND t_site.id = t_localisation.site_id
+LEFT JOIN t_module 
+ON t_donneetmp.categorie = t_module.categorie AND t_donneetmp.numero_module = t_module.numero_module AND t_donneetmp.numero_message = t_module.numero_message AND t_localisation.mode_id = t_module.mode_id
+LEFT JOIN t_genre 
+ON t_module.genre_id = t_genre.id
+LEFT JOIN localisation_module 
+ON t_localisation.id = localisation_module.localisation_id AND t_module.id = localisation_module.module_id
+WHERE t_donneetmp.erreur = 'DGMNF'
+GROUP BY DonneeErronee_Code
+ORDER BY DonneeErronee_Code
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------- ERREURS DGMNF 2 eme requête -----------------------------------------------------
+
+DGMNF : Récupération des fichiers - A utiliser lorsqu'il y a peux de données car par de groupement
+
+SELECT CONCAT(t_donneetmp.horodatage, '.', t_donneetmp.cycle) as heure_data, t_donneetmp.nom_fichier as Fichier, CONCAT(t_donneetmp.categorie, RIGHT(CONCAT('00', t_donneetmp.numero_module), 2), RIGHT(CONCAT('00', t_donneetmp.numero_message), 2)) as DonneeErronee_Code, t_donneetmp.numero_genre as DonneeErronee_Genre, t_genre.numero_genre as t_genre_Genre, t_module.id as t_module_id
+FROM t_donneetmp
+INNER JOIN t_site
+USING (affaire)
+INNER JOIN t_localisation
+ON t_donneetmp.numero_localisation = t_localisation.numero_localisation AND t_site.id = t_localisation.site_id
+LEFT JOIN t_genre
+USING (numero_genre)
+LEFT JOIN t_module
+ON t_donneetmp.categorie = t_module.categorie AND t_donneetmp.numero_module = t_module.numero_module AND t_donneetmp.numero_message = t_module.numero_message AND t_genre.id = t_module.genre_id AND t_localisation.mode_id = t_module.mode_id
+WHERE t_donneetmp.erreur = 'DGMNF'
+ORDER BY Fichier, DonneeErronee_Code
+
+
+ ----------------------------------------------------------- ERREURS DD -----------------------------------------------------
+
+
+DD  On recherche les donneetmp même si on ne trouve pas de genre associé / même si on ne trouve pas le module associé
+SELECT t_donneetmp.horodatage as heure_data, t_donneetmp.cycle as cycle_data, t_donneetmp.valeur1 as valeur1_data, t_donneetmp.valeur2 as valeur2_data, CONCAT(t_donneetmp.categorie, RIGHT(CONCAT('00', t_donneetmp.numero_module), 2), RIGHT(CONCAT('00', t_donneetmp.numero_message), 2)) as DonneeErronee_Code, t_donneetmp.nom_fichier as fichier_tentative,  t_fichier.date_traitement as heure_importation, t_fichier.nom as fichier_importation
+FROM t_donneetmp
+INNER JOIN t_site
+USING (affaire)
+INNER JOIN t_localisation
+ON t_donneetmp.numero_localisation = t_localisation.numero_localisation AND t_site.id = t_localisation.site_id
+LEFT JOIN t_genre
+USING (numero_genre)
+LEFT JOIN t_module
+ON t_donneetmp.categorie = t_module.categorie AND t_donneetmp.numero_module = t_module.numero_module AND t_donneetmp.numero_message = t_module.numero_message AND t_genre.id = t_module.genre_id AND t_localisation.mode_id = t_module.mode_id
+INNER JOIN t_donnee
+ON t_donnee.module_id = t_module.id AND t_donnee.horodatage = t_donneetmp.horodatage AND t_donnee.cycle = t_donneetmp.cycle AND t_donnee.valeur1 = t_donneetmp.valeur1 AND t_donnee.valeur2 = t_donneetmp.valeur2 AND t_donnee.localisation_id = t_localisation.id
+INNER JOIN t_fichier
+ON t_donnee.fichier_id = t_fichier.id
+WHERE (
+t_donneetmp.erreur = 'DD'
+AND t_donneetmp.nom_fichier <> t_fichier.nom
+)
+
+
+
+
+Date du plus ancien et du plus recent fichier d'une donnee en erreur
+SELECT nom_fichier, horodatage FROM t_donneetmp WHERE 1 ORDER BY nom_fichier ASC LIMIT 1
+SELECT nom_fichier, horodatage FROM t_donneetmp WHERE 1 ORDER BY nom_fichier DESC LIMIT 1

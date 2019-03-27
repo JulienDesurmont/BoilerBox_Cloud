@@ -1,0 +1,2 @@
+boilerbox_c782
+/run/mysqld/mysqld.sock

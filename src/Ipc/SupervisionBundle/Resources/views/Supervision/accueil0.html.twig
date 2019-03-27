@@ -1,0 +1,20 @@
+{# /src/Ipc/SupervisionBundle/Supervision/accueil0.html.twig #}
+
+{% extends 'IpcSupervisionBundle::secondLayout.html.twig' %}
+
+{% block title %}Live:Accueil{% endblock title %}
+
+{% block bodyJavascript %}
+	<script type="text/javascript">
+		var $reloadUrl = {{ reloadUrl|json_encode|raw }};
+		var $rand_connexions = {{ rand_connexions|json_encode|raw }};
+		$(document).ready(function () {
+			if ($reloadUrl == true) {
+                                var $regexp = /^(.+?)&.*$/;
+				var $windowHref = window.location.href.replace($regexp, "$1");
+				var $newUrl = $windowHref + $rand_connexions;
+				window.location.replace($newUrl);
+			}
+		});
+	</script>
+{% endblock bodyJavascript %}

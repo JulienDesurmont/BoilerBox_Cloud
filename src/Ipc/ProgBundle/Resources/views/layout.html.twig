@@ -1,0 +1,20 @@
+{# src/Ipc/ProgBundle/Resources/views/layout.html.twig #}
+{% extends "::layout.html.twig" %}
+
+{% block title %}{{ parent() }} {% endblock %}
+
+{% block body %}
+        <div class='pageIcone'><img src="{{ asset('images/icones/V3-web-accueil-ttl.png') }}" class="icone" alt="icone_accueil" /></div>
+        <div class='pageTitleLarge'>
+		<h1 class='title'>{{ pageTitle }}</h1>
+	</div>
+        <div class='messagePeriodeLarge'>
+                <h2>{{ messagePeriode }}</h2>
+        </div>
+	<div class='loaderLarge'>
+		<span id="loader" style="display: none;"><img src="{{ asset('images/icones/loader.gif') }}" alt="loading" /></span>
+	</div>
+		
+        <br />
+	{% include "IpcProgBundle::menu.html.twig" %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{# src/Ipc/ConfigurationBundle/Resources/views/Configuration/configuration.html.twig #}
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+{% block title_header %}
+	<h1>Configuration</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+        <select name='select_configuration' id='select_configuration' class='principal'>
+			<option class='optionTitre' disabled selected>Configuration BoilerBox</option>
+            {#
+			<option class='optionTitre' disabled>Sites et Utilisateurs</option>
+			#}
+            {% if is_granted('ROLE_ADMIN') %}
+                {#
+				<option value="{{ path('ipc_createSite') }}">Gestion des sites</option>
+				<option value="{{ path('ipc_createEtatAuto') }}">Gestion des états</option>
+                <option value="{{ path('ipc_createUser') }}">Gestion des utilisateurs</option>
+				#}
+            {% endif %}
+            {#<option value="{{ path('ipc_autorisationClient') }}">Gestion des accès client</option>#}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                {#
+				<option class='optionTitre' disabled>Exploitation des chaudières</option>
+                <option value="{{ path('ipc_infos_loc') }}">Les périodes d'exploitation</option>
+				#}
+            {% endif %}
+
+            <option class='optionTitre' disabled>Paramètres BoilerBox</option>
+            <option value="{{ path('ipc_param_ipc') }}">Paramètres de configuration</option>
+            {#<option value="{{ path('ipc_gestionCouleurGenres') }}">Couleur des genres</option>#}
+
+            <option class='optionTitre' disabled>Tables d'échanges</option>
+            {#<option value="{{ path('ipc_import_bdd') }}">Importation</option>#}
+            <option value="{{ path('ipc_export_tableEchange') }}">Exportation</option>
+
+            {#
+			<option class='optionTitre' disabled>Paramètres Live</option>
+            <option value="{{ path('ipc_add_donnee_live') }}">Gestion des données live</option>
+            <option value="{{ path('ipc_createTypeGenerateur') }}">Gestion des types de générateur</option>
+			#}
+        </select>
+    </section>
+{% endblock body %}
+
+
+{% block bodyjavascript %}
+	{{ parent() }}
+	<script type='text/javascript'>
+        $(function(){
+            $('#select_configuration').change(function(){
+                attente();
+                setTimeout(function() {
+                    var $url_configuration = $('#select_configuration').val();
+                    window.location.href = $url_configuration;
+                }, 100);
+            });
+        });
+	</script>
+{% endblock bodyjavascript %}

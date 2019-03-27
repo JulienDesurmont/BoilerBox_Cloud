@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="{{ _charset }}" />
+        <title>Erreur: {{ status_text }}</title>
+    </head>
+    <body>
+        <h1>Oops! Erreur {{ status_code }} rencontrée</h1>
+        <h2>"{{ status_text }}".</h2>
+
+        <div>
+			Merci de corriger l'erreur ou de la signaler à l'administrateur.<br />
+            Nous ferons tout pour résoudre rapidement l'incident. Veuillez nous excuser pour le dérangement.
+        </div>
+    </body>
+</html>

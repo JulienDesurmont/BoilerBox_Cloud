@@ -1,0 +1,27 @@
+# /src/Ipc/SupervisionBundle/Resources/translations/messages.de.yml
+live:
+    label:
+        titre:
+            principal: Betriebsdaten
+        evenements: Geschehnisse
+        alarmes: Alarm
+        defauts: Fehler
+        aucun_message: Keine nachricht
+        dernier_fichier_importe: Letzte eingeführte Datei
+        derniere_donnee_importee: Letzte eingeführte Angabe
+        serveur_actif: Tätiger server
+        serveur_inactif: Inaktiver Server
+        serveur_occupe: Besetzter Server
+    lien:
+        label:
+            rapatrier_messages: Die nachrichten zurückbringen
+        etat: Staat
+        graphique: Abbildung
+    bouton:
+        afficher_evenements: Die ereignisse anzeigen
+        masquer_evenements: Die ereignisse maskieren
+        reset: Zurücksetzen
+    checkbox:
+        label:
+            masquer_infobulles: Die nachrichten-blasen maskieren
+            afficher_titretuiles: Die nachrichten-blasen anzeigen

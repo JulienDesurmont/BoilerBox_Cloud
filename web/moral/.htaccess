@@ -1,0 +1,4 @@
+AuthName "Page d'administration"
+AuthType Basic
+AuthUserFile "/var/www/html/BoilerBox/web/moral/.htpasswd"
+Require valid-user

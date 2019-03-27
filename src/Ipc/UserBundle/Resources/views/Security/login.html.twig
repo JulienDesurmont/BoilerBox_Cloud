@@ -1,0 +1,106 @@
+{% extends "IpcUserBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Login{% endblock title %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+	<input type='hidden' name='setSessionVars' id='setSessionVars' data-url="{{ path('ipc_setSessionVars') }}"  />
+	<div id='pagePrincipaleBody'>
+		<section>
+	    	<div class='boxlogin'>
+				<!--Logo-IBC-->
+				<div id='logo-IBC'>
+		    		<div class='iconeBoilerbox'><div class='txt'><span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL</div></div>
+				</div>
+				<div class='icone'><div class='codeaffaire'>{{ affaire }}</div></div>
+				<div class='affaire'><span>{{ intitule }}</span></div>
+				<form action="{{ path("fos_user_security_check") }}" method="post" name='myForm'>
+    		    	<input type='hidden' name="_csrf_token" value="{{ csrf_token }}" />
+		    		<input type='hidden' id="remember_me" name="_remember_me" value="on" />
+                    <input type='text' id="username" name="_username" placeholder="Identifiant" value="" required="required" x-moz-errormessage="Entrez un identifiant"  />
+                    <input type='password' placeholder="Mot de passe" id="password" name="_password" required="required" autocomplete="off" />
+		    		<input type='hidden' id="_label" name="_label" value="" />
+		    		<input type='hidden' id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+		    		<div id='validationbouton'>
+						<a href='#' class='right' onClick="document.forms['myForm'].submit();return false;" ><div class='bouton blue'><div class='bgbouton'>CONNEXION</div></div></a>
+		    		</div>
+				</form>
+	    	</div>
+		</section>
+        <div id='horodatage'>
+            <div id='heure' class='heure' title="Heure du système BoilerBox">{{ lHeure }}</div>
+            <div id='date' class='date'>{{ leJour }}</div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block javascript %}
+{{ parent() }}
+<script type='text/javascript'>
+	var months              = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Déc'];
+	var timestampDebut      = {{ timestamp|json_encode|raw }};
+	var timestampDateDebut  = {{ timestamp|json_encode|raw }} * 1000;
+	var timeDateDebut       = new Date(timestampDateDebut);
+	var strDateDebut        = timeDateDebut.getDate()+'-'+months[timeDateDebut.getMonth()]+'-'+timeDateDebut.getFullYear()+' '+timeDateDebut.getHours()+':'+timeDateDebut.getMinutes()+':'+timeDateDebut.getSeconds();
+	var tmpDebutScript      = new Date().getTime();
+
+	$(document).ready(function() {
+    	document.getElementById('username').focus();
+
+    	setSiteIpcDimension();
+    	setInterval("majDeDate()",100);
+    	var erreur = {{ error|trans|json_encode|raw }};
+    	if (erreur != '') {
+			$('#pagePrincipaleBody').addClass('shadowing');
+			desactivateLinks();
+			$('#siteIpc').on("click",closeMessageBox);
+			$('#messageboxTexte').text(erreur);
+			$('#messagebox').removeClass('cacher');
+    	}
+
+		// Appel de la fonction permettant de récupérer les variables de sessions
+		getSessionVars();
+
+    	$(document).keypress(function(e) {
+        	if (e.keyCode == 13) {
+    	    	if ($('#messageboxTexte').text().trim() == '') {
+					document.forms['myForm'].submit();
+    	    	} else {
+					$('#messageboxTexte').text('');
+                	$('#lienMessageBox').get(0).click();
+    	    	}
+        	}
+    	});
+	});
+
+	function majDeDate() {
+    	var heureActuelle = {{ lHeure|json_encode|raw }};
+    	var jourActuel = {{ leJour|json_encode|raw }};
+    	$('#heure').text(heureActuelle);
+    	$('#date').text(jourActuel);
+    	// Temps d'execution du script 
+    	var tmpFinScript = new Date().getTime();
+    	var tmpTimestampDiffScript 	= tmpFinScript - tmpDebutScript;
+    	//	Nouvelle date 
+    	var newTimestamp = timestampDateDebut+tmpTimestampDiffScript;
+    	var newDate = new Date(newTimestamp);
+    	$('#heure').text(fillNumber(newDate.getHours())+':'+fillNumber(newDate.getMinutes())+':'+fillNumber(newDate.getSeconds()));
+    	$('#date').text(fillNumber(newDate.getDate())+' '+months[newDate.getMonth()]+' '+newDate.getFullYear());
+	}
+
+	function fillNumber(num) {
+    	if (num.toString().length == 1) {
+			return("0"+num);
+    	}
+    	return(num);
+	}
+
+	function getSessionVars() {
+		var $url = $('#setSessionVars').attr('data-url');
+		$.ajax({
+			url: $url
+		});
+	}
+</script>
+{% endblock javascript %}

@@ -1,0 +1,1353 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - SECTIONS  - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - -*/
+
+header                          {position:absolute; top:0px; right:0px; left:0px; height:55%; padding:0 10%; display:block; background:@black;}
+
+menus							{z-index:85; position:absolute; right:0px; bottom:27%; left:100px; text-align:center; background:@black; height:25%;
+	&.vueRestreinte				{display:none;}
+}
+
+configperiode {                 position:absolute; right:0px; bottom:0px; left:0px; padding:0 10%; height:25%; min-height:40px; line-height:50px; background:@black; display:block; white-space:nowrap;
+    a                           {color:inherit; text-transform:uppercase;}
+	.definitionDate   			{background-color:@red; display:none;}
+    .date                       {font-size:18px; text-align:left; color:@white; display:inline-block; width:80%;}
+    .configbouton               {display:inline-block; width:20%; text-align:right;}
+    .bouton                     {width:auto; display:inline-block; vertical-align:middle; border-radius:@contourArrondi; font-size:@normauxCaracteres; text-align:center; font-weight:bold; line-height:16px;}
+    input                       {width:194px; text-align:center;}
+    input[type="text"]          {text-align:center; height:24px;}
+	&.vueRestreinte				{text-align:center;
+		.date					{text-align:center;}
+	}
+}
+
+configperiode.vueRestreinte .date
+
+menu_gauche                     {z-index:80; position:absolute; top:@hauteurEnTete; left:0px; bottom:120px; width:200px; color:@black; text-align:center; background:@white;}
+menu_droite                     {z-index:80; position:absolute; top:@hauteurEnTete; right:0px; bottom:120px; width:200px; color:@black; text-align:center; background:@white;}
+
+page {                          position:absolute; top:@hauteurEnTete; right:200px; bottom:0px; left:200px; display:block; color:@darkGray; -moz-box-sizing: border-box; box-sizing: border-box;
+	.icone-info                	{border:@darkGray solid 2px;}
+    thead {
+        .actions                {text-align:center;}
+        .periodedate            {text-align:center;}
+    }
+    tbody {
+        .actions                {text-align:right;}
+        .periodedate            {text-align:left;}
+        .code                   {padding-top:8px;}
+    }
+    table                      	{border-collapse:collapse; margin:6px 0 10px 0; width:100%;}
+    th {                        height:18px; font-family:"Myriad Pro", Verdana, Geneva, sans-serif; font-weight:lighter; font-size:@petitsCaracteres; color:@darkGray; 
+								border-bottom:@darkGray solid 2px;
+        span:nth-child(0n+2)    {color:#999;}
+    }
+    td {
+        &.clRadiobox            {width:100px !important;}
+        &.clLocalisation        {width:150px !important;}
+        &.clDate                {width:150px !important;}
+        &.clProgramme           {width:150px !important;}
+        &.clDescription         {width:200px !important; overflow:auto;}
+        &.localisation          {font-size:32px; border:none; vertical-align:middle; height:auto;}
+        &.code                  {font-size:38px; height:auto; text-align:left !important;}
+        &.designation           {font-size:16px; line-height:18px; vertical-align:middle; border:none; height:auto; }
+        &.periodedate           {font-size:18px; line-height:normal; border:none; height:auto;}
+        &.periodeheure          {font-size:18px; line-height:normal; height:auto; }
+        &.actions               {font-size:10px; width:150px !important; border:none; height:auto;}
+        &.texte                 {padding-left:10px; font-size:20px;}
+        &.horodatage            {padding-top:5px;}
+        &.horodatage .date      {font-size:@petitsCaracteres; line-height:10px;}
+        &.horodatage .heure     {font-size:26px;}
+        &.valeurs .valeur1      {font-size:20px;}
+        &.valeurs .valeur2      {font-size:@petitsCaracteres; color:#999;}
+        &.point                 {font-size:18px;}
+        &.point .invalide       {color:@orange; display:inline-block;}
+        &.point .valide         {color:@green; display:inline-block;}
+        &.compression {         font-size:15px;
+            select              {background:@white; color:@darkGray; font-size:@petitsCaracteres; height:22px; margin:2px 0;}
+            .select-point       {height:26px;}
+            .select-pas         {height:26px;}
+        }
+	}
+    a {							display:inline-block;
+        &.bouton {              height:60px; width:70px;
+            div { 
+				&.bouton {		border-radius:50%; width:35px; height:35px; margin:auto;
+            		&.ajouter   {border:@green solid 4px; width:40px; height:40px; margin-top:5px; background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-89px -113px; 
+								background-repeat:no-repeat;}
+            		&.editer    {border:@blueC solid 4px; width:40px; height:40px; margin-top:5px; background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-17px -113px; 
+								background-repeat:no-repeat;}
+            		&.supprimer {border:@red   solid 4px; width:40px; height:40px; margin-top:5px; background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-50px -113px; 
+								background-repeat:no-repeat;}
+				}
+				&.boutonname    {text-align:center; font-size:@minisCaracteres; color:@gris;}
+            }
+        }
+        .disabled               {color:@red; pointer-events:none;}
+    }
+}
+
+
+
+
+
+footer{                         z-index:86; position:absolute; right:0px; bottom:0px; left:0px; min-width:1024px; overflow:auto; height:120px; padding:2px 10% 0 10%; background:@black;
+								display:table-row; border-top:@black solid 1px; color:@white;
+    h2                         	{text-align:left; width:auto; display:inline-block;}
+    .bouton                     {width:auto; float:right; font-size:@normauxCaracteres; text-align:center; margin-left:10px; border-radius:@contourArrondi; line-height:14px;}
+    a                           {color:inherit; font-weight:bold; text-transform:uppercase;}
+    .titre                      {width:50%; display:inline-block; text-align:left;}
+    .actions                    {width:50%; display:inline-block; text-align:right;}
+    .icone-info {               position:relative; border:#CCC solid 2px; text-indent:0; display:inline-block; vertical-align:8px; margin:1px 0 0 11px;
+        help                    {display:none;}
+        &:hover {               border:@blueC solid 3px; color:@blueC; cursor:pointer; margin:0 0 0 10px;
+            help                {position:absolute; left:30px; top:-10px; display:block; background:#333; width:450px; font-family:"Myriad Pro", Verdana, Geneva, sans-serif; 
+								font-weight:normal; color:@white; border:@blue solid 2px; border-radius:3px; font-size:@petitsCaracteres;}
+        }
+    }
+    table                       {border-collapse:collapse; margin:6px 0 10px 0; width:100%; clear:both;}
+    th                          {height:18px; font-family:"Myriad Pro", Verdana, Geneva, sans-serif; font-weight:lighter; font-size:@petitsCaracteres; border-bottom:#CCC solid 2px;}
+    tbody tr                    {height:60px; border-bottom:#CCC solid 1px;}
+    #compression                {max-height:155px; display:block; overflow:auto;}
+    td {
+        .localisation           {font-size:32px; border:none; vertical-align:middle; height:auto;}
+        .code                   {font-size:40px; border:none; height:auto; }
+        .designation            {font-size:@normauxCaracteres; line-height:18px; vertical-align:middle; border:none; height:auto;}
+        .point                  {font-size:18px;}
+        .point {
+            .invalide           {color:@orange; display:inline-block;}
+            .valide             {color:@green; display:inline-block;}
+        }
+        .compression {          font-size:15px;
+            select              {font-size:@petitsCaracteres; height:22px; margin:2px 0;}
+            .select-point       {height:26px;}
+            .select-pas         {height:26px;}
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*- - - - - - - - - - - - - - - - - - - - - - - - - - - -  DECLARATIONS  - - - - - - - - - - - - -  - - - - - - - - - - - - - - -*/
+html							{position:fixed; height:100%;}
+body							{position:fixed; display:table; width:100%; height:100%; min-height:100%; margin:0; padding:0; font-family:"Myriad Pro",Arial,Helvetica,sans-serif; 
+								color:@white;}
+
+/* Titres */
+h1                         		{display:inline-block; margin:8px 0 0 0; width:100%; font-family:Verdana,Geneva,sans-serif; font-weight:lighter; font-size:40px; color:@darkGray;}
+h2            					{display:inline-block; margin:10px 0 0 0; width:100%; font-size:36px; text-transform:uppercase;} 
+h3								{margin:0 0 2px 0; font-family:"Myriad Pro",Arial,Helvetica,sans-serif; font-size:20px; text-align:center;} 
+
+ul                              {margin:0; padding:0;}
+select                          {height:30px; width:auto; margin:0 5px; font-size:18px; background:#292929; border:none; border:@blueC solid 2px; border-radius:3px; color:@white;}
+select#fos_user_registration_form_roles_0 {width:160px; height:23px; background:white; margin-left:-6px; border:none;}
+
+input[type="text"]              {margin:0 5px; border:@blue solid 2px; border-radius:3px; color:#292929; font-size:18px; background:#292929; color:@white;}
+input[type="radio"]             {width:10px; margin:0 5px; border:none;}
+input[type="checkbox"]          {margin:5px; padding:0; background:#9F0;}
+input[type='text']#fos_user_registration_form_username {background:@white; color:@black; width:146px; border:none; border-radius:0px; height:23px;}
+
+img.afficher                    {background-repeat:no-repeat; margin:11px 0 0 6px;}
+
+span {
+	&.tabulation                {display:inline-block; width:150px; text-align:left;}
+	&.codeModule                {display:inline-block; width:70px;}
+	&.etatNombre				{display:inline-block; width:60px; text-align:right;}
+}
+
+textarea                        {resize:none; }
+
+div {
+    &.separation                 {background-color:#D8D8D8; margin-top:20px; margin-bottom:20px; margin-right:auto; margin-left:auto; width:70%; border:2px groove #D8D8D8;}
+    &.separation2                {background-color:#D8D8D8; margin-top:20px; margin-bottom:20px; margin-right:auto; margin-left:auto; width:30%; border:2px groove #D8D8D8;}
+    &.espace                     {display:inline-block; width:1px;}
+    &.accueilEtat {              border:1px solid @red; height:100px; background:#333;
+        li                      {list-style-type:none; margin:auto; border:1px solid @yellow;}
+        a                       {color:@white;}
+    }
+    &.etatExclusion table td:first-child          {width:300px;}
+    &.etatAcquittement table td:first-child       {width:300px;}
+    &.etatArretBruleur table td:first-child       {width:300px;}
+    &.etatSection {              background:@white; margin-top:50px; width:1200px; border-bottom:1px dashed @black; color:#333; text-align:center;
+        div.titre               {display:block; width:200px; width:100%; background:@white; color:@black; font-size:1.5em; padding-bottom:20px;}
+    }
+    &.loader                     {position:fixed; display:block; vertical-align:middle; text-align:center; width:100%;}
+    &.etatSelectLocalisation     {width:200px; margin-left:auto; margin-right:auto;}
+	&.etatPage					{
+		h1						{font-size:20px; margin-top:50px; margin-bottom:20px; font-weight:bold;}
+		h2						{font-size:16px; margin-top:20px; margin-bottom:10px; font-weight:normal; text-decoration:underline;}
+		h3						{font-size:14px; margin-top:10px; margin-bottom:10px; font-weight:bold; padding-left:10px; text-align: left;}
+		p						{margin:0; font-size:14px;
+			span				{padding-left:10px; padding-right:10px;}
+		}
+	}
+	&.etatContainer				{margin-top:60px;}
+	&.etatFinPage				{display: none;}
+	&.etatCompteur p>span:first-child {display:inline-block; width:300px;}
+	&#container {				width:100%; height:750px;
+		&.containerImpression	{width:85%; height:600px;}
+	}
+
+}
+
+table.getSystemParam {          color:@white; background:@black; border-radius:@contourArrondi; width:500px; height:300px;
+    td                          {color:white !important;}
+}
+
+
+
+
+
+
+
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - -  LES CLASSES  - - - - - - - - - - - - -  - - - - - - - - - - - - - - -*/
+.decalageGauche					{padding-left:10px;}
+
+.on_off	{						float:right; color:yellow;
+	.background					{height:20px; width:64px; background:#292929 url(../images/ipcWeb/bouton-on_off.png) center no-repeat; border:3px solid; border-color:inherit; 
+								border-radius:20px; color:purple;}
+	.slideur					{display:block; height:12px; width:39px; margin:1px; padding:1px; border-radius:@contourArrondi; background:inherit; color:@blue;}
+	.pastille					{height:10px; width:10px; border-radius:10px; background:inherit; color:@green;}
+}
+.on {
+	.background					{border-color:@green;}
+	.slideur					{background:@green; float:left;}
+	.pastille					{background:#00501f;}
+}
+.off {
+	.background					{border-color:@red;}
+	.slideur					{background:@red; float:right;}
+	.pastille					{background:#7d1518;}
+}
+
+.bgbouton  						{background:none; width:auto; display:inline-block; vertical-align:middle; padding:2px 8px 1px 8px; margin:2px; border-radius:@contourArrondi;  
+								font-size:@normauxCaracteres; text-align:center;}
+.smallbgbouton 					{background:none; font-size:@petitsCaracteres; .border-bouton; vertical-align:middle;}
+
+
+.green  {						color:@green;
+    .bgbouton:hover             {color:@white; background:@green; .border-bouton;}
+    .smallbgbouton:hover        {color:@white; background:@green; font-size:@petitsCaracteres; .border-bouton; color:@white}
+}
+.red {							color:@red;
+    .bgbouton:hover             {color:@white; background:@red; .border-bouton;}
+    .smallbgbouton:hover        {color:@white; background:@red; font-size:@petitsCaracteres; .border-bouton;}
+}
+.blue {							color:@blue;
+    .bgbouton:hover             {color:@white; background:@blue; .border-bouton;}
+    .smallbgbouton:hover        {color:@white; background:@blue; font-size:@petitsCaracteres; .border-bouton;}
+}
+.blueC {
+    .bgbouton:hover             {color:@white; background:@blueC; .border-bouton;}
+    .smallbgbouton:hover        {color:@white; background:@blueC; font-size:@petitsCaracteres; .border-bouton;}
+}
+.orange {
+    .bgbouton:hover             {color:@white; background:@orange; .border-bouton;}
+    .smallbgbouton:hover        {color:@white; background:@orange; font-size:@petitsCaracteres; .border-bouton;}
+}
+
+
+.info                           {text-align:left; text-indent:-28px; margin-left:28px;}
+.icone-info                     {width:20px; height:20px; line-height:20px; font-family:"Courier New", Courier, monospace; font-weight:bold; font-size:18px; text-align:center; 
+								border-radius:50%; display:inline-block; margin:2px 5px 2px 0; text-indent:0;}
+
+.left                           {width:100%; text-align:left;}
+.center                         {width:100%; text-align:center;}
+.centrer                        {text-align:center;}
+.right                          {width:100%; text-align:right;}
+
+
+.titreBoilerInitial             {font-size:30px; font-weight:bold;}
+.titreBoilerTitre               {font-size:40px; font-weight:bold;}
+
+.smallbouton                    {min-width:55px !important; font-size:13px !important;}
+.nonVisible                     {visibility:hidden;}
+.afficher                       {display:inline-block;}
+
+.periode                        {font-size:24px;}
+.select-point select            {width:140px;}
+.aff-select-point select 		{width:180px; border-radius:5px;}
+
+.select-pas select              {width:106px;}
+.txtlocalisation                {position:relative; font-weight:bold;}
+
+.shadowing                      {opacity:0.3; filter:alpha(opacity=70); z-index:1;}
+.lightShadowing                 {opacity:0.7; filter:alpha(opacity=30); z-index:1;}
+
+.validationbouton {
+    div {
+        .bouton         		{width:130px; display:inline-block; vertical-align:middle; padding-top:5px; padding-bottom:3px; border-radius:@contourArrondi; border:@blackGray solid 3px; 
+								font-size:@petitsCaracteres !important; text-align:center;}
+        .bgbouton       		{font-size:@petitsCaracteres !important;}
+    }
+    a                   		{color:@white; text-align:center; text-transform:uppercase;}
+}
+
+.bouton.black                   {background:@black;}
+
+.validationPopupRequete {       margin-top:15px; display:block; background:@orange; cursor:pointer;
+    .bouton                     {width:auto; float:right; font-size:@normauxCaracteres; text-align:center; margin-left:10px; border-radius:@contourArrondi; line-height:14px; min-width:150px;
+ 								font-weight:bold;}
+    .bgbouton:hover             {width:80% !important;}
+    a                           {color:inherit; font-weight:bold; text-transform:uppercase;}
+}
+
+
+.btn-disable {                  pointer-events: none;
+    a                           {color:gray;}
+}
+
+.pageAccueil                    {position:fixed; width:300px; background-color:@white; text-align:center; font-size:60px;}
+
+.cursor_wait                    {cursor:wait;}
+.cursor_default                 {cursor:default;}
+
+.legende_zone_infos             {display:inline-block; margin-left:100px;}
+
+.table_errors                   {margin-left:auto; margin-right:auto; width:700px;}
+.table_autorisation {			margin-left:auto; margin-right:auto; width:300px; text-align:left; border-radius:@contourArrondi; background:@black; color:@white;
+	th							{color:white; text-align:center; font-weight:bold;}
+}
+.select_multiple                {color:@white; width:550px; font-size:18px; height:200px; background:@blackGray; border:none; border:@blueC solid 2px; border-radius:3px; margin:0 5px;}
+.gestion_site                   {position:absolute; left:0; right:0; color:@white; height:350px; margin:auto; overflow:auto; }
+.gestion_infosScripts           {position:absolute; left:0; right:0; color:@black; overflow:auto; margin:auto; }
+
+.gestion_parametres_header {    width:100%; height:40px; margin-top:-50px; background:@blackGray; border:2px solid @black; border-radius:@contourArrondi;
+    th                          {height:50px; color:@white; font-size:@petitsCaracteres; font-weight:bold;}
+}
+.gestion_parametres_body {      width:100%; height:400px; background:@blackGray; color:@white; border:2px solid @black; overflow:auto; border-radius:@contourArrondi;
+    td                          {font-size:@petitsCaracteres; font-weight:normal; }
+    tr                          {height:30px; border-bottom:@black solid 1px;}
+}
+.gestion_parametres_foot        {width:100%; height:50px; margin-top:10px;}
+
+.gestion_utilisateur            {color:@white; height:300px; overflow:auto;}
+
+.table_gestion_utilisateur {    color:@white; background:#333; border-radius:@contourArrondi; padding-top:10px; padding-bottom:10px;
+    tr th                       {height:40px; border-bottom:none; color:@white; font-weight:bold; font-size:@petitsCaracteres;}
+    td                          {color:@white; border-bottom:@black solid 1px; font-weight:normal; font-size:@petitsCaracteres;}
+	tr>td:first-child			{text-align:left; padding-left:10px;}
+}
+
+.table_gestion_suppression_utilisateur          {border:2px solid #333; color:@white; background:#333; width:750px;}
+.messageConfirmation            {width:800px; margin-left:auto; margin-right:auto;}
+
+.gestion_ajout_utilisateur      {margin-right:auto; margin-left:auto; width:500px; text-align:center;}
+
+.gestion_modif_site {           color:@black; height:500px; width:500px; overflow:auto; background:@white; margin-left:auto; margin-right:auto;
+    h1                          {text-align:center;}
+}
+
+.table_gestion_site {           position:relative; display:block; background:@black; width:1050px; overflow:auto;
+	th,td						{color:@white; min-width:400px; max-width:400px;}
+    td                          {
+		&.small					{min-width:120px; max-width:120px;}
+		&.mini					{min-width:50px; max-width:50px;}
+	}
+	th {
+		&.th_title				{height:40px; font-size:15px; font-weight:bold;}
+		&.th_subtitle			{height:40px; font-size:15px; font-weight:bold; background:#333;}
+		&.small					{min-width:120px; max-width:120px;}
+		&.mini					{min-width:50px; max-width:50px;}
+	}
+}
+
+.table_gestion_scripts {        border:none; color:@black; background:@white;
+    tr th                       {height:40px; border-bottom:none; font-weight:bold; font-size:@petitsCaracteres; }
+    td {                        border-bottom:@white solid 2px; font-weight:normal; font-size:@petitsCaracteres;
+        &.action                {min-width:50px; max-width:50px;}
+		&.nom					{min-width:100px; max-width:100px;}
+		&.execution				{min-width:50px; max-width:50px;}
+		$.admin					{min-width:50px; max-width:50px;}
+    }
+}
+
+.gestion_infosGenres            {margin:auto; width:800px;}
+
+.table_gestion_genres {         border:2px solid #333; color:@white; background:@black; width:800px; margin-top:50px;
+    th                          {color:@white; font-size:1.1em;}
+    td {
+        &.intitule_genre         {width:200px; text-align:left;}
+        &.numero_genre           {width:100px; text-align:center;}
+    }
+    input[type='text']          {width:150px; margin-top:3px;}
+}
+
+.ajoutLoc                       {margin-top:20px;}
+
+
+.gestion_infosGenres button                            {
+        background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #bab1ba));
+        background:-moz-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+        background:-webkit-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+        background:-o-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+        background:-ms-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+        background:linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bab1ba',GradientType=0);
+        background-color:#ededed;
+        border-radius:55px;
+        border:1px solid #d6bcd6;
+        display:inline-block;
+        cursor:pointer;
+        color:#3a8a9e;
+        font-family:Arial;
+        font-size:17px;
+        text-decoration:none;
+        width:20px;
+        height:20px;
+}
+
+.table_gestion_genres button                {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #bab1ba));
+    background:-moz-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+    background:-webkit-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+    background:-o-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+    background:-ms-linear-gradient(top, #ededed 5%, #bab1ba 100%);
+    background:linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bab1ba',GradientType=0);
+    background-color:#ededed;
+    -moz-border-radius:@contourArrondi;
+    -webkit-border-radius:@contourArrondi;
+    border-radius:05px;
+    border:1px solid #d6bcd6;
+    display:inline-block;
+    cursor:pointer;
+    color:#3a8a9e;
+    font-family:Arial;
+    font-size:17px;
+    text-decoration:none;
+    width:90px;
+    height:25px;
+}
+
+.table_gestion_genres button:hover          {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bab1ba), color-stop(1, #ededed));
+    background:-moz-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+    background:-webkit-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+    background:-o-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+    background:-ms-linear-gradient(top, #bab1ba 5%, #ededed 100%);
+    background:linear-gradient(to bottom, #bab1ba 5%, #ededed 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bab1ba', endColorstr='#ededed',GradientType=0);
+    background-color:#bab1ba;
+}
+
+.etatTitre{
+    label                       {display:block; width:200px; width:100%; background:@white; color:@black;}
+    input                       {margin-left:30px; width:600px; .bordure-noire;}
+}
+
+.etatPeriode {
+    label                       {display:inline-block; width:200px;}
+    input[type='text']          {margin-left:30px; width:40px; .bordure-noire;}
+    span {
+        .vide                   {display:inline-block; width:300px;}
+        .space                  {display:inline-block; width:100px;}
+    }
+    select                      {.bordure-noire;}
+}
+
+.etatSelectLocalisation {       padding-right:97px; text-align:left; margin-bottom:19px;
+    label                       {display:inline-block; width:100px;}
+    select                      {background-color:@white; color:@black; border:1px solid @black;}
+}
+
+
+.etatSelectMessage  {           padding-right:97px; text-align:left; margin-bottom:19px;
+    label                       {display:inline-block; width:100px;}
+    select                      {margin-left:30px; background-color:@white; color:@black; border:1px solid @black;}
+    input                       {margin-left:30px; background-color:@white; color:@black; border:1px solid @black;}
+    div {
+        .Pleft select           {display:inline-block; width:200px;}
+        .message select         {display:inline-block; width:900px;}
+    }
+}
+
+.etatDesignationModule {        margin-bottom:20px; width:700px; margin-left:auto; margin-right:auto;
+    label                       {display:inline-block; width:200px;}
+    input                       {background-color:@white; color:@black; border:1px solid @black;}
+}
+
+.etat_container                 {width:94%; margin-top:50px; margin-left:auto; margin-right:auto; margin-bottom:20px;}
+
+.sous_titre                     {text-decoration:underline; font-weight:bold;}
+
+.gras                           {font-weight:bold;}
+.gauche                         {text-align:left;}
+.droite							{text-align:right;}
+
+.remove_category                {font-size:@petitsCaracteres;}
+.remove_category:hover          {color:@red; font-weight:bold;}
+.intervButton                   {width:130px; padding-top:5px; padding-bottom:3px; border-radius:@contourArrondi; border:#202a36 solid 3px; font-size:16px; text-align:center; color:@black; 
+								text-transform:uppercase;}
+.intervGreen:hover              {color:@green; font-weight:bold;}
+.intervRed:hover                {color:@red; font-weight:bold;}
+
+.noWrap                         {white-space:nowrap; min-width:300px;}
+.noWrapTitle                    {white-space:nowrap; min-width:220px;}
+
+.menu-flex-container            {display:flex; height:805px; width:190px; list-style:none; flex-direction:column; justify-content:center; align-items:flex-start;}
+.menu-flex-item                 {padding:5px; width:165px; min-height:40px; max-height:80px; margin:5px; color:@white; font-weight:bold; font-size:2em; text-align:center; border:1px solid @black;}
+.menu-flex-start                {margin-bottom:auto; border:0px; color:@black;}
+.menu-flex-center               {background:@white; color:@black; font-size:@petitsCaracteres; font-weight:normal; overflow:hidden; border-radius:5px;}
+.menu-flex-center a             {color:@black;}
+.menu-flex-end                  {margin-top:auto; border:0px;}
+
+.scrollable                     {overflow:auto; height:80%;}
+
+.tableInfoDonneeLive            {border:2px solid @black; background-color:#848484; border-radius:@contourArrondi; margin:5px 0px 15px 0px; color:@white;}
+
+.boutonTitreRefresh             {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-140px 0;*/}
+.boutonTitreEdition             {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-70px 0;*/}
+.boutonTitrePrint               {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-105px 0;*/}
+.boutonTitreDownload            {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-35px 0;*/}
+.boutonTitreCompress            {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:0 0;*/}
+.boutonTitreReinitialise        {display:inline-block; height:35px; width:35px; /*background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-175px 0;*/}
+
+.block_exception_message        {color:@black; }
+.parametre input                {box-sizing:border-box; width:100%; border:1px solid @red;}
+
+
+.float_left                     {float:left;}
+.float_right                    {float:right;}
+
+
+.live_indicateur {              border-bottom:4px solid @black;
+    h1                          {color:@white; border-bottom:1px solid @white; font-size:20px; text-align:center;}
+}
+
+.live_indicateur_logo           {display:inline-block; color:@white; font-size:10px; border:2px solid RGB(128,64,64); height:20px; width:140px;}
+.live_indicateur_temoins        {display:inline-block;}
+.feu_vert                       {background-position:0 -0px;}
+.feu_orange                     {background-position:0 -18px;}
+.feu_rouge                      {background-position:0 -37px;}
+
+.iconeAdministrateur            {display:inline-block; height:47px; width:47px; margin-top:-3px; margin-left:-3px;}
+.iconeTechnicien                {display:inline-block; height:47px; width:47px; margin-top:-3px; margin-left:-3px;}
+.iconeClient                    {display:inline-block; height:47px; width:47px; margin-top:-3px; margin-left:-3px;}
+
+.iconeFrancais                  {display:inline-block; height:19px; width:23px; background-image:url(../images/ipcWeb/multilingue.png); background-position:0px 0px; margin-right:5px;}
+.iconeAnglais                   {display:inline-block; height:19px; width:23px; background-image:url(../images/ipcWeb/multilingue.png); background-position:-30px 0px; margin-right:5px;}
+.iconeEspagnol                  {display:inline-block; height:19px; width:23px; background-image:url(../images/ipcWeb/multilingue.png); background-position:-60px 0px; margin-right:5px;}
+.iconeAllemand                  {display:inline-block; height:19px; width:23px; background-image:url(../images/ipcWeb/multilingue.png); background-position:-90px 0px; margin-right:5px;}
+
+.label                          {width:400px;}
+.entier                         {width:100px;}
+
+.tdRadio                        {width:20px;}
+.tdSmallText                    {width:100px;}
+
+.generateursExistants                               {display:flex;}
+.generateursExistants div.column                    {border:2px solid gray; width:300px; flex:0 0 auto;}
+.generateursExistants div.column ul                 {list-style-position:inside;}
+.optionTitre                    {text-decoration:underline;}
+
+.serveurActif                   {color:@green;}
+.serveurInactif                 {color:@red;}
+
+.disabled                       {pointer-events:none;}
+
+.grise                          {background-color:#A4A4A4; color:#F2F2F2; text-align:center; font-size:@petitsCaracteres;}
+.noScreen                       {display:none;}
+
+.table_live_alerte              {margin-left:50px; border-top:1px solid @black; width:200px;}
+.live_red                       {color:@red; font-weight:bold;}
+.live_orange                    {color:@orange; font-weight:bold;}
+.live_green                     {color:@green; font-weight:bold;}
+.live_back_gray                 {color:@black; background-color:gray}
+
+.interventionSeparateur         {height:3%; padding-top:2px;}
+
+
+.formatageTitre {
+	h1							{font-size:30px;}
+	h2							{font-size:20px; margin-bottom:50px;}
+	h3							{font-size:16px; margin-bottom:20px;}
+}
+
+.champsDate 					{width:100px; height:20px; border-radius:15px !important; background:@white !important; color:@black !important; font-size:12px !important; 
+								text-align:center;}
+
+.petitScreen					{display:none;}
+
+.pageDefaut						{position:absolute;}
+.pageDefaut.vueRestreinte 		{top:120px;}
+
+.largeContainer					{display:inline-block; height:300px; width:100%;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    ID   - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - -*/
+
+
+#logo-IBC {						position:absolute; display:inline-block; top:0px; right:0px; bottom:0px; left:0px; width:15%;
+    .txt                        {position:absolute; padding:18px 0 0 18px; display:block; color:@white; text-align:left; line-height:15pt;}
+}
+
+
+
+#verificationLoad               {width:99px;}
+
+#boutonInfoPeriode              {text-decoration:underline;}
+
+#boutontitre {                  display:inline-block; float:right; vertical-align:bottom; margin-top:10px; font-size:@petitsCaracteres;
+    ul li                       {display:inline-block; position:relative; width:35px; margin-left:5px; text-align:center; list-style-type:none;}
+    ul ul                       {display:none; position:absolute; right:0px; top:35px; margin:0px; padding:0px; z-index:1; border:1px solid @black; background-color:@darkGray;}
+    ul ul li                    {display:block; position:relative; height:30px; width:240px; margin:0; text-align:left; line-height:30px; border-bottom:1px solid #999;}
+    ul ul li a                  {display:block; padding-left:10px; color:@white;}
+    ul ul li a:hover            {background:@blue;}
+    li:hover ul.niveau2, li li:hover ul.niveau3{display:block;}
+}
+
+#title							{position:absolute; top:10px; right:0; left:0; display:inline-block; padding-top:5px; font-size:20px; text-align:center; width:60%; margin:auto;}
+
+@media screen and (max-width:1490px) {
+    .titreBoilerInitial         {font-size:20px; font-weight:bold;}
+    .titreBoilerTitre           {font-size:30px; font-weight:bold;}
+}
+@media screen and (max-width: 1300px) {
+  	.pageDefaut.noMenus 		{position:absolute; left:0px; right:0px;}
+  	.pageDefaut.noLeftMenus		{position:absolute; left:0px;}
+    menus						{left:0px;}
+}
+@media screen and (max-width:1200px) {
+	header, configperiode, page, footer {padding-left:20px !important; padding-right:20px !important;}
+	menus						{left:0px; right:0px;}
+  	#login .user 				{height:23px; font-size:12px;}
+  	#menu .txt 					{padding:10px 0 0 10px; font-size:15px !important;}
+  	#menu .img 					{width:10px; height:10px;}
+  	#menu li 					{padding:0 15px 0 15px; border-left:2px solid #CCC;}
+  	#login .box 				{position:absolute; right:130px !important;}
+}
+@media screen and (max-width:1050px){
+  #menu .txt 					{padding:10px 0 0 10px; font-size:10px !important;}
+  #menu .img 					{width:5px; height:5px;}
+  #menu li 						{padding:0 5px 0 5px !important; border-left:2px solid #CCC;}
+  #login .box 					{display:none;}
+  .petitScreen                	{display:inline-block !important;}
+  .grandScreen                	{display:none;}
+}
+@media screen and (max-width:900px){
+  #logo-IBC						{width:80px !important;}
+  #title 						{position:absolute; left:80px !important;}
+  .titreBoilerInitial 			{font-size:20px; font-weight:bold;}
+  #texteAnalyse 				{display:none; padding:10px 0 20px 0;}
+  #enTeteInitial				{text-align:right;}
+}
+
+@media screen and (max-height: 600px) {
+    #lightbox 					{top:0px !important;}	
+    #blockPiedDePage 			{display:none !important;}
+    #pagePrincipaleBody 		{position:absolute; bottom:0px !important;}
+}
+
+
+
+
+
+#login {						padding-top:5px; text-align:right; }
+#encart_login {					position:absolute; top:10px; right:0px; display:flex;
+	div							{margin:5px;}
+	.box						{width:47px; height:47px; float:right; background:#1f2930; border:solid 3px #c6c7c9; border-radius:10px;}
+	img							{margin-left:-2px; margin-top:-2px;}
+}
+
+#menu {							width:100%; height:35px; overflow:hidden; margin-top:5px;
+    .menuleft                   {padding:0 25px 0 0; border:none;}
+    .txt                        {padding:10px 0 0 10px; display:inline-block; font-size:20px;}
+    .img                        {margin:5px 0 0 0; width:30px; height:30px; float:left; display:block;}
+    ul                          {display:inline-block; margin:0; padding:0; list-style:none; width:100%;}
+    li {                        display:inline-block; height:30px; padding:0 25px 0 25px; border-left:2px solid #CCC;
+        a                       {color:@white;}
+    }
+	.etats						{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:0 -147px; background-repeat:no-repeat;}
+	.listing                  	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-30px -147px; background-repeat:no-repeat;}
+	.courbes                  	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-60px -147px; background-repeat:no-repeat;}
+	.outils                   	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -147px; background-repeat:no-repeat;}
+	.configurations           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -147px; background-repeat:no-repeat;}
+	.telechargement           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -147px; background-repeat:no-repeat;}
+	.rapports					{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -147px; background-repeat:no-repeat;}
+	.bruleurs					{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-150px -147px; background-repeat:no-repeat;}
+
+	.listing:hover           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-30px -177px; background-repeat:no-repeat;}
+	.courbes:hover           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-60px -177px; background-repeat:no-repeat;}
+	.rapports:hover           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -177px; background-repeat:no-repeat;}
+	.outils:hover             	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -177px; background-repeat:no-repeat;}
+	.configurations:hover    	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -177px; background-repeat:no-repeat;}
+	.telechargement:hover    	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -177px; background-repeat:no-repeat;}
+	.bruleurs:hover           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-150px -177px; background-repeat:no-repeat;}
+	.tableau-de-bord:hover    	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:0 -177px; background-repeat:no-repeat;}
+
+	.etats-active            	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:0 -177px; background-repeat:no-repeat;}
+	.listing-active           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-30px -177px; background-repeat:no-repeat;}
+	.courbes-active           	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-60px -177px; background-repeat:no-repeat;}
+	.rapports-active          	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -177px; background-repeat:no-repeat;}
+	.outils-active            	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -177px; background-repeat:no-repeat;}
+	.configurations-active    	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-90px -177px; background-repeat:no-repeat;}
+	.telechargement-active    	{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-120px -177px; background-repeat:no-repeat;}
+	.bruleurs-active			{background-image:url(../images/ipcWeb/boutons-menu.png); background-position:-150px -177px; background-repeat:no-repeat;}
+	.pageactive					{color:@blueC;}
+}
+
+#menuDroite 					{position:absolute; bottom:10px;}
+
+#validation	{ 					margin-top:15px; display:block; 
+	.bouton						{width:auto; float:right; font-size:16px; text-align:center; margin-left:10px; border-radius:@contourArrondi; line-height:14px; min-width:150px;}
+	.bgbouton:hover				{width:80% !important;}
+	a							{color:inherit; font-weight:bold; text-transform:uppercase;}
+}
+
+
+#lightboxSmall                  {position:fixed; z-index:90; background-color:@black; width:860px; top:200px; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -moz-transform:translateX(-50%); color:@white; padding:10px 20px 20px 20px; 
+								border:@red solid 3px; border-radius:@contourArrondi;}
+
+#lightbox {						position:fixed; z-index:90; background-color:@black; width:960px; top:200px; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -moz-transform:translateX(-50%); color:@white; padding:10px 20px 20px 20px; 
+								border:@red solid 3px; border-radius:@contourArrondi;
+	select						{border-radius:@contourArrondi;}
+	select[name='listeIdModules'] {width:670px; position:absolute; margin-left:-2px;}
+    select[name='listeIdModules']:hover {height:300px;}
+	a							{color:@white;}
+	h2							{font-size:@titre2; text-align:center; margin-bottom:20px; text-decoration:underline;}
+	#ajoutRequetePopup			{white-space:nowrap;
+		select					{z-index:90;}
+	}
+	#popupMessage				{display:flex; flex-direction:row; flex-wrap:nowrap; justify-content:flex-start; align-items:center;
+		label:first-child 		{display:inline-block; position:relative; margin-bottom:-3px;}
+	}
+    #popupDivMessage 			{position:relative; height:30px; margin-left:5px; margin-top:3px; width:670px; border-radius:@contourArrondi; align-self:flex-start;}
+	.Pleft select         		{margin:10px 20px 10px 0; width:290px;}
+	.line                 		{width:1px; background:#999; margin:auto; height:20px;}
+	.circle               		{height:65px; width:65px; border:@blueC solid 5px; border-radius:50%; font-size:28px; font-family:Verdana,Geneva,sans-serif; display:flex; flex-direction:column; justify-content:center;}
+    #messageDeLaListe			{text-align: center; width:100%; height:30px; padding-top:5px; margin-bottom:-10px; font-size:14px;}
+	#codeModule           		{height:30px; width:290px; margin-top:60px; text-align:center; font-size:@normauxCaracteres; font-weight:bold; border-radius:@contourArrondi;}
+	.exemple              		{color:#999; font-size:@petitsCaracteres; padding-left:65px; font-weight:700;}
+	.message select       		{margin:10px 40px 15px 0; width:740px; }
+	#exclure              		{height:auto;}
+    .schema                     {height:155px; width:130px; display:inline-block; margin:5px 0 0 0; background:url(../images/ipcWeb/Layout-IPC_2014-11-05_courbes.png) no-repeat;}
+    .on {
+		.schema span            {color:@blueC; font-size:@petitsCaracteres;}
+		.hachures-h             {height:38px; width:126px; background:url(../images/ipcWeb/Layout-IPC_2014-11-05_hachures.png) repeat-x; background-position:0 -1px; position:absolute; top:0;}
+		.hachures-b             {height:38px; width:126px; background:url(../images/ipcWeb/Layout-IPC_2014-11-05_hachures.png) repeat-x; background-position:0 1px; position:absolute; bottom:0;}
+		.selection {			width:280px;
+			span				{color:@blueC; font-size:16px; margin-left:8px;}
+		}
+		.saisie                 {font-size:@petitsCaracteres; border:@blue solid 2px; width:65px; text-align:center;}
+	}
+    .off {
+		.schema span           {color:#999; font-size:@petitsCaracteres;}
+		.hachures-h            {display:none;}
+		.hachures-b            {display:none;}
+		.selection {			width:280px;
+			span        		{color:#999; font-size:16px; margin-left:8px;}
+		}
+		.saisie                {font-size:@petitsCaracteres; border:#999 solid 2px; background:none; width:65px; text-align:center;}
+	}
+    .schemabox                  {height:136px; position:relative;}
+    .txt                        {font-size:11px; text-align:center; margin-top:5px; height:auto;}
+    .selection                  {width:248px; height:auto; display:inline-block; vertical-align:top; font-size:@petitsCaracteres; margin:5px 0 0 25px;}
+    p                           {text-indent:-22px; margin:0; margin-top:2px;}
+    .bouton                     {width:auto; display:inline-block; vertical-align:middle; border-radius:@contourArrondi; font-size:@normauxCaracteres; text-align:center;font-weight:bold; line-height:16px; margin:13px 0 0 5px;}
+    .option                     {width:50%; display:inline-block; text-align:left;}
+    .actions                    {width:100%; display:inline-block; text-align:right;}
+    option                      {max-width:800px; font-size:13px;}  
+}
+
+
+#selectLocalisation				{padding-right:97px; text-align:center; margin-bottom:19px;}
+
+#ajoutRequetePopup {
+	.Pleft						{width:390px; display:inline-block; vertical-align:top;}
+	.Pcenter					{width:78px; display:inline-block; text-align:center; vertical-align:top; padding:0 5px 0 5px; margin-top:30px;}
+	.Pright						{width:390px; display:inline-block; vertical-align:top; margin-left:-30px;}
+}
+
+#exclure {
+	.Pleft						{width:450px; display:inline-block; vertical-align:top;}
+	.Pcenter					{width:5px; display:inline-block; text-align:center; vertical-align:top; padding:0 1px 0 1px;}
+	.Pright						{width:450px; display:inline-block; vertical-align:top;}
+}
+
+
+#listingpreconf {
+	tbody tr        			{height:40px; border-bottom:@red solid 1px;}
+}
+
+#listingperso {
+	tbody tr					{height:40px; border-bottom:@black solid 1px;}
+	.localisation				{width:20px; text-align:center; padding:0 10px 0 10px;}
+	.code						{width:120px; text-align:left; padding:0 5px 0 5px;}
+	.designation				{text-align:left; padding:0 10px 0 10px;}
+	.optimisation				{width:240px; text-align:center;}
+	.actions					{width:120px;}
+}
+
+#compression {
+	tbody tr           			{height:40px; border-bottom:@black solid 1px;}
+	.localisation				{width:20px; text-align:center; padding:0 10px 0 10px;}
+	.code						{width:120px; text-align:center; padding:0 5px 0 5px;}
+	.designation				{text-align:left; padding:0 10px 0 10px;}
+	.compression				{width:220px; text-align:left; padding:0 10px 0 5px;}
+	.point						{width:110px; text-align:center; padding:0 5px 0 5px;}
+	.actions					{width:60px; padding-left:5px; padding-right:5px;}
+}
+
+#graphiqueperso {
+	tbody tr        			{height:40px; border-bottom:@black solid 1px;}
+}
+
+#listingmessage {				width:100%;
+	tbody tr        			{height:40px; border-bottom:@black solid 1px;}
+	.genre						{width:10px; text-align:center; position:relative;}
+}
+
+#etatperso {
+	tbody tr            		{height:40px; border-bottom:@black solid 1px;}
+}
+
+
+#resultatDebut, #resultatFin	{margin:5px 0; color:@darkGray;}
+#resultatDebut .navigation, #resultatFin .navigation		{background:@darkGray; width:auto; display:inline-block; color:@white; border-radius:5px; margin:0 2px; padding:0 10px; text-align:left;}
+#resultatDebut .navigation a, #resultatFin .navigation a	{color:@white; font-weight:bold; font-size:20px; font-family:"Courier New", Courier, monospace; margin:0 4px;}
+#resultatDebut input, #resultatFin input					{width:30px; height:16px; background:@white; text-align:center; color:@black; font-size:@petitsCaracteres; margin:2px 0; border:2px solid @black;}
+#resultatDebut .Pleft, #resultatFin .Pleft					{width:50%; display:inline-block;}
+#resultatDebut .Pright, #resultatFin .Pright				{display:inline-block;  text-align:right; width:50%;}
+
+#tab_param_system {				width:600px; color:@black; margin-left:auto; margin-right:auto; margin-bottom:30px;
+	td {						color:@black; text-align:left;
+		.red					{color:@red;}
+		:first-child 			{width:300px; text-align:left;}
+	}
+}
+
+
+#legende {						margin:4px 0; padding-bottom:10px; font-size:0.8em;
+	br							{border:2px solid @red; height:10px;}
+	ul                     		{display:inline; margin:0; padding:0;}
+	li {						list-style:none; display:inline; position:relative;
+		.block               	{list-style:none; display:block; position:relative;}
+	}
+	span.titre             		{display:inline-block; width:100px; position:absolute; margin-top:0px;}
+}
+
+#legende_zone_genre li			{margin-left:45px;}
+#legende_zone_requete			{margin-bottom:8px;}
+#legende_zone_localisation		{margin-bottom:18px;}
+#legende_zone_localisation li	{margin-right:20px;}
+#legende_zone_genre				{display:inline-block;}
+#legende_zone_genre div.legende_zone_infos {margin-left:90px !important;}
+
+#boxheaderSmall                 {position:fixed; top:0px; left:0px; width:100%; height:80px; padding:0; padding-top:2px; padding-left:8px; border-bottom:1px solid @black; color:@white; 
+								text-align:center; background-color:#3B515B; }
+#boxtitle table                 {color:@white;}
+#boxcontentSmall                {position:relative; top:80px; height:120px; overflow:auto}
+
+#messagebox {					position:fixed; z-index:5; background-color:#333; width:460px; top:300px; left:50%; margin-left:-250px; color:@white; padding:10px 20px 20px 20px; 
+								border:@black solid 3px;
+	a                   		{color:inherit; text-transform:uppercase;}
+	.bouton           			{width:auto; display:inline-block; vertical-align:middle; border-radius:@contourArrondi; font-size:@normauxCaracteres; text-align:center; font-weight:bold; 
+								line-height:16px;}
+}
+
+#boxheader                      {position:absolute; top:0px; left:0px; width:99%; height:20px; padding:0; padding-top:2px; padding-left:8px; border-bottom:1px solid @black; color:@white; 
+								text-align:center; background-color:#3B515B; }
+#boxtitle                       {color:@white; }
+#boxclose                       {float:right; position:absolute; top:0px; right:0px; background-image:url(../images/ipcWeb/close.gif); background-repeat:no-repeat; background-color:#CCC;
+					 			border:1px solid @black; width:20px; height:20px; }
+
+#siteIpc 						{position:fixed; top:0px; right:0px; bottom:5px; left:0px; height:100%; z-index:2;}
+
+#menu_configuration	{			width:100%; text-align:center;
+	h2          				{text-align:center; font-size:20px;}
+	textarea					{margin-top:50px;}
+}
+
+#ajoutSite {
+	select						{width:185px; height:28px; border-radius:3px; font-family:Verdana; margin-left:0px; .bordure-noire;}
+    input[type='text']          {.input-texte}
+    input[type='password']      {.input-texte}
+}
+
+#ajoutLoc {
+	input[type='text']          {.input-texte}
+	input[type='password']      {.input-texte}
+}
+
+#modifLoc {
+	select						{width:185px; height:28px; border-radius:3px; font-family:Verdana; margin-left:0; .bordure-noire;}
+	input[type='text']    		{.input-texte}
+	input[type='password']		{.input-texte}
+}
+
+#modifSite {
+	input[type='text']   		{.input-texte}
+	input[type='password']		{.input-texte}
+}
+
+	
+#boutontitre {
+	a span 						{opacity:0; position:absolute; margin-top:33px; margin-left:-35px; color:#09c; background:#333; padding:5px; border-radius:3px; 
+								transform:scale(0) rotate(-12deg);transition:all .25s;}
+	a:hover span, a:focus span  {opacity:1; transform:scale(1) rotate(0);}
+}
+
+
+#title_header 					{position:absolute; top:0px; right:0px; left:0px; height:100px;}
+
+#pagePrincipaleBody 			{position:absolute; top:100px; left:0px; right:0px; bottom:120px; overflow:auto;
+	&.vueRestreinte				{bottom:0;}
+}
+
+#blockPiedDePage.vueRestreinte	{display:none;}
+
+#vueRestreinte:hover			{color:red; cursor:pointer;}
+#vueRestreinte.vueRestreinte 	{color:red;}
+#vueRestreinte.vueRestreinte:hover {color:white; cursor:pointer;}
+
+
+#choix_mode {                   border:2px solid #333; color:@white; width:90%; margin-left:auto; margin-right:auto; margin-top:50px;  background:@blackGray; border-radius:@contourArrondi;
+    th                          {color:@white; font-size:@petitsCaracteres; font-weight:bold; }
+    table {                     width:100%;
+        thead                   {height:50px;}
+        tbody                   {max-height:300px !important; overflow:auto;}
+		.quatre {				width:100%;
+			td 					{width:25%;}
+		}
+		.cinq {					width:100%;
+			td 					{width:20%;}
+		}
+		.six {					width:100%;
+			td 					{width:16%;}
+		}
+		td 						{width:33%;}
+	}
+}
+
+
+#choix_mode_info {				min-height:350px; overflow:scroll;
+	div.description    			{height:50px; overflow-y:scroll; overflow-x:hidden;}
+}
+
+
+
+#afficheEtat {
+	table {						border-collapse:separate; border-spacing:5px;
+		.compteur td:first-child   	{width:530px; }
+	}
+}
+
+
+#etatPage          				{position:absolute; margin-left:5px; top:0px; right:0px; bottom:0px; left:0px; overflow:auto;}
+#etat							{padding-left:200px;}
+
+#supervision_page         		{width:90%; height:90%; min-height:90%; display:block; border:2px solid @blue; margin-left:auto; margin-right:auto; margin-top:3%; font-size:0px;}
+#supervision_listing      		{width:20%; height:100%; min-height:100%; display:inline-block; background:@red; color:@black; vertical-align:text-top; font-size:20px;}
+
+#supervision_listing_titre {	width:95%; height:15%; overflow:auto; border:2px solid @green;
+	h1							{margin-left:10px; font-size:20px; text-align:left; color:@white; width:90%; border:2px solid @blue;}
+	h2  						{margin-left:10px; font-size:15px; text-align:left; color:@white; width:90%; border:2px solid @blue;}
+}
+
+#supervision_listing_liste     	{width:90%; height:70%; min-height:70%; overflow:auto; margin-left:auto; margin-right:auto; margin-top:3%; border:2px solid @yellow;}
+p.live_back_gray               	{color:@black; background-color:gray; padding:0; margin:0; border:4px solid @black; font-size:15px;}
+
+#supervision_indicateurs       	{width:10%; height:100%; min-height:100%; display:inline-block; color:@black; vertical-align:text-top; background:#774A4A; font-size:20px;}
+
+#supervision_indicateurs_titre 	{width:95%; height:15%; overflow:auto; border:2px solid @green;
+	h1       					{margin-left:10px; font-size:20px; text-align:left; color:@white; width:90%; border:2px solid @blue;}
+}
+
+#supervision_indicateurs_automates	{width:90%; height:70%; min-height:70%; overflow:auto; margin-left:auto; margin-right:auto; margin-top:6%; border:2px solid @yellow;}
+
+#supervision_live          		{width:70%; height:100%; min-height:100%; display:inline-block; color:@black; vertical-align:text-top; background:@yellow; font-size:20px;}
+#live_titre                		{width:95%; height:7%; text-align:center; font-size:20px; margin-left:2%; margin-bottom:1%; margin-top:1%; overflow:auto;}
+#live_choix_page          		{width:95%; height:3%; text-align:center; font-size:20px; margin-left:2%; overflow:auto;}
+#live_options_graphiques  		{width:95%; height:3%; text-align:center; font-size:20px; margin-left:2%; overflow:auto;}
+
+#supervision_info_listing 		{font-style:italic;}
+#supervision_info_graphique 	{color:@black; font-size:10px; text-align:right;}
+#supervision_live_change       	{text-align:right;}
+
+#live_listing                  	{width:95%; height:80%; margin-left:2%; border:2px solid @red;}
+.table_live                    	{margin-left:50px;}
+#live_logo                     	{display:inline-block; width:500px; height:250px;}
+#live_valeurs {					display:inline-block; width:250px; height:280px; margin-left:100px;
+	h1               			{font-size:20px;}
+}
+#live_alerte {					font-size:20px;	font-weight:bold; height:30px; width:300px;
+	span              			{margin-left:15px; margin-right:15px;}
+}
+#live_pression {
+	h1              			{color:@red; border-bottom:1px solid @red;}
+	span             			{display:block; height:20px; text-align:right; color:@red;        font-weight:bold; padding-right:20px;}
+}
+#live_charge {
+	h1                			{color:DarkOrange; border-bottom:1px solid DarkOrange;}
+	span               			{display:block; height:20px; text-align:right; color:DarkOrange;  font-weight:bold; padding-right:20px;}
+}
+#live_niveau {
+	h1                			{color:@blue; border-bottom:1px solid @blue;}
+	span               			{display:block; height:20px; text-align:right; color:@blue;       font-weight:bold; padding-right:20px;}
+}
+#live_conductivite {
+	h1          				{color:purple; border-bottom:1px solid purple;}
+	span         				{display:block; height:20px; text-align:right; color:purple;      font-weight:bold; padding-right:20px;}
+}
+#live_vapeur {
+	h1                			{color:@green; border-bottom:1px solid @green;}
+	span               			{display:block; height:20px; text-align:right; color:@green;      font-weight:bold; padding-right:20px;}
+}
+
+
+#container_live                	{width:95%; height:80%; margin-left:2%;}
+
+#acceuilIntervention {			width:500px; margin:auto; text-align:center;
+	h1							{font-size:35px; margin-bottom:20px;}
+}
+
+#intervention  {				position:relative; font-size:@petitsCaracteres; width:100%; height:300px;
+	h1               			{font-family:Verdana,Geneva,sans-serif; font-weight:normal; font-size:25px; font-style:normal; text-transform:none; margin-bottom:20px; text-align:left;}
+	h2               			{font-family:Verdana,Geneva,sans-serif; font-weight:normal; font-size:20px; font-style:normal; text-transform:none; margin-bottom:10px; text-align:left;}
+	h3               			{font-family:Verdana,Geneva,sans-serif; font-weight:normal; font-size:16px; font-style:normal; text-transform:none; margin-bottom:5px;  text-align:left;}
+}
+
+#interventionGauche	{			display:inline-block; width:60%; height:600px; padding-left:2px;
+	div	{						display:inline-block; width:100%; box-sizing:border-box;
+		&.semi					{display:inline-block; width:50%; box-sizing:border-box;}
+		&.flexh					{display:flex; vertical-align:bottom;}
+	}
+	select 						{width:250px; height:25px; border-radius:5px; background-color:@white; font-family:Verdana; color:@black; border:1px solid gray; margin-left:0;}
+	span {
+		&.ouinon				{align-self:flex-end; flex-shrink:0; width:100px;}
+		&.localisation			{align-self:flex-end; flex-shrink:0; }
+		&.label					{font-weight:bold; padding-left:2px;}
+		&.flexlabel				{font-weight:bold; padding-left:2px; align-self:center;}
+		&.fieldError			{color:@red; font-size:0.8em;}
+	}
+	input[type="text"] {
+		&.intervWidget			{margin-left:-2px; font-size:15px; border-radius:5px; text-align:center; height:25px; .bordure-noire;}
+		&.intervWidgetDate		{width:150px;}
+		&.intervWidgetFill		{width:100%;}
+	}
+	textarea {					position:absolute; top:250px; box-sizing:border-box; border-radius:5px; border:1px solid @black; width:60%; height:411px;
+		&.indication			{position:absolute; top:150px; box-sizing:border-box; border-radius:5px; border:1px solid @black; width:60%; height:350px;}
+		&.modif					{position:absolute; top:500px; box-sizing:border-box; border-radius:5px; border:1px solid @black; width:60%; height:161px;}
+	}
+}
+
+#interventionDroite	{			display:inline-block; position:absolute; padding-left:5px; vertical-align:top; height:600px; right:10px; width:30%; border:1px solid @black; 
+								border-radius:5px; overflow:none;
+	div 						{display:inline-block; width:100%; box-sizing:border-box;}
+	span.label					{display:inline-block; font-weight:bold; padding-left:2px; margin-top:10px; margin-bottom:5px;}
+	a							{color:@blue; font-style:italic;}
+	a:hover						{color:@blue; font-weight:bold;}
+}
+
+#add_category					{display:inline-block; margin-top:10px; font-size:15px;}
+#add_category:hover				{color:@blue; font-weight:bold;}
+#interventionSave               {display:flex; justify-content:flex-end; width:100%; box-sizing:border-box; margin-top:30px;}
+
+#interventionVueListe {			position:relative; border:1px solid @black; border-radius:5px;
+	table {
+		td.midTd      			{width:300px; color:@black;}
+		td.smallTd  			{width:250px;}
+	}
+}
+
+#listeInterRapportsTitre {		font-size:@petitsCaracteres; font-weight:bold; padding-right:50px; margin-right:30px; margin-left:0px;
+	table						{width:100%; margin:0px; height:30px; padding-right:50px;}
+	a     						{color:@black; font-weight:normal;}
+	a:hover 					{color:@black; font-weight:bold;}
+}
+
+#listeInterRapports {			width:100%; height:200px; overflow:auto; border-top:1px solid @black; margin:auto; font-size:@petitsCaracteres;
+	table       				{width:100%; margin:0px; color:@black;}
+	a           				{color:@black;}
+	a:hover     				{color:@blue; font-weight:bold;}
+}
+
+#interventionVueKeyWords {		margin-top:10px;
+	p							{margin-top:0px; margin-bottom:0px;}
+	input[type='text']			{padding:0; margin:0; height:25px; width:500px; font-size:19px; border-radius:5px; font-family:Verdana; .bordure-noire;}
+	button 						{width:130px; height:28px; padding-top:0px; padding-bottom:1px; border-radius:@contourArrondi; border:#202a36 solid 3px; font-size:@petitsCaracteres; text-align:center; color:@black; text-transform:uppercase;}
+	button:hover                {color:@green; font-weight:bold;}
+}
+
+#interventionVueRapport			{position:relative;}
+
+#interventionVueGauche {		display:inline-block; width:60%; height:400px; box-sizing:border-box; 
+	textarea 					{position:absolute;top:78px;box-sizing:border-box; border-radius:5px; margin-top:20px; width:60%; height:302px; .bordure-noire;}
+}
+
+#interventionVueDroite {		float:right; height:390px; width:30%; padding-left:5px; border:1px solid @black; border-radius:5px; box-sizing:border-box; margin-top:10px; overflow:none;
+	h2							{margin-top:0; height:10%;}
+	a       					{color:@black;}
+	a:hover						{color:@green; font-weight:bold;}
+}
+
+#viewFichiers					{height:85%; overflow:auto;}
+
+#interventionModifFile			{height:40%; overflow:auto; }
+#interventionAddFile			{height:43%; overflow:auto; }
+
+
+#newLiveField					{}
+#changeLiveField				{width:80%; margin:auto;}
+
+#liveContainer {				display:flex; justify-content:space-between; color:@white;
+	button {					border-radius:25px; border-color:@black;
+		&.widgetValidation:hover	{color:@green;}
+	}
+	h1							{color:@black; text-decoration:underline; margin-bottom:15px;}
+}
+
+#accueilDonneeLive1				{text-align:center;}
+
+#accueilDonneeLive2 {			vertical-align:top; border-radius:5px; background:#333; color:@white; width:450px; height:200px; padding-top:10px;
+	select						{background:@white; color:@black; width:200px;}
+}
+
+#donneesLiveCrees1				{}
+
+#donneesLiveCrees2 {			border-radius:5px; background:#333; color:@white; width:550px; height:500px; overflow:auto;
+	table tr td:nth-child(2)	{width:200px;}
+}
+
+#donneesExistantes {			display:flex; flex-direction:row; flex-wrap:wrap;
+	span						{width:200px; border:1px solid gray; flex:0 0 auto;}
+}
+
+#addDonneeLive {				vertical-align:top; border-radius:5px; background:@white; height:600px;
+	.newTuile					{display:inline-block; width:50%;}
+	select                      {padding:0; margin:0; height:28px; width:350px; font-size:19px; border-radius:5px; font-family:Verdana; margin-left:0; .bordure-noire(@creme);}
+	label						{color:@black; font-size:@petitsCaracteres;}
+	button {					vertical-align:middle; border-radius:@contourArrondi; border-color:@black; width:150px; height:50px;
+		&.widgetValidation		{color:@green;}
+		&.widgetValidation:hover {font-weight:bold;}
+	}
+	table {						margin:0; padding:0; border-collapse:collapse; color:@black;
+		&.tableMoyenne			{width:60%; margin:auto; }
+		tr						{height:20px;}
+		tr td:first-child		{border-bottom:1px solid @black;}
+		tr:last-child td:first-child	{border-bottom-style:none !important; text-align:center;} 
+	}
+	tr.errors 					{height:20px; color:@red; font-size:0.7em; }
+}
+
+#newLiveField h1									{font-size:30px; margin-top:20px; text-align:center; margin-bottom:20px;}
+#newLiveField h2									{font-size:22px; margin-top:20px;}
+
+#changeLiveField h1                                 {font-size:30px; margin-top:20px; text-align:center; margin-bottom:20px;}
+#changeLiveField h2									{font-size:22px; margin-top:20px;}
+
+#addDonneeLive {
+	input[type="number"].widgetMin					{padding:0; margin:0; height:25px; width:90px; font-size:@petitsCaracteres;  border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+	input[type="text"].widgetMin					{padding:0; margin:0; height:25px; width:150px; font-size:@petitsCaracteres; border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+	input[type="text"].widgetMoyen					{padding:0; margin:0; height:25px; width:280px; font-size:@petitsCaracteres; font-family:Verdana; .bordure-noire(@creme);text-transform:uppercase;}
+	input[type="text"].widgetMessage				{padding:0; margin:0; height:25px; width:280px; font-size:@petitsCaracteres; border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+	select.widgetMoyen 								{padding:0; margin:0; height:28px; width:280px; font-size:@petitsCaracteres; border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+	select.widgetMin 								{padding:0; margin:0; height:28px; width:150px; border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+	select.widgetIcone 								{padding:0; margin:0; height:150px; width:280px; font-size:@petitsCaracteres; border-radius:5px; font-family:Verdana; .bordure-noire(@creme);}
+}
+
+#donneesLiveExistantes {							display:inline-block; margin: 0px 0px 10px 0px; height:600px; width:45%; overflow:none;
+	.moyen 											{width:300px;}
+	.petit 											{width:150px;}
+	span {
+		&.valField									{font-style:italic; font-size:0.9em; }
+		&.labelgrand									{display:inline-block; color:@white; width:170px; text-decoration:underline;}
+		&.labelmoyen									{display:inline-block; color:@white; width:100px; text-decoration:underline;}
+		&.labelpetit									{display:inline-block; color:@white; width:70px; text-decoration:underline;}
+	}
+}
+
+#DonneeLive_icone									{position:relative; z-index:10; background-color:@white;}
+#DonneeLive_icone option							{height:30px; text-align:left; color:@black; padding-top:10px;}
+#divImgIcone										{display:inline-block; width:30px; height:30px; background-position:center center; background-repeat:no-repeat; margin-left:20px; }
+
+#choix-langue                                       {float:left; padding-left:5px; padding-top:3px;}
+
+
+#formulaireEntete {									width:1200px; margin:auto; margin-top:50px;
+	h1												{font-size:36px; margin-top:20px; margin-bottom:20px; text-decoration:underline;}
+	td:first-child									{width:300px;}	
+	td:nth-child(2) 								{width:400px;}
+	button {										border-radius:25px; border-color:@black;
+		&.widgetValidation:hover 					{color:@green;}
+	}
+	.label											{width:400px;} 
+	.adresse										{width:400px;}
+}
+
+
+#ping                           					{position:absolute; right:5px;}
+
+#menu_general {										display:flex; flex-direction:column; width:100%; align-items:center; text-align:center; margin-bottom:10px;
+	div {
+		&.validationbouton { 						margin-top:30px;
+			div.bouton       						{width:230px; display:inline-block; vertical-align:middle; padding-top:5px; padding-bottom:3px; border-radius:@contourArrondi; border:#202a36 solid 3px; font-size:16px; text-align:center;}
+		}
+		&.table_zone_texte {						margin:20px auto 20px; min-width:600px; max-width:1100px;
+			input[type='date']						{width:100px; text-align:center;}
+			textarea								{box-sizing:border-box; width:100%}
+		}
+		&.gestion_recherche_valeurs {                text-align: left;
+        	h1                                      {font-size:16px; margin:5px;}
+        	input[type='text'].inputTextInParagraphe    {background:white; color:blue; border:none; width:65px;}
+    	}
+		$.gestion_affichage_valeurs {    			padding:5px; margin-top:30px; border:1px dashed black; text-align:left;
+			h1										{text-decoration:blink; font-size:16px; margin:5px;}
+		}
+	}
+	h1												{text-align:center; margin-top:30px; margin-bottom:80px; padding-bottom:10px; border-bottom:1px dashed @black;}
+	select											{width:250px; border-radius:@contourArrondi;
+		&.principal									{width:300px; background:@black;}
+	}
+	textarea                              			{display:block; margin-top:60px; background-color:#D8D8D8; color:@black;}
+	table.table_emails             					{margin:20px auto 20px; padding:10px; width:300px; text-align:left; border-radius:@contourArrondi; background:@black; color:@white;
+		tr > td										{min-width:300px; max-width:300px;}
+  		tr td:nth-of-type(2)						{min-width:50px; max-width:50px;}
+	}
+
+}
+
+#regRequest	{										position:absolute; top:10px; width:100%; text-align:right;  font-size:@minisCaracteres; padding-top:10px;
+	select                              			{position:relative; border-radius:@contourArrondi; top:-5px; width:295px; margin-bottom:10px; height:23px; font-size:@petitsCaracteres; 
+													.bordure-noire;}
+}
+
+#checkRegRequest									{position:relative; top:3px;}
+
+#sectionModeExploitation							{display:block; text-align:left;}
+
+#checkSaveRequest {									border:2px solid @green; background-color:@white; color:@green; width:100px; border-radius:@contourArrondi;
+	&:hover 										{cursor:pointer; font-weight:bold;}
+}
+
+#deleteSaveRequest {                                border:2px solid @red; background-color:@white; color:@red; margin-left:10px; width:100px; border-radius:@contourArrondi;
+    &:hover                                         {cursor:pointer; font-weight:bold;}
+}
+
+
+#menu_analyse {										display:flex; flex-direction:column; width:100%; align-items:center; text-align:center;
+	h1												{text-align:center; margin-top:30px; margin-bottom:80px; padding-bottom:10px; border-bottom:1px dashed @black;}
+	select											{background-color:black; text-align:center; width:300px; border-radius:@contourArrondi;}
+}
+
+#titre_defauts_bruleurs h1                          {font-size:20px; width:100%; text-align:center; text-decoration:underline;}
+
+#blocs_defauts_bruleurs {							display:flex; justify-content:space-around; width:100%; min-width:700px; max-height:400px; overflow:auto; box-sizing:border-box; margin-top:30px; text-align:center;
+	h1                          					{font-size:@petitsCaracteres; text-align:center; margin-bottom:20px;}
+	.containerDefautsBruleur {						flex-shrink:0; min-width:350px; max-width:350px;
+		a  											{display:inline-block; border:1px groove @black; width:300px; height:30px;  color:@black; padding-top:15px;}
+		h1											{font-size:16px; width:100%;}
+	}
+}
+
+#informationText									{width:100%; text-align:center; color:@red;}
+#infoBulles											{border:2px solid @red;}
+
+#sectionOptionsGraphiques {							height:30px; font-size:@petitsCaracteres; display:flex; justify-content:'left'; flex-direction:row; flex-wrap:wrap; align-items:flex-end; margin-top:20px; margin-bottom:-7px; margin-left:9px;
+	input[type='text'] {							height:15px; margin:0 10px 0 0; width:30px; font-size:@petitsCaracteres; .bordure-noire;
+		&.pas										{width:20px;}
+	}
+	div {
+		&.debutLigne									{width:500px; height:24px;}
+		&.milieuLigne								{width:500px; height:30px;}
+		&.finLigne									{height:30px; text-align:right; padding-right:30px; flex:1;}
+	}
+	span											{padding-right:10px;}
+}
+
+
+#intituleRequetePerso								{width:600px; margin-top:@minisCaracteres; border-radius:@contourArrondi; .bordure-noire(@creme); text-align:center;}
+#compteRequetePerso									{text-align:right;}
+
+#ajout_requete_perso {								text-align:center;
+	input[type='button']							{width:200px; margin-top:30px;}
+	h1												{font-size:@grandsCaracteres; color:@white;}
+}
+
+#legendeGraphique                       			{display:none;}
+
+#div_session_ipc {									position:absolute; top:10px; left:0px; font-size:@minisCaracteres; margin-right:20px; z-index:5;
+	span											{display:inline-block; padding-left:0px; margin-bottom:1px;}
+	select											{height:20px; width:100px; font-size:@minisCaracteres; border-radius:@contourArrondi; text-align:center;}
+	input[type="checkbox"]							{position:absolute; top:16px; cursor:pointer;}
+}
+
+#pre_export_rapport	{								width:300px; margin:auto; padding-top:30px;
+	input[type="date"]								{height:20px; width:150px; font-size:10px; border-radius:20px; text-align:center;}
+	input[type="button"]							{height:30px; width:100px; font-size:10px; border-radius:20px; text-align:center; background-color:@black; color:@white; margin-top:10px;}
+	input[type="button"]:hover						{color:@white; border:3px solid green; font-size:@petitsCaracteres; height:32px; width:102px;}
+	span.choix_date									{display:inline-block; width:130px; padding-top:5px; padding-bottom:5px;}
+	div.valid_export								{text-align:right; padding-top:5px;}
+}
+
+#accueilEtatPage {                                  position:absolute; top:0px; right:0px; bottom:0px; left:0px; padding-top:20px; text-align:center;
+    #listeDesRapports                               {position:absolute; top:40px; right:0px; bottom:0px; left:0px; overflow-y:scroll; overflow-x:none;}
+    h1                                              {position:absolute; top:0px; right:0px; bottom:0px; left:0px; font-size:@normauxCaracteres; font-weight:bold; text-transform:underline; 
+													margin-bottom:20px;}
+    h2                                              {font-size:@grandsCaracteres; margin-bottom:50px;}
+    h3                                              {font-size:@normauxCaracteres; margin-bottom:20px;}
+    a                                               {display:block; color:@black; margin-bottom:5px;}
+    a:hover                                         {color:@blue;}
+    a:selected                                      {color:@black;}
+}
+
+#etatAuto {
+    h1                                              {font-size:30px; text-align:center; margin-bottom:50px;}
+    select                                          {width:300px; height:28px; border-radius:3px; font-family:Verdana; font-size:@petitsCaracteres; margin-left:0; background-color:#FFF; 
+													color:@black; border:1px solid @black;}
+    span {
+        &.titre1                                    {display:inline-block; text-align:left; width:250px; height:30px;}
+        &.titre2                                    {display:inline-block; text-align:left; width:500px; height:30px;}
+        &.validation                                {display:inline-block; text-align:right;}
+    }
+    div {
+        &.champs_etat                               {text-align:center;}
+    }
+}
+
+#validationMin {									display:inline-block;
+	.bouton											{width:100px; height:18px; text-align:center; margin-left:10px; border-radius:15px; min-width:50px;}
+	.bgbouton										{background:none; width:auto; display:inline-block; vertical-align:middle; padding:1px 8px 1px 8px; margin:2px; border-radius:15px; 
+													font-size:11px; text-align:center;}
+	a												{color:inherit; font-weight:bold; text-transform:uppercase;}
+	.blue .bgbouton:hover							{color:@white; background:#006AB3; width:auto; display:inline-block; padding:1px 8px 0px 8px; margin:2px; border-radius:@contourArrondi;
+													text-align:center;}
+}
+
+#message_404 {										font-size:28px; border:23px solid black; text-align:center;}
+
+#headprint 											{z-index:80; position:absolute; top:0px; right:0px; left:0px; height:@hauteurEnTete; min-height:180px; background:@black;
+	&.vueRestreinte									{height:120px; min-height:120px;}
+}
+
+#etat1Affichage 									{display:table; margin:auto;}
+
+#etatHeader											{display:table-header-group; height:100px; text-align:center;
+	h1												{font-size:30px;}
+	h2												{font-size:25px;}
+}
+
+#etatBody											{display:table-cell;}
+
+#etatPartieFonctionnement p>span:first-child 		{display:inline-block; min-width:350px;}
+
+#headerUser div.heureImpression 					{display:none;}
+
+#message_last_data									{font-size:12px; padding-left:5px; position:fixed; top:85px; z-index:99; }

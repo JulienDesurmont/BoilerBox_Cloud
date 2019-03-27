@@ -1,0 +1,4 @@
+parameters:
+#    ipc_user.example.class: Ipc\UserBundle\Example
+
+services:

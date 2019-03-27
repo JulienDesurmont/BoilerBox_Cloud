@@ -1,0 +1,64 @@
+{# src/Ipc/ConfigurationBundle/Resources/views/Configuration/modificationLocalisation.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Modification des tables d'échange{% endblock title %}
+
+
+{% block title_header %}
+    <h1>Exploitation des chaudières</h1>
+{% endblock title_header %}
+
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+        <div id='choix_mode'>
+            <table>
+                <thead>
+                    <tr><td class='clRadiobox'>Période d'analyse</td><td class='clLocalisation'>Localisation</td><td class='clDate'>Date de début de programme</td><td class='clDate'>Date de fin de programme</td><td class='clProgramme'>Programme utilisé</td><td class='clDescription'>Description</td></tr>
+                </thead>
+                <tbody>
+                    {% for info_loc in tabInfos %}
+                        <tr><td class='clRadiobox'><input type='radio' name="localisation_{{ info_loc.localisation.id }}" {% if info_loc.periodeCourante == 1 %}checked{% endif %} onClick="attente();setTimeout(function(){majPeriode({{ loop.index }},{{ info_loc.id }},{{ info_loc.localisation.id }},{% if info_loc.mode != null %}{{ info_loc.mode.id }}{% else %}null{% endif %});},100);" ></td>
+                        <td class='clRadiobox'>{{ info_loc.localisation.designation }} ({{ info_loc.localisation.numeroLocalisation }})</td>
+                        <td class='clDate' id="dateInfoDeb_{{ loop.index }}">{{ info_loc.horodatageDeb | date("d/m/Y H:i:s") }}</td>
+                        <td class='clDate' id="dateInfoFin_{{ loop.index }}">{% if info_loc.horodatageFin is null %} - {% else %}{{ info_loc.horodatageFin | date("d/m/Y H:i:s") }}{% endif %}</td>
+                        <td class='clProgramme'>{% if info_loc.mode != null %}{{ info_loc.mode.designation }}{% else %}Aucun programme{% endif %}</td>
+                        <td class='clDescription'>{% if info_loc.mode != null %}{{ info_loc.mode.description }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+	<div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+		function goBack() {
+    	    var url_intervention = $('#Configurations').attr('href');
+    	    window.location.href = url_intervention;
+    	}
+
+		function majPeriode(loopNum, infoId, infoLocId, infoProg) {
+    	    var xhr = getXHR();
+    	    xhr.open("POST", "{{ path('ipc_conf_majPeriodeAnalyse') }}", false);
+    	    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		    var datas = "infoModeId="+ infoId + "&infoLocId=" + infoLocId + "&infoProg=" + infoProg;
+    	    xhr.send(datas);
+		    fin_attente();
+		}
+    </script>
+{% endblock bodyjavascript %}

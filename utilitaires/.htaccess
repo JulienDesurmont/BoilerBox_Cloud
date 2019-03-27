@@ -1,0 +1,8 @@
+Options +FollowSymlinks
+Options +Indexes
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteBase /utilitaires/
+    RewriteRule phpInfo phpInfo.php
+    RewriteRule apc apc.php
+</IfModule>

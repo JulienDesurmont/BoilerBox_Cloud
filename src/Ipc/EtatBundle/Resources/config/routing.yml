@@ -1,0 +1,69 @@
+ipc_nouvelEtat:
+    path: /nouvelEtat/{numero}
+    defaults: { _controller: IpcEtatBundle:Etat:nouvelEtat }
+
+ipc_defineEtat:
+    path: /defineEtat/
+    defaults: { _controller: IpcEtatBundle:Etat:index2 }
+
+ipc_defineCalcul:
+    path: /defineCalcul/
+    defaults: { _controller: IpcEtatBundle:Etat:gestionCalcul }
+
+ipc_defineRequetesTypes:
+    path: /defineRequetesTypes/
+    defaults: { _controller: IpcEtatBundle:Etat:indexRequetesTypes }
+
+ipc_createEtat:
+    path: /createEtat
+    defaults: { _controller: IpcEtatBundle:Etat:creation }
+
+ipc_createCalcul:
+    path: /createCalcul
+    defaults: { _controller: IpcEtatBundle:Etat:creationCalcul }
+
+ipc_afficheListingCalcul:
+    path: /afficheListing
+    defaults: { _controller: IpcEtatBundle:Etat:afficheListing }
+
+ipc_afficheGraphiqueCalcul:
+    path: /afficheGraphique
+    defaults: { _controller: IpcEtatBundle:Etat:afficheGraphique }
+
+ipc_afficheCalcul:
+    path: /afficheCalcul
+    defaults: { _controller: IpcEtatBundle:Etat:afficheCalcul }
+
+ipc_createRequeteType:
+    path: /creationRequeteType
+    defaults: { _controller: IpcEtatBundle:Etat:creationRequeteType }
+
+ipc_afficheRequeteType:
+    path: /afficheRequeteType/{typeRequete}
+    defaults: { _controller: IpcEtatBundle:Etat:afficheRequeteType }
+    requirements:
+        typeRequete: graphique|listing
+
+ipc_etat_affiche:
+    path: /affiche/{idEtat}
+    defaults: { _controller: IpcEtatBundle:Etat:afficheEtat,idEtat:0 }
+
+ipc_etat1_accueil:
+    path: /1/affiche/{idEtat}
+    defaults: { _controller: IpcEtatBundle:Etat:afficheEtat1Accueil,idEtat:0 }
+
+ipc_etat1_affiche:
+    path: /1/affiche/{idEtat}/{dateEtat}
+    defaults: { _controller: IpcEtatBundle:Etat:afficheEtat1 }
+
+ipc_etat:
+    path: /ajax/prepare
+    defaults: { _controller: IpcEtatBundle:Etat:prepare }
+
+ipc_gestionEtatQueries:
+    path: /gestionEtatQueries
+    defaults: { _controller: IpcEtatBundle:Etat:gestionEtatQueries }
+
+ipc_createEtatAuto:
+    path: /createEtatAuto
+    defaults: { _controller: IpcEtatBundle:Etat:creationAuto }

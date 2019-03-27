@@ -1,0 +1,42 @@
+{# src/Ipc/RapportsBundle/Resources/views/secondLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapport - {% endblock %}
+
+{% block body %}
+	<span id='pageRapportsView' class='cacher'></span>
+{% endblock body%}
+
+	
+{# Suppression des menus #}
+{% block left_menu %}
+{% endblock left_menu %}
+
+
+
+{% block bodyjavascript %}
+    <script type='text/javascript'>
+		$('page').addClass('noLeftMenus');
+
+    	function afficheFooter() {
+    	    $('#blockPiedDePage').removeClass('cacher');
+    	    $('#pagePrincipaleBody').css('bottom', '120px');
+    	}
+
+    	function closeFooter() {
+    	    $('#blockPiedDePage').addClass('cacher');
+    	    $('#pagePrincipaleBody').css('bottom', '0px');
+    	}
+
+        function goBack() {
+            var url_intervention = $('#Rapports').attr('href');
+            window.location.href = url_intervention;
+        }
+
+	</script>
+    {% javascripts output='js/rapports.js'
+        'bundles/ipcrapports/js/rapports.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock bodyjavascript%}

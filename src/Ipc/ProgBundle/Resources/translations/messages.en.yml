@@ -1,0 +1,219 @@
+# /src/Ipc/ProgBundle/Resources/translations/messages.en.yml
+"Régul. combustion mesureuse - Brûleur 1 : Courbe combustible, valeur d'entrée du bloc courbe = $ (%)": These Burners
+entete:
+    menu:
+        etat: State
+        courbe: Chart
+        rapport: Reports
+        listing: Listing
+        outil: Tools
+        bruleur: Burner
+        configuration: Configuration
+    lien:
+        deconnexion: Logout
+        connexion: Login
+        
+periode:
+    duree:
+        seconde: second
+        minute: minute
+        heure: hour
+        jour: day
+        mois: month
+        pluriel: 
+            seconde: second|]1,+Inf]seconds
+            minute: minute|]1,+Inf]minutes
+            heure: hour|]1,+Inf]hours
+            jour: day|]1,+Inf]days
+            mois: month|]1,+Inf]months
+    bouton:
+        attention: Attention
+        modifier: Modify
+        valider: Save
+    info:
+        chargement: Loading
+        none: No period define
+    compression:
+        moyenne: Average by
+        maximum: Maximum by 
+        minimum: Minimum by
+        complete: Full research
+        points:
+            moyen: Average point
+            maximum: Higher point
+            minimum: Lower point
+            complete: All points
+ 
+info:
+    rapport:
+        enregistrer: Report saved
+        modifier: Report changed
+        none: No report found
+        tailleDocuments: "Max size authorized : %maxVarGetSize%"
+        trigrammeIntervention:
+            absent_base: Module %trigrammeIntervention% not found in database - Report not saved
+            absent_configuration: "[trigramme_intervention] configuration parameter not found - Report not saved"
+            erreur_configuration: "[trigramme_intervention] configuration parameter is incorrect (%trigrammeIntervention%) - Report not saved"
+    erreur:
+        titre: "Error"
+        recherche_fichier: "File not found"
+        import_fichier: "Error : File not imported"
+    periode:
+        none: Please choose a period
+
+select:
+    points:
+        tous: Every points
+        moyen: Medium points
+        minimum: Higher points
+        maximum: Lower points
+    pas:
+        titre: Step of
+        seconde: Second
+        minute: Minute
+        heure: Hour
+        jour: Jour
+        mois: Month
+    requetes_client:
+        titre:
+           listing: Client listing requests
+           graphique: Client chart requests
+    requetes_perso:
+        titre:
+           listing: Personal queries
+           graphique: Personal queries
+    popup:
+        tous_genres: Every genre
+        tous_modules: Every module
+        tous_messages: Every message
+
+lien:
+    precedent: Previous
+    suivant: Next
+    ajout_fichier: Add a file
+    supprimer: Delete
+
+checkbox:
+    requetes_client: Client querie :
+    afficher: Display
+    minimiser: Reduce
+    uniformiser: Harmonize the scale
+    legende: Fill / Clear
+
+textbox:
+    bas: Bottom
+    haut: Top
+    pas: Step
+
+bouton:
+    requetes_client:
+        enregistrement: Save querie
+        suppression: Delete querie
+    ajouter_requete: Add
+    supprimer_requete: Delete
+    editer_requete: Edit
+    rechercher: Research
+    raz: Raz
+    retour: Back
+    afficher: Display
+    modifier: Modify
+    recalculer: Recalculate
+    enregistrer: Save
+    export: Export
+    popup:
+        valider: Save
+        fermer: Close
+
+label:
+    oui: Yes
+    non: No
+    sur: on 
+    chargement: Loading ...
+    legende:
+        checkbox: Legend
+        requetes: Queries
+        localisations: Locations
+        genres: Genres
+    titre:
+        principal: Data analysis
+        legende: Legend
+        courbe: Curves
+        listing: Listing
+        rapport: Intervention reports
+        nouveau_rapport: New intervention report
+        vue_rapport: Intervention report list
+        pas_de_donnee: No data found
+        page_inexistante: Page %page% not found
+        compression: COMPRESSING DATA
+    export_rapport: Report export
+    site: Site
+    localisation: Location
+    localisation_reduit: Loc.
+    code_message: Message code
+    designation: Description
+    action: Action
+    genre: Genre
+    module: Module
+    message: Message
+    valeur1: Value 1
+    valeur2: Value 2
+    horodatage: Timestamp
+    points: Points
+    compression: Compressing data
+    ajout_listing: Add a listing
+    ajout_courbe: Add a curve
+    ou: or
+    et: and
+    donnee: Data|]1,+Inf]Data
+    requete_timeout: Queries timeout
+    afficher: Display
+    infos_bulles: Tooltip
+    ajout_rapport: Add a report
+    visualisation_rapport: View a report
+    info:
+        points_max: To display the chart, every curve should have a max of %limit% points. Please compress the data.
+        modification:
+            listing: Change
+            courbe: Change
+        rafraichissement: Refresh
+        impression: Print
+        compression: Compress
+        reinitialisation: Reset 
+        export_csv: Export csv data
+        export_page_csv: Export csv page 
+    popup:
+        titre:
+            listing: Add a listing
+            courbe: Add a curve
+            filtre: Filter
+            mots_cle: Keywords research
+            selection_message: Select a message
+            ajout_requete_personnelle: Ajouter une requête personnelle
+        filtre:
+            superieur:
+                designation: Higher
+                description: Accept every message with value %numero% higher than
+            compris:
+                designation: Between
+                description: Accept every message with value %numero% between 
+            inferieur:
+                designation: Lower
+                description: Accept every message with value %numero% lower than
+        textbox:
+            intitule_requete: Intitulé de la requête
+
+    rapport:
+        recherche: Reports research
+        titre: Title
+        horodatage: Intervention hours
+        zone_rapport: Report
+        equipement: Intervention made on an equipment
+        intervenant: Author
+        fichiers_inclus: Included files
+        fichiers_lies: Linked file|]1,+Inf]Linked %count% files
+        titre_vue: "%auteur% report : %horodatage%"
+        titre_vue_equipement: on %equipement%
+        titre_vue_tousEquipements: on all equipments
+
+Enregistrer: Save
+Retour: Back

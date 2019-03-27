@@ -1,0 +1,65 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/export_table_echange_ipc.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Tables d'échanges{% endblock title %}
+
+
+{% block title_header %}
+    <h1>Exportation d'une table d'échange</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+		<div class='gestion_modif_site'>
+	    	<form action={{ path('ipc_export_tableEchange') }} method='post' name='MyForm'>
+	   			<table>
+                    <tr><th>Site</th><th>Localisation</th><th>Choix</th></tr>
+                    {% for keySite,site in liste_sites %}
+			    		{% if site.localisations | length > 0 %}
+			       			<tr>	
+				   				<td class='gauche' rowspan="{{ site.localisations | length }}">{{ site.intitule }}</td>
+				   				{% for keyLocalisation,localisation in site.localisations %}
+				       				{% if loop.index0 == 0 %}
+				               			<td class='gauche'>{{ localisation.designation }}</td>
+				               			<td><input type='radio' name='radioIdLoc' value="{{ localisation.id }}" /></td></tr>
+				       				{% else %}
+				    					<tr>
+				        					<td class='gauche'>{{ localisation.designation }}</td>
+				        					<td><input type='radio' name='radioIdLoc' value="{{ localisation.id }}" /></td></tr>
+									{% endif %}
+				   				{% endfor %}
+			    		{% else %}
+				   			<tr><td>{{ site.intitule }}</td></tr>
+			    		{% endif %}
+			    		<tr><td colspan="3"><hr></td></tr>
+                    {% endfor %}
+					<tr><td colspan='2'>Toutes localisations</td><td><input type='radio' name='radioIdLoc' value='allLoc' checked /></td></tr>
+              	</table>
+	    	</form>
+		</div>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="document.forms['MyForm'].submit();return false;" ><div class='bouton blue'><div class='bgbouton'>EXPORTER</div></div></a>
+		<a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+	</script>
+{% endblock bodyjavascript %}
+
+

@@ -1,0 +1,78 @@
+{# src/Ipc/SupervisionBundle/Resources/views/secondLayout.html.twig #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	{% block head %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<title>{% block title %}{% endblock title %}</title>
+	{% endblock head %}
+
+
+	{% block headLink %}
+		<link rel="icon" type="image/png" href="{{ asset('bundles/ipcsupervision/images/favicon.ico') }}" />
+	{% endblock headLink %}
+
+    {% block headCss %}
+		{#
+        {% stylesheets filter='cssembed,cssrewrite' output='css/live.css'
+            'bundles/ipcsupervision/css/screen-live.css'
+        %}
+            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" media="screen" />
+        {% endstylesheets %}
+		#}
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcsupervision/css/screen-live.css') }}">
+    {% endblock headCss %}
+
+    {% block headJavascript %}
+        {% javascripts filter='jsqueeze' output='js/jquery_supervision.js'
+            'bundles/ipcprog/js/jquery.js'
+			'bundles/ipcsupervision/js/chargement.js'
+        %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock headJavascript %}
+</head>
+
+<body>
+	<div id='prechargement' style='position:fixed; width:100%; height:100%; background-color:black; z-index:1000; text-align:center; font-size:40px; color:white; padding-top:400px; font-family:"Calibri Light","Arial Unicode MS","Times New Roman",serif'></div>
+	{% block body %}
+	{% endblock body %}
+
+	{% block bodyJavascript %}
+	{% endblock bodyJavascript %}
+
+    <script type='text/javascript'>
+		function verificationLoad() {
+        	//  Vérification du chargement des scripts js de la page Live
+        	if (document.getElementById('pageSupervisionView')) {
+        	    if (typeof($chargementSupervision) == "undefined") {
+        	        document.getElementById('prechargement').innerHTML = "Boiler-Box<br /><br />Chargement du live ...";
+        	        location.reload();
+        	        return 1;
+        	    }
+
+				if ((typeof($chargementGraphique) == "undefined") || (typeof($chargementAside) == "undefined")) {
+					document.getElementById('prechargement').innerHTML = "Boiler-Box<br /><br />Chargement du live ...";
+                    location.reload();
+                    return 2;
+				}
+        	}
+			document.getElementById('prechargement').setAttribute('class','cacher');
+			return 0;
+		}
+
+        // Ajout l'événement d'écoute du chargement de la page. Spécificité IE prise en compte
+        function addEvent(obj, event, fct) {
+            if (obj.attachEvent) {
+                obj.attachEvent("on" + event, fct);
+            } else {
+                obj.addEventListener(event, fct, true);
+            }
+        }
+
+        //  Création de l'événement d'écoute du chargement de la page
+        addEvent(window, "load", verificationLoad);
+	</script>
+</body>
+</html>

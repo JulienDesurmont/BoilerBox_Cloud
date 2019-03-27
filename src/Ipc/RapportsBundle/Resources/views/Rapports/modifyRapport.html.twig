@@ -1,0 +1,136 @@
+{# /src/Ipc/RapportsBundle/Resources/views/Rapports/modifyRapport.html.twig #}
+
+{% extends "IpcRapportsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapport d'intervention{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='intervention'>
+    	{{ form_start(form, {'attr': {'class': 'form-horizontal','id': 'formModifRapport'}}) }}
+    		{# Les erreurs générales du formulaire. #}
+    		{{ form_errors(form) }}
+    		{# Définition des variables #}
+    		{% if entityRapport.fichiersrapport|length > 0 %}{% set nombreFichiers = entityRapport.fichiersrapport|length %} {% else %} {% set nombreFichiers = 1 %}{% endif %}
+    		<h1>{{ 'label.titre.rapport'|trans }}</h1>
+    		<div id='interventionGauche'>
+        		<h2>{{ entityRapport.titre }}</h2>
+				<h3>{{ 'label.rapport.titre_vue'|trans({'%auteur%':entityRapport.nomTechnicien, '%horodatage%':entityRapport.dateRapport|date('d/m/Y à H:i')}) }} {% if entityRapport.localisation %}{{ 'label.rapport.titre_vue_equipement'|trans({'%equipement%':entityRapport.localisation.designation}) }}{% else %}{{ 'label.rapport.titre_vue_tousEquipements' }}{% endif %}</h3>
+			
+				<textarea class='indication' readonly>{{ indicationRapport }}</textarea>
+        		{{ form_widget(form.rapport,{'attr':{'class':'modif inputText'}}) }}
+    		</div>
+    		<div id='interventionDroite'>
+        		<div><span class='label'>{{ 'label.rapport.fichiers_lies'|transchoice(nombreFichiers) }}</span></div>
+        		<div id='interventionModifFile'>
+            		{% for fichier in entityRapport.fichiersrapport %}
+               			{{ fichier.nom }}<br />
+            		{% endfor %}
+        		</div>
+				<div class='interventionSeparateur'><hr /></div>
+				<div><span class='label'>{{ 'label.rapport.fichiers_inclus'|trans }} (max : {{ maxUploadedFileSize }})</span></div>
+				<div id='interventionAddFile'>
+            		{{ form_widget(form.fichiersrapport) }}
+				</div> 
+				<div class='interventionSeparateur'></div>
+    		</div>
+    		<div id='interventionSave'>
+        		<button class='intervButton intervRed' onClick="redirection();return false;" >{{ 'bouton.retour'|trans }}</button>
+        		{{ form_widget(form.enregistrer,{'attr':{'class':'intervButton intervGreen'}}) }}
+    		</div>
+    		{# Génération automatique des champs pas encore écrits. le champ CSRF (géré automatiquement par boilerbox et tous les champs cachés (type « hidden »).#}
+    		{{ form_rest(form) }}
+    	{{ form_end(form) }}
+    	{#	Redirection vers la page d'affichage des rapports : ipc_view_interventions #}
+    	{#  Redirection vers la page d'accueil : ipc_rapports_conf #}
+    	<input type='hidden' name='url_redirect' id='url_redirect' value="{{ path('ipc_view_interventions') }}" />
+	</div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+	<script type="text/javascript">
+  		$(document).ready(function() {
+    		$('#formModifRapport').submit(function(){ $(':visible').addClass('cursor_wait'); });
+
+    		//	Fonction permettant d'afficher ou de cacher le champ localisation en fonction du choix de la checkbox 'Intervention sur automate'
+    		$('#Rapport_site').on("change",function(){
+    		    $('#Rapport_localisation').toggleClass('nonVisible');
+    		});
+
+   	 		//	Vérification du choix de la checkbox 'Intervention sur automate' : utilisé lors du rafraichissement pour afficher le champs localisation lorsque la checkbox est cochée
+    		if($('#Rapport_site_0').is(':checked')) {
+				$('#Rapport_localisation').removeClass('nonVisible');
+    		}
+
+    		// On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+    		var $container = $('div#Rapport_fichiersrapport');
+
+    		// On ajoute un lien pour ajouter une nouvelle catégorie
+    		var $addLink = $('<div id="lienAjoutRapport"><a href="#" id="add_category">' + traduire('lien.ajout_fichier') + '</a></div>');
+    		$container.append($addLink);
+
+    		// On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+    		$addLink.click(function(e) {
+    		  	addCategory($container);
+      			e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+      			return false;
+    		});
+
+    		// On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+    		var index = $container.find(':input').length;
+
+    		// On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+    		if (index == 0) {
+    		    addCategory($container);
+    		} else {
+				//	Suppression des lien vers les autres fichiers du rapports
+				var prototypeToDelete = document.getElementById('Rapport_fichiersrapport');
+				if(prototypeToDelete.hasChildNodes()) {
+				    for(var i=0; i<index; i++) {
+				        prototypeToDelete.removeChild(prototypeToDelete.childNodes[0]);
+				    }
+				}
+    		}
+
+    		// La fonction qui ajoute un formulaire Categorie
+    		function addCategory($container) {
+      			// Dans le contenu de l'attribut « data-prototype », on remplace :
+      			// - le texte "__name__label__" qu'il contient par le label du champ
+      			// - le texte "__name__" qu'il contient par le numéro du champ
+      			var $prototype = $("<div class='divNouvFichierRapport'>" + $container.attr('data-prototype').replace(/__name__label__/g,'')
+        	  		.replace(/__name__/g, index) + "</div>");
+	      		// On ajoute au prototype un lien pour pouvoir supprimer la catégorie
+	      		addDeleteLink($prototype);
+	      		// On ajoute le prototype modifié à la fin de la balise <div>
+	      		$container.prepend($prototype);
+	      		// Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
+	      		index++;
+	    	}
+
+    		// La fonction qui ajoute un lien de suppression d'une catégorie
+    		function addDeleteLink($prototype) {
+      			// Création du lien
+      			$deleteLink = $('<a href="#" class="btn btn-danger">' + traduire('lien.supprimer') + '</a>');
+      			// Ajout du lien
+      			$prototype.append($deleteLink);
+      			// Ajout du listener sur le clic du lien
+      			$deleteLink.click(function(e) {
+        			$prototype.remove();
+        			e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+        			return false;
+      			});
+    		}
+  		});
+
+    	function redirection() {
+        	attente();
+        	setTimeout(function() {
+        	    var url_intervention = $('#url_redirect').val();
+        	    window.location.href = url_intervention;
+        	},100);
+    	}
+	</script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,27 @@
+# /src/Ipc/SupervisionBundle/Resources/translations/messages.fr.yml
+live:
+    label:
+        titre:
+            principal: "Données d'exploitation"
+        evenements: Evénements
+        alarmes: Alarmes
+        defauts: Défauts
+        aucun_message: Aucun message
+        dernier_fichier_importe: Dernier fichier importé
+        derniere_donnee_importee: Donnée la plus récente
+        serveur_actif: Serveur actif
+        serveur_inactif: Serveur inactif
+        serveur_occupe: Serveur occupé
+    lien:
+        label:
+            rapatrier_messages: Rapatrier les derniers messages
+        etat: Etat
+        graphique: Graphique
+    bouton:
+        afficher_evenements: Afficher les évenements
+        masquer_evenements: Masquer les évenements
+        reset: Réinitialiser
+    checkbox:
+        label:
+            masquer_infobulles: Masquer les infos-bulles
+            afficher_titretuiles: Afficher les titres des tuiles

@@ -1,0 +1,7 @@
+parameters:
+#    ipc_etat.example.class: Ipc\EtatBundle\Example
+
+services:
+#    ipc_etat.example:
+#        class: %ipc_etat.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

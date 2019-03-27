@@ -1,0 +1,247 @@
+{# src/Ipc/AnalyseBundle/Resources/views/Analyse/index.html.twig #}
+
+{% extends "IpcAnalyseBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Bruleurs{% endblock title %}
+
+{% block title_header %}
+    <h1>Analyse bruleurs</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+    {{ parent() }}
+	<div id='informationText'>&nbsp;</div>
+    <section id='menu_analyse'>
+        <select name='select_analysebruleurs' id='select_analysebruleurs' data-url={{ path('ipc_analyse_getDefautsBruleurs') }} data-url2={{ path('ipc_selectRequest', {'page':'graphique'}) }} data-urlGraphique={{ path('ipc_accueilGraphique') }} data-urlNewDate={{ path('ipc_define_dates') }} data-urlSaveDate={{ path('ipc_saveSessionDate') }}>
+			<option class='optionTitre' value='defaut' disabled selected>Sélectionnez une localisation</option>
+			{% for idloc, bruleur in tableau_defauts_bruleurs %}
+            	<option value="{{ idloc }}">{{ bruleur['designation'] }}</option>
+			{% endfor %}
+        </select>
+    </section>
+	<section id='titre_defauts_bruleurs'></section>
+	<section id='blocs_defauts_bruleurs'></section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='bloc_retour_bruleurs' class='cacher'>
+        <div id='validation'>
+            <a href='#' class='right' onClick="retourMenuAnalyse();return false;" ><div class='bouton blue'><div class='bgbouton'>RETOUR</div></div></a>
+        </div>
+    </div>
+{% endblock choix_validation %}
+
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+    <script type='text/javascript'>
+		// Transforme une date et heure passée au format : AAAA-MM-JJ HH:ii:ss
+		// Retourne la date au format "pcToHuman1 : - Le JJ/MM/AAAA à HH:ii:ss" ou "pcToHuman2 : JJ/MM/AAAA HH:ii:ss" ou "pcToHuman3 : JJ-MM-AAAA HH:ii:ss"
+		function transformeHorodatage($dateHeure, $version) {
+			$dateHeureRetour = $dateHeure;
+			var $horodatageRetour = $dateHeure.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}:\d{2}:\d{2})$/);
+			if (($version == 'pcToHuman1') || ($version == 'pcToHuman2') || ($version == 'pcToHuman3')) {
+				$dateHeureRetour = $dateHeure;
+				var $horodatageRetour = $dateHeure.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}:\d{2}:\d{2})$/);
+				if ($version == 'pcToHuman1') {
+        			if ($horodatageRetour !== null) {
+						$dateHeureRetour = '- Le ' + $horodatageRetour[3] + '/' + $horodatageRetour[2] + '/' + $horodatageRetour[1] + ' à ' + $horodatageRetour[4];
+					}
+				}
+				if ($version == 'pcToHuman2') {
+                    if ($horodatageRetour !== null) {
+                        $dateHeureRetour = $horodatageRetour[3] + '/' + $horodatageRetour[2] + '/' + $horodatageRetour[1] + ' ' + $horodatageRetour[4];
+                    }
+                }
+				if ($version == 'pcToHuman3') {
+					if ($horodatageRetour !== null) {
+						$dateHeureRetour = $horodatageRetour[3] + '-' + $horodatageRetour[2] + '-' + $horodatageRetour[1] + ' ' + $horodatageRetour[4];
+					}
+				}
+				return $dateHeureRetour;
+			}
+		}
+
+		//	Soustrait une période à une date pour obtenir une date de début de période
+		function addPeriodeToDate($dateHeure, $periode) {
+           	var $result = /^(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/.exec($dateHeure);
+            var $annee = RegExp.$1;
+            var $mois = RegExp.$2-1;
+            var $jour = RegExp.$3;
+            var $heure = RegExp.$4;
+            var $minute = RegExp.$5;
+            var $seconde = RegExp.$6;
+			var $horaire = new Date($annee, $mois, $jour, $heure, $minute, $seconde);
+			$horaire.setSeconds($horaire.getSeconds() - parseInt($periode));
+			var $formatNewMonth = $horaire.getMonth() +  1;
+			var $newDateHeure = $horaire.getFullYear() + '-' + completeNumber($formatNewMonth) + '-' + completeNumber($horaire.getDate()) + ' ' + completeNumber($horaire.getHours()) + ':' + completeNumber($horaire.getMinutes()) + ':' + completeNumber($horaire.getSeconds());
+			return $newDateHeure;
+		}
+
+		// Ajoute des caractères 0 au nombre pour obtenir une dateHeure au format AAAA MM JJ HH MM SS
+		function completeNumber($number) {
+			var $compare = $number.toString().match(/^.$/);
+			if ($compare !== null) {
+				return '0' + $number
+			}	
+			return $number;
+		}
+
+		//	Retourne sur la page d'accueil des Analyses défauts bruleurs
+		function retourMenuAnalyse() {
+			// Cache du bouton de retour
+			$('#bloc_retour_bruleurs').addClass('cacher');
+			// Effacement des blocs 
+			$('#titre_defauts_bruleurs').html("");
+			$('#blocs_defauts_bruleurs').html("");
+			$('#select_analysebruleurs').val('defaut');
+            // Affichage du bouton de modification de période + activation de la fonction clic sur la banière de la période
+            $('#choixSelectionPeriode').show();
+    		$('configperiode').on('click',function(){
+        		if (choixPeriode == 'modifier') {
+        	    	// Ouverture de la partie : Modification de période
+        	    	modificationPeriode('modifier');
+        		}
+        		return false;
+    		});
+		}
+    
+		function selectRequest($idBruleur, $numLocalisation, $date) {
+			attente();
+			$numBruleur = $idBruleur.match(/^.+?\s(.+?)$/);
+			if ($numBruleur !== null) {
+				$numBruleur = 'dbr' + $numBruleur[1];
+			}
+			var $laDate = transformeHorodatage($date, 'pcToHuman2');
+            var $url = $('#select_analysebruleurs').attr('data-url2');
+            var $affaire = {{ affaireSite | json_encode | raw }};
+			var $dureePeriode = {{ duree_periode_analyse_bruleur | json_encode | raw }};
+            var $nameFichier = $affaire + " loc" + $numLocalisation + " " + $numBruleur;
+            $.ajax({
+                url: $url,
+                method: 'get',
+                data: 'nom=' + $nameFichier,
+                timeout: 10000
+            })
+            .done(function($message, $status) {
+				if ($message != "") {
+					$('#informationText').html($message);
+					fin_attente();
+				} else {
+					$urlSaveDate = $('#select_analysebruleurs').attr('data-urlSaveDate');
+				 	$.ajax({
+                        url: $urlSaveDate,
+                        timeout: 10000
+                    })
+                    .done(function($message, $status) {
+                    	var $dateDebut = addPeriodeToDate($date, $dureePeriode);
+                    	// Changement de la période d'analyse
+                    	$urlSetSessionDate = $('#select_analysebruleurs').attr('data-urlNewDate');
+                    	$.ajax({
+                    	    url: $urlSetSessionDate,
+                    	    method: 'post',
+                    	    data: 'datedebut=' + transformeHorodatage($dateDebut, 'pcToHuman3') + '&datefin=' + transformeHorodatage($date, 'pcToHuman3'),
+                    	    timeout: 10000
+                    	})
+                    	.done(function($message, $status) {
+                    	    location.href = $('#select_analysebruleurs').attr('data-urlGraphique');
+                    	})
+                    	.fail(function($xhr, $status, $error) {
+                    	    alert('Erreur 3 ' + $error);
+                    	    fin_attente();
+                    	});
+                    })
+                    .fail(function($xhr, $status, $error) {
+                        alert('Erreur 2 ' + $error);
+                        fin_attente();
+                    });
+				}
+            })
+            .fail(function($xhr, $status, $error) {
+                alert('Erreur 1 ' + $error);
+                fin_attente();
+            });
+    	}
+
+		/* On remet la période initiale */
+        $urlRestoreDate = $('#pageActive').attr('data-urlRestoreDate');
+        $.ajax({
+            url: $urlRestoreDate,
+			async: false,
+            timeout: 10000
+        })
+        .done(function($message, $status) {
+            var $testMatch = $message.match(/^.+?(Du.+?)$/);
+            if ($testMatch !== null) {
+                $('#periodeDefinie div.entetePeriode').html($testMatch[1]);
+            }
+        })
+        .fail(function($xhr, $status, $error) {
+            alert('fail : ' + $error);
+        });
+
+        $(function(){
+            $('#select_analysebruleurs').change(function() {
+				attente();	
+				var $tabParamLocalisation =  $("#select_analysebruleurs option:selected").val().split('_');
+				var $idLocalisation = $tabParamLocalisation[0];
+				var $numLocalisation = $tabParamLocalisation[1];
+				// Réinitialisation de l'affichage 
+				$('#blocs_defauts_bruleurs').html("");
+                setTimeout(function() {
+					var $url_getDefautsBruleur = $('#select_analysebruleurs').attr('data-url');
+                	$.ajax({
+						url: $url_getDefautsBruleur,
+						method: 'get',
+						contentType: "application/json; charset=utf-8",
+						dataType: 'json',
+						data: 'idLocalisation=' + $idLocalisation,
+					})
+                    .done(function($tabDefautsBruleurs, $status) {
+						if (typeof($tabDefautsBruleurs) == "string") {
+							$('#informationText').html($tabDefautsBruleurs);
+							$('#select_analysebruleurs').val('defaut');
+						} else {
+							// Affichage du bouton de retour
+							$('#bloc_retour_bruleurs').removeClass('cacher');
+							// Cache du bouton de modification de période + désactivation de la fonction clic sur la banière de la période
+							$('#choixSelectionPeriode').hide();
+							$('configperiode').off('click');
+							// Création du tableau html à insérer dans la page twig
+							$.each($tabDefautsBruleurs, function($idLoc, $tabLoc) {
+								var $tabHTML = "";
+								$('#titre_defauts_bruleurs').html("<h1>Liste des défauts bruleurs sur " + $idLoc + "</h1>");
+								$.each($tabLoc, function($idBruleur, $tabBruleur) {
+									$tabHTML = "<div class='containerDefautsBruleur'><h1>" + $idBruleur.substr(0,1).toUpperCase() + $idBruleur.substr(1) + "</h1>";
+									$tabHTML = $tabHTML + "<div class='listeDesDefauts'>";
+									// Parcours de chaque bruleur
+									if (typeof($tabBruleur) == 'string') {
+										$tabHTML = $tabHTML + "<span style='color:red'>" + $tabBruleur + "</span>";
+									} else {
+										$.each($tabBruleur, function($key, $tabValues) {
+											$.each($tabValues, function($param, $value) {
+												if($param == 'horodatage') {
+													$tabHTML = $tabHTML + "<a href='#' onClick=\"selectRequest('" + $idBruleur + "','" + $numLocalisation + "','" + $value + "');return false;\">" + transformeHorodatage($value,'pcToHuman1') + "</a><br />";
+												}
+											});
+										});
+									}
+									// Insertion du tableau pour chaque bruleur
+									$tabHTML = $tabHTML + "</div></div>";
+									$('#blocs_defauts_bruleurs').append($tabHTML);
+								});
+							});
+						}
+						fin_attente();
+                    })
+                    .fail(function($xhr, $status, $error) {
+                        alert('Erreur ' + $error);
+                        fin_attente();
+                    });
+                }, 100);
+            });
+        });
+    </script>
+{% endblock bodyjavascript %}

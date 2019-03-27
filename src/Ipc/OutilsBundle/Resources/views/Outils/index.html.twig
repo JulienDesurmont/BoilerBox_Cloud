@@ -1,0 +1,51 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/index.html.twig #}
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+{% block title_header %}
+    <h1>Outils</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+	<section id='menu_general'>
+		<select name='select_outils' id='select_outils' class='principal'>
+			<option class='optionTitre' disabled selected>Outils BoilerBox</option>
+			{#
+			<option class='optionTitre' disabled>Gestion de la crontab</option>
+			<option value="{{ path('ipc_gestionScripts') }}">Arrêt-relance des scripts</option>
+			#}
+			<option class='optionTitre' disabled>Envoi de mails</option>
+			<option value="{{ path('ipc_gestionRapport') }}">Rapports Boilerbox</option>
+			{#
+			<option class='optionTitre' disabled>Transfert de fichiers</option>
+			<option value="{{ path('ipc_transfertFtp') }}">Transfert ftp</option>
+			<option value="{{ path('ipc_forcageFtpVides') }}">Suppression des fichiers ftp vides</option>
+			#}
+			<option class='optionTitre' disabled>Recherche</option>
+			<option value="{{ path('ipc_search_value') }}">Recherche de valeurs</option>
+			<option class='optionTitre' disabled>Gestion des erreurs</option>
+			<option value="{{ path('ipc_import_errorsdonnees') }}">Analyse des données erronées</option>
+			<option class='optionTitre' disabled>Informations</option>
+			<option value="{{ path('ipc_getParamSystem') }}">Informations système</option>
+		</select>
+	</section>
+{% endblock body %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+        $(function() {
+            $('#select_outils').change(function() {
+                attente();
+                setTimeout(function() {
+                    var $url_outils = $('#select_outils').val();
+                    window.location.href = $url_outils;
+                }, 100);
+            });
+        });
+	</script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,22 @@
+{# src/Ipc/UserBundle/Resources/views/User/registration.email.html.twig #}
+
+{% block subject %}Confirmation d'inscription{% endblock %}
+
+{% block body_test %}
+{% autoescape false %}
+Bonjour {{ user.username }} !
+
+Veuillez cliquer sur le lien pour valider votre inscription: {{ confirmationUrl }}
+
+Cordialement
+Administrateur Loos-IpcWeb
+{% endautoescape %}
+{% endblock %}
+
+{% block body_html %}
+{#
+	Partie supplémentaire optionnelle
+	include 'IpcUserBundle:User:registration_email.html.twig
+#}
+{% endblock %}
+

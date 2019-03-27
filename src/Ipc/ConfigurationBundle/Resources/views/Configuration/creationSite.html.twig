@@ -1,0 +1,416 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/creationSite.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Sites{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des sites</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+    {{ parent() }}
+    <div class='gestion_site'>
+        {% for liste in liste_sites %}
+            <table class='table_gestion_site'>
+                <tr>
+                    <th colspan='9' class='th_title'>Site</th></tr>
+                <tr>
+                    <th class='mini'>Site courant</th>
+                    <th>Intitulé</th>
+                    <th class='small'>Nombre d'automates</th>
+                    <th class='small'>Code affaire</th>
+					<th class='cacher'>LoginFtp</th>
+                    <th class='small'>Début d'exploitation</th>
+                    <th class='small'>Fin d'exploitation</th>
+                    {#<th class='mini'>Modif.</th>#}
+                    {#<th class='mini'>Supp.</th>#}
+                </tr>
+                <tr>
+                    {% if liste.siteCourant == 1 %}
+                        <td class='mini centrer'><input type='radio' name='sitec' checked value={{ liste.id }} /></td>
+                    {% else %}
+                        <td class='mini centrer'><input type='radio' name='sitec' value={{ liste.id }} /></td>
+                    {% endif %}
+                    <td class='centrer'>{{ liste.intitule }}</td>
+                    <td class='small centrer'>{{ liste.localisations|length }}</td>
+                    <td class='small centrer'>{{ liste.affaire }}</td>
+					<td class='cacher'>{{ liste.loginFtp }}</td>
+                    <td class='small centrer'>{% if liste.debutExploitation %}{{ liste.debutExploitation|date("Y/m/d") }}{% endif %}</td>
+                    <td class='small centrer'>{% if liste.finExploitation %}{{ liste.finExploitation|date("Y/m/d") }}{% endif %}</td>
+                    {#<td class='mini centrer'><input type='radio' name='modifSite' value={{ liste.id }} /></td>#}
+                    {#<td class='mini centrer'><input type='radio' name='suppSite' value={{ liste.id }} /></td>#}
+                </tr>
+                {% if liste.localisations|length > 0 %}
+                <tr>
+                    <th colspan='9' class='th_subtitle'>Localisation{% if liste.localisations|length > 1 %}s{% endif %}</th></tr>
+                <tr>
+                    <th class='mini'>Numéro</th>
+                    <th>Désignation</th>
+                    <th class='small'>Mode</th>
+                    <th class='small'>Adresse Ip</th>
+					<th class='small'>Adresse Modbus</th>
+                    <th class='small'>Login Ftp</th>
+                    {#<th class='mini'>Modif.</th>#}
+                    {#<th class='mini'>Supp.</th>#}
+                </tr>
+                {% for localisation in liste.localisations %}
+                    <tr>
+                        <td class='mini centrer'>{{ localisation.numeroLocalisation }}</td>
+                        <td class='centrer'>{{ localisation.designation }}</td>
+                        <td class='small centrer'>{{ localisation.typeGenerateur.description }}</td>
+                        <td class='small centrer'>{{ localisation.adresseIp }}</td>
+						<td class='small centrer'>{{ localisation.adresseModbus }}</td>
+                        <td class='small centrer'>{{ localisation.loginFtp }}</td>
+                        {#<td class='mini centrer'><input type='radio' name='modifLoc' value={{ localisation.id }} /></td>#}
+                        {#<td class='mini centrer'><input type='radio' name='suppLoc' value={{ localisation.id }} /></td>#}
+                        <td class='cacher'>{{ liste.id }}</td>
+                    </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+            <br />
+        {% endfor %}
+    </div>
+    <br />
+    <div id='gestion_creation_site' class='cacher'>
+        <div id='ajoutSite' class='cacher'>
+            <h1>Nouveau site</h1>
+            {{ form_start(form,{method:"post",action:path('ipc_createSite')}) }}
+                <table class='modification' border=2>
+                    <tr><td>{{ form_label(form.intitule) }}</td><td>{{ form_widget(form.intitule,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form.affaire) }}</td><td>{{ form_widget(form.affaire,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form.login_ftp) }}</td><td>{{ form_widget(form.login_ftp,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form.password_ftp.first) }}</td><td>{{ form_widget(form.password_ftp.first,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form.password_ftp.second) }}</td><td>{{ form_widget(form.password_ftp.second,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form.siteCourant) }}</td><td>{{ form_widget(form.siteCourant) }}</td></tr>
+                    <tr><td>{{ form_label(form.localisations) }}</td><td>{{ form_widget(form.localisations) }}</td></tr>
+                </table>
+                <ul class='localise' data-prototype="&lt;div id=&quot;Contact_Localisations___name__&quot;&gt;<div class='ajoutLoc'><h3>Nouvelle Localisation</h3><table><tr><td>&lt;label for=&quot;Contact_Localisations___name___numeroLocalisation&quot; class=&quot;required&quot;&gt;Numéro de la localisation&lt;/label&gt;</td><td>&lt;input type=&quot;number&quot; id=&quot;Contact_Localisations___name___numeroLocalisation&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][numeroLocalisation]&quot; required=&quot;required&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___adresseIp&quot; class=&quot;required&quot;&gt;Adresse IP&lt;/label&gt;</td><td>&lt;input type=&quot;text&quot; id=&quot;Contact_Localisations___name___adresseIp&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][adresseIp]&quot; required=&quot;required&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___adresseModbus&quot; class=&quot;required&quot;&gt;Adresse Modbus&lt;/label&gt;</td><td>&lt;input type=&quot;text&quot; id=&quot;Contact_Localisations___name___adresseModbus&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][adresseModbus]&quot; required=&quot;required&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___designation&quot; class=&quot;required&quot;&gt;Désignation&lt;/label&gt;</td><td>&lt;input type=&quot;text&quot; id=&quot;Contact_Localisations___name___designation&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][designation]&quot; required=&quot;required&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___typeGenerateur&quot; class=&quot;required&quot;&gt;Mode d&amp;#039;exploitation&lt;/label&gt;</td><td>&lt;select id=&quot;Contact_Localisations___name___typeGenerateur&quot; name=&quot;Contact[Localisations][__name__][typeGenerateur]&quot;&gt;&lt;option value=&quot;VP&quot;&gt;Vapeur&lt;/option&gt;&lt;option value=&quot;ES&quot;&gt;Eau surchauffée&lt;/option&gt;&lt;option value=&quot;SU&quot;&gt;Surchauffeur&lt;/option&gt;&lt;option value=&quot;AC&quot;&gt;Automate des communs&lt;/option&gt;&lt;/select&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___login_ftp&quot; class=&quot;required&quot;&gt;Login Ftp&lt;/label&gt;</td><td>&lt;input type=&quot;text&quot; id=&quot;Contact_Localisations___name___login_ftp&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][login_ftp]&quot; required=&quot;required&quot; maxlength=&quot;50&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___password_ftp_first&quot; class=&quot;required&quot;&gt;Mot de passe Ftp&lt;/label&gt;</td><td>&lt;input type=&quot;password&quot; id=&quot;Contact_Localisations___name___password_ftp_first&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][password_ftp][first]&quot; required=&quot;required&quot; /&gt;</td></tr><tr><td>&lt;label for=&quot;Contact_Localisations___name___password_ftp_second&quot; class=&quot;required&quot;&gt;Confirmation du mot de passe&lt;/label&gt;</td><td>&lt;input type=&quot;password&quot; id=&quot;Contact_Localisations___name___password_ftp_second&quot; class=&quot;inputText&quot; name=&quot;Contact[Localisations][__name__][password_ftp][second]&quot; required=&quot;required&quot; /&gt;</td></tr></table></div>&lt;/div&gt;">
+                </ul>
+                {{ form_rest(form) }}
+                <input type="hidden" name="valider" value="Valider" />
+                <div class='validationbouton'>
+                    <div class='center'>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireCreation');return false;" ><div class='bouton blue'><div class='bgbouton'>Valider</div></div></a>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+        <div id='modifSite' class='cacher'>
+            <h1>Modification de site</h1>
+            <form name="MyModifSiteForm" action={{ path('ipc_createSite') }} method="post" {{ form_enctype(form) }}>
+                <table class='modificationSite' border=2>
+                    <tr><td>Intitule</td><td><input type='text' class='inputText' name='intitule' id='intitule' size='30' /></td></tr>
+                    <tr><td>Code affaire</td><td><input type='text' class='inputText' name='affaire' id='affaire' size='10' /></td></tr>
+                    <tr><td>Login Ftp</td><td><input type='text' class='inputText' name='loginFtp' id='loginFtp' size='15' /></td></tr>
+                    <tr><td>Mot de passe</td><td><input type='password' class='inputText' name='passwordFtp' id='passwordFtp' size='15' /></td></tr>
+                    <tr><td>Confirmation</td><td><input type='password' class='inputText' name='confirmation'   id='confirmation' size='15' /></td></tr>
+                    <tr><td>Début d'exploitation</td><td><input type='date' class='inputText' name='debutExploitation' id='debutExploitation' size='10' /></td></tr>
+                    <tr><td>Fin d'exploitation</td><td><input type='date' class='inputText' name='finExploitation' id='finExploitation' size='10' /></td></tr>
+                    <tr><td>Site Courant</td><td><input type='checkbox' name='siteCourant' id='siteCourant' disabled /></td></tr>
+                </table>
+                <br />
+                <input type="hidden" name='idconf'  id='idconf' />
+                <input type="hidden" name="valider" value="Modifier le site" id='submitSite' />
+                <div class='validationbouton'>
+                    <div class='center'>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireModification');return false;" ><div class='bouton blue'><div class='bgbouton'><div id='titreSiteValidation'>Valider</div></div></div></a>
+                        <span id="ajoutLoc"><a href='#' style="height:30px;" onClick="validationFormulaire('ajoutLoc');return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter une localisation</div></div></a></span>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id='modifLoc' class='cacher'>
+            <h1>Modification de localisation</h1>
+            {{ form_start(form_loc,{method:"post",action:path('ipc_createSite')}) }}
+                <table class='modification' border=2>
+                    <tr><td>{{ form_label(form_loc.numeroLocalisation) }}</td><td>{{ form_widget(form_loc.numeroLocalisation,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.adresseIp) }}</td><td>{{ form_widget(form_loc.adresseIp,{'attr':{'class':'inputText'}}) }}</td></tr>
+					<tr><td>{{ form_label(form_loc.adresseModbus) }}</td><td>{{ form_widget(form_loc.adresseModbus) }}</td><td>{{ form_widget(form_loc.adresseModbus,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.designation) }}</td><td>{{ form_widget(form_loc.designation,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.typeGenerateur) }}</td><td>{{ form_widget(form_loc.typeGenerateur) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.login_ftp) }}</td><td>{{ form_widget(form_loc.login_ftp,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.password_ftp.first) }}</td><td>{{ form_widget(form_loc.password_ftp.first,{'attr':{'class':'inputText'}}) }}</td></tr>
+                    <tr><td>{{ form_label(form_loc.password_ftp.second) }}</td><td>{{ form_widget(form_loc.password_ftp.second,{'attr':{'class':'inputText'}}) }}</td></tr>
+                </table>
+                <br />
+                <input type='hidden' name='idconfsite'   id='idconfsite' />
+                <input type='hidden' name='idconfloc'   id='idconfloc' />
+                <input type="hidden" name="valider" value="Valider" id='submitLocalisation' />
+                <div class='validationbouton'>
+                    <div class='center'>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireModificationLoc');return false;"><div class='bouton blue'><div class='bgbouton'><div id='titreLocValidation'>Modifier</div></div></div></a>
+                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
+                    </div>
+                </div>
+            {{ form_end(form_loc) }}
+        </div>
+    </div>
+{% endblock body %}
+
+
+{% block choix_validation %}
+    <div id='titreSiteCreation'>
+        <div id='validation'>
+            {#<a href='#' class='right' onClick="validationFormulaire('ajoutSite');return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.nouveau"|trans|upper }}</div></div></a>#}
+            <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+        </div>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+
+        // Récupération du div qui contient la collection de tags
+        var collectionHolder = $('ul.localise');
+        // Ajout d'un lien 'add' une localisation
+        var $addLocaliseLink = $('<a href="#" class="green">Ajouter une localisation</a>');
+        var $newLinkLi = $('<li></li>').append($addLocaliseLink);
+        $(document).ready(function()  {
+            $('input[type=radio][name=modifLoc]').val(['0']);
+            $('input[type=radio][name=modifSite]').val(['0']);
+            $('input[type=radio][name=suppSite]').val(['0']);
+            $('input[type=radio][name=suppLoc]').val(['0']);
+            $('input:radio').click(function() {
+                $('#gestion_creation_site').removeClass('cacher');
+		$('div .gestion_site').addClass('cacher');
+                if (! $("#ajoutSite").hasClass('cacher')) {
+                    $("#ajoutSite").addClass('cacher');
+                }
+                if (! $("#titreSiteCreation").hasClass('cacher')) {
+                    $("#titreSiteCreation").addClass('cacher');
+                }
+                if (($(this).attr('name') == 'modifSite') || ($(this).attr('name') == 'suppSite') || ($(this).attr('name') == 'sitec')) {
+                    if (! $("#modifLoc").hasClass('cacher')) {
+                        $("#modifLoc").addClass('cacher');
+                    }
+                    // Récupération des valeurs du site
+                    var $siteCourant = $(this).parent().parent().children('td').children('input').attr('checked');
+                    var $intitule = $(this).parent().parent().children('td').eq(1).text();
+                    var $affaire = $(this).parent().parent().children('td').eq(3).text();
+                    var $loginFtp = $(this).parent().parent().children('td').eq(4).text();
+                    var $debutExploitation = $(this).parent().parent().children('td').eq(5).text();
+                    var $finExploitation = $(this).parent().parent().children('td').eq(6).text();
+                    var $idconf = $(this).attr('value');
+                    // Inscription des paramètres récupérés dans les champs modifiables
+                    document.getElementById('intitule').value = $intitule;
+                    document.getElementById('affaire').value = $affaire;
+                    document.getElementById('loginFtp').value = $loginFtp;
+                    document.getElementById('debutExploitation').value = $debutExploitation;
+                    document.getElementById('finExploitation').value = $finExploitation;
+                    document.getElementById('idconf').value = $idconf;
+                    document.getElementById('idconfsite').value = $idconf;
+                    if ($siteCourant === 'checked') {
+                        document.getElementById('siteCourant').checked = true;
+                    } else {
+                        document.getElementById('siteCourant').checked = false;
+                    }
+                    if ($(this).attr('name') == 'sitec') {
+                        $('#submitSite').attr('value','Modifsitec');
+                        validationFormulaire('ajaxModifSitec');
+                    } else {
+                        if ($(this).attr('name') == 'modifSite') {
+                            // Modification du Titre
+                            $('#modifSite').children('h1').text('Modification de site');
+                            // Modification de l'intitulé du bouton de validation
+                            $("#titreSiteValidation").text('Modifier le site');
+                            // Modification de la valeur du submit
+                            $("#submitSite").attr('value','Modifier le site');
+                            // Décoche des boutons input de type radio supp
+                            $('input[type=radio][name=modifLoc]').val(['0']);
+                            $('input[type=radio][name=suppLoc]').val(['0']);
+                            $('input[type=radio][name=suppSite]').val(['0']);
+                            // Affichage du bouton d'ajout d'une localisation
+                            $("#ajoutLoc").removeClass("cacher");
+                        }
+                        if ($(this).attr('name') == 'suppSite') {
+                            // Modification du Titre
+                            $('#modifSite').children('h1').text('Suppression de site');
+                            // Modification de l'intitulé du bouton de validation
+                            $("#titreSiteValidation").text('Supprimer le site');
+                            $("#submitSite").attr('value','Supprimer le site');
+                            // Décoche des boutons input de type radio modif
+                            $('input[type=radio][name=modifLoc]').val(['0']);
+                            $('input[type=radio][name=suppLoc]').val(['0']);
+                            $('input[type=radio][name=modifSite]').val(['0']);
+                            // Cache du bouton d'ajout d'une localisation
+                            $("#ajoutLoc").addClass("cacher");
+                        }
+                        // Affichage du div de modification d'un paramètre
+                        $("#modifSite").removeClass('cacher');
+                    }
+                } else if (($(this).attr('name') == 'modifLoc') || ($(this).attr('name') == 'suppLoc')) {
+                    if (! $("#modifSite").hasClass('cacher')) {
+                        $("#modifSite").addClass('cacher');
+                    }
+                    // Récupération des paramètres de la localisation : Définit sur la page d'affichage des sites & localisations
+                    var $numeroLocalisation = $(this).parent().parent().children('td').eq(0).text();
+                    var $designation = $(this).parent().parent().children('td').eq(1).text();
+                    var $typeGenerateur = $(this).parent().parent().children('td').eq(2).text();
+                    var $adresseIp = $(this).parent().parent().children('td').eq(3).text();
+					var $adresseModbus = $(this).parent().parent().children('td').eq(4).text();
+                    var $loginftpLoc = $(this).parent().parent().children('td').eq(5).text();
+                    var $idconfloc = $(this).attr('value');
+                    var $idconfsite = $(this).parent().parent().children('td').eq(8).text();
+                    // Inscription des paramètres récupérés dans les champs modifiables
+                    document.getElementById('Localisation_numeroLocalisation').value = $numeroLocalisation;
+                    document.getElementById('Localisation_adresseIp').value = $adresseIp;
+					document.getElementById('Localisation_adresseModbus').value = $adresseModbus;
+                    document.getElementById('Localisation_designation').value = $designation;
+					$('#Localisation_typeGenerateur').find('option:contains("' + $typeGenerateur + '")').attr('selected', 'selected');
+
+
+                    document.getElementById('Localisation_login_ftp').value = $loginftpLoc;
+                    document.getElementById('idconfloc').value = $idconfloc;
+                    document.getElementById('idconfsite').value = $idconfsite;
+                    if ($(this).attr('name') == 'modifLoc') {
+                        // Modification du Titre
+                        $('#modifLoc').children('h1').text('Modification de localisation');
+                        // Modification de l'intitulé du bouton de validation
+                        $("#titreLocValidation").text('Modifier la localisation');
+                        $("#submitLocalisation").attr('value','Modifier la localisation');
+                        // Décoche des boutons input de type radio supp
+                        $('input[type=radio][name=modifSite]').val(['0']);
+                        $('input[type=radio][name=suppSite]').val(['0']);
+                        $('input[type=radio][name=suppLoc]').val(['0']);
+                    }
+                    if ($(this).attr('name') == 'suppLoc') {
+                        // Modification du Titre
+                        $('#modifLoc').children('h1').text('Suppression de localisation');
+                        // Modification de l'intitulé du bouton de validation
+                        $("#titreLocValidation").text('Supprimer la localisation');
+                        $("#submitLocalisation").attr('value','Supprimer la localisation');
+                        // Décoche des boutons input de type radio supp
+                        $('input[type=radio][name=modifSite]').val(['0']);
+                        $('input[type=radio][name=suppSite]').val(['0']);
+                        $('input[type=radio][name=modifLoc]').val(['0']);
+                    }
+                    // Affichage du div de modification d'un paramètre
+                    $("#modifLoc").removeClass('cacher');
+                }
+            });
+            // Ajout d'un lien 'delete' à tous les éléments li de formulaire Localisation existant
+            collectionHolder.find('li').each(function(){
+                addTagFormDeleteLink($(this));
+            });
+            // Ajoute l'ancre 'ajouter un tag' et li à la balise ul
+            collectionHolder.append($newLinkLi);
+            $addLocaliseLink.on('click', function(e){
+                // Empêche le lien de créer un # dans l'URL
+                e.preventDefault();
+                // Ajoute un nouveau formulaire Localisation
+                addLocaliseForm(collectionHolder, $newLinkLi);
+            });
+        });
+
+        function validationFormulaire(choix) {
+            if (choix === 'ajoutSite') {
+				$('div .gestion_site').addClass('cacher');
+				$('#gestion_creation_site').removeClass('cacher');
+                $('#ajoutSite').removeClass('cacher');
+            }
+            // Lors du choix d'ajout d'une localisation
+            // 1 Modification du Label du bouton
+            // 2 Modification du Titre du div
+            if (choix === 'ajoutLoc') {
+                // Modification du Titre
+                $("#modifLoc").children('h1').text('Ajout de localisation');
+                // Modification de la valeur du submit
+                $("#submitLocalisation").attr('value','Ajouter la localisation');
+                $("#modifSite").addClass('cacher');
+                $("#modifLoc").removeClass('cacher');
+            }
+            if (choix === 'annuler') {
+                $('#gestion_creation_site').addClass('cacher');
+		$('div .gestion_site').removeClass('cacher');
+                document.getElementById('intitule').value = '';
+                document.getElementById('affaire').value = '';
+                document.getElementById('loginFtp').value = '';
+                document.getElementById('passwordFtp').value = '';
+                document.getElementById('confirmation').value = '';
+                document.getElementById('debutExploitation').value = '';
+                document.getElementById('finExploitation').value = '';
+                document.getElementById('idconf').value = 0;
+                document.getElementById('Localisation_numeroLocalisation').value = 0;
+                document.getElementById('Localisation_adresseIp').value = '';
+				document.getElementById('Localisation_adresseModbus').value = 0;
+                document.getElementById('idconfloc').value = 0;
+                document.getElementById('idconfsite').value = 0;
+                // Décoche des boutons input de type radio
+                $('input[type=radio][name=modifSite]').val(['0']);
+                $('input[type=radio][name=suppSite]').val(['0']);
+                $('input[type=radio][name=modifLoc]').val(['0']);
+                $('input[type=radio][name=suppLoc]').val(['0']);
+                $('#ajoutSite').addClass('cacher');
+                $('#modifSite').addClass('cacher');
+                $('#modifLoc').addClass('cacher');
+                $("#titreSiteCreation").removeClass('cacher');
+            }
+            if (choix === 'formulaireCreation') {
+                attente();
+                setTimeout(function() {
+                    document.forms['Site'].submit();
+                },200);
+            }
+            if (choix === 'formulaireModification') {
+                attente();
+                document.getElementById('siteCourant').disabled = false;
+                setTimeout(function() {
+                    document.forms['MyModifSiteForm'].submit();
+                },200);
+            }
+            if (choix === 'formulaireModificationLoc') {
+                attente();
+                setTimeout(function() {
+                    document.forms['Localisation'].submit();
+                },200);
+            }
+            if (choix === 'ajaxModifSitec') {
+                var $idConf = document.getElementById('idconf').value;
+                $.ajax({
+                    url: "{{ path('ipc_ajax_set_sitec') }}",
+                    method: "get",
+                    data: 'idconf=' + $idConf
+                }).done(function($msg){
+                    $('#title').html($msg);
+                });
+            }
+        }
+
+        function addLocaliseForm(collectionHolder, $newLinkLi) {
+            // Récupére l'élément ayant l'attribut data-prototype
+            var prototype = collectionHolder.attr('data-prototype');
+            // Remplace '__name__' dans le HTML du prototype
+            var newForm = prototype.replace(/__name__/g, collectionHolder.children().length);
+            // Affiche le formulaire dans la page dans un li, avant le lien 'ajouter une localisation'
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+            // Ajout d'un lien de suppression
+            addLocaliseFormDeleteLink($newFormLi);
+        }
+
+
+        // Fonction qui permet la création d'un lien : Suppression de la localisation et l'ajout de celui-ci à la balise passée en argument
+        function addLocaliseFormDeleteLink($localiseFormLi) {
+            var $removeFormA = $('<a href="#" class="red">Supprimer la localisation</a>');
+            $localiseFormLi.append($removeFormA);
+            $removeFormA.on('click', function(e) {
+                // Empêche le lien de crée un # dans l'URL
+                e.preventDefault();
+                // Supprime l'élément li pour le formulaire
+                $localiseFormLi.remove();
+            });
+        }
+</script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,27 @@
+{# src/Ipc/GraphiqueBundle/Resources/views/secondLayout.html.twig #}
+
+{% extends "::firstLayout.html.twig" %}
+
+{% block link %}
+{% endblock link %}
+
+{% block title %}{{ parent() }}Courbes - {% endblock title %}
+
+{# Suppression des menus #}
+{% block right_menu %}
+{% endblock right_menu %}
+
+{% block left_menu %}
+{% endblock left_menu %}
+
+
+{% block bodyjavascript %}
+    {% javascripts output='js/graphique.js' filter='jsqueeze'
+        'bundles/ipcgraphique/js/chargement.js'
+		'bundles/ipcgraphique/js/highstock.js'
+		'bundles/ipcgraphique/js/exporting.js'
+        'bundles/ipcgraphique/js/graphique.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock bodyjavascript %}

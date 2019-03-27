@@ -1,0 +1,158 @@
+{# /src/Ipc/UserBundle/Resources/views/Configuration/creationUser.html.twig #}
+
+{% extends "IpcUserBundle::secondConfigurationLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Gestion des Utilisateurs{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des Utilisateurs</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+    <section id='menu_general'>
+		<div id='liste'>
+	    	<div class='gestion_utilisateur'>
+	    		<table class='table_gestion_utilisateur'>
+					<tr><th width=100px>Login</th>
+						<th width=250px>Email</th>
+						<th width=50px>Compte Activé</th>
+						<th width=100px>Dernière Connexion</th>
+						<th width=300px>Droits</th>
+						<th width=100px>Supprimer</th>
+					</tr>
+					{% for user in liste_utilisateurs %}
+		    			<tr><td align='left'>{{ user.username }}</td>
+							<td align='left'>{{ user.email }}</td>
+                        	<td>{# Si les informations concernent l'utilisateur courant les modifications ne sont pas autorisées #}
+								{% if user.id == id_utilisateur_courant %}
+			    					{% if user.enabled == 1 %}	
+										<input type="checkbox" name="actif" checked disabled="disabled" />
+			    					{% else %}	
+			        					<input type="checkbox" name="actif" disabled="disabled" />
+			    					{% endif %}
+								{% else %}
+			    					{% if user.enabled == 1 %}
+                                		<input type="checkbox" name="actif" checked />
+                            		{% else %}
+                                		<input type="checkbox" name="actif" />
+                            		{% endif %}
+								{% endif %}
+							</td>
+							<td>{{ user.lastLogin|date('Y/m/d') }}</td>
+							<td align='left'>{% for role in user.roles %}<span class='tabulation'>{{ role }}</span>{% endfor %}</td>
+							<td>	
+								{% if user.username == 'Admin' or user.username == 'Technicien' or user.username == 'Client' or user.username == 'Admintmp' or user.username == 'Superviseur' %}
+				    				<input type="radio" name="supp" disabled="disabled" />
+								{% elseif user.id == id_utilisateur_courant %}
+				    				<input type="radio" name="supp" disabled="disabled" />
+								{% else %}	
+				    				<input type="radio" name="supp"/>
+								{% endif %}
+							</td>
+							<td class="cacher">{{ user.id }}</td>
+		    			</tr>
+					{% endfor %}
+	    		</table>
+	    	</div>
+		</div>
+    </section>
+
+    <div id="supp" class="cacher">
+		<div class='messageConfirmation'>
+		    <table class="table_gestion_suppression_utilisateur">
+		        <tr><td id="messageSuppression"></td></tr>
+		    </table>
+		</div>
+        <div class='validationbouton'>
+            <div class='center'>
+                <a href='#' style="height:30px;" onClick="supprimeUtilisateur();return false;" ><div class='bouton blue'><div class='bgbouton'>Supprimer l'utilisateur</div></div></a>
+                <a href='#' style="height:30px;" onClick="annuleCreation();return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
+            </div>
+        </div>
+    </div>
+    <div id="valid_configuration" class='cacher'>
+		<form method='post' action={{ path('ipc_createUser') }} id="FormUser" >
+		    <input type='integer' name='userid' id='userid' class='cacher' />
+		    <input type='submit' name='choix' value='Valider' onClick='attente();'/>
+		</form>
+    </div>
+{% endblock body %}
+
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="ajoutUtilisateur();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.nouveau"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+
+
+
+
+{% block bodyjavascript %}
+
+{% include "User/selectionListe.js" %}
+
+<script type="text/javascript">
+    function goBack() {
+        var url_intervention = $('#Configurations').attr('href');
+        window.location.href = url_intervention;
+    }
+
+	$(document).ready(function(){
+		// Partie Suppression d'utilisateur
+		$('input[type=radio][name=supp]').click(function(){
+			//	Récupération de l'identifiant de l'utilisateur à supprimer : Correspond au text du td de class "cacher"
+			document.getElementById('userid').value=$(this).parent().parent().children('td').eq(6).text();
+			//	Création du message de suppression	
+			$message = "Etes vous certain de vouloir supprimer le compte de l'utilisateur "+$(this).parent().parent().children('td').eq(0).text()+' '+$(this).parent().parent().children('td').eq(1).text()+' ?';
+			//	Inscription du message de suppression
+			$('#messageSuppression').text($message);
+			//	Modification de l'option de submit du formulaire
+			$('input[type=submit][name=choix]').attr('value','Supprimer');
+			//	Cache du div de liste	
+			$('#liste').addClass('cacher');
+			//	Affichage du div de suppression
+			$('#supp').removeClass('cacher');
+		});	
+
+
+		// Partie Activation Désactivation de compte
+		$('input[type=checkbox][name=actif]').click(function(){
+			$id = $(this).parent().parent().children('td').eq(6).text();
+			document.getElementById('userid').value=$id;
+			$('input[type=submit][name=choix]').attr('value','Activation');
+			$('input[type=submit][name=choix]').trigger('click');
+		});
+	});
+
+    function supprimeUtilisateur() {
+        // Envoi du formulaire
+        $('input[type=submit][name=choix]').trigger('click');
+    }
+
+    //      Lors du click sur le bouton Ajouter
+    function ajoutUtilisateur() {
+		var $urlRegistration = $("#lien_url_ajax").attr('data-urlRegister');
+		document.location.href = $urlRegistration;
+    }
+
+    // Lors du click sur un bouton Annuler
+    function annuleCreation() {
+        $('input[type=radio][name=supp]').val(['0']);
+        $('#supp').addClass('cacher');
+        $('div#liste').removeClass('cacher');
+        $('#ajout').addClass('cacher');
+    }
+
+    function validFormulaire(formName) {
+		attente();
+		setTimeout(function(){
+		    document.forms[formName].submit();
+		}, 200);
+    }
+</script>
+{% endblock bodyjavascript %}

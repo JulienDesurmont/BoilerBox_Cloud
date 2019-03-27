@@ -1,0 +1,24 @@
+{# src/Ipc/ProgBundle/Resources/views/Prog/mailing.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+{% for contenu in liste_contenus %}
+{% if loop.index == 1 %}
+	<h2 style='color:#FF0000'>{{ contenu }}</h2>
+{% elseif contenu starts with 'Liste'  %}
+	<h3 style='text-decoration:underline'>{{ contenu }}</h3>
+{% elseif contenu starts with 'Equipement' %}
+	<h4>{{ contenu }}</h4>
+{% elseif contenu matches '{^\\d.+$}' %}
+	<p style='text-decoration:underline'>{{ contenu }}</p>	
+{% else %}
+	{{ contenu|raw }}
+{% endif %}
+{% endfor %}
+<img src="{{ image_link }}" alt='IPC' align='left' />
+</body>
+</html>
+

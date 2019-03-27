@@ -1,0 +1,65 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/gestionRapport.html.twig #}
+
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapports{% endblock title %}
+
+{% block title_header %}
+    <h1>Rapports Boilerbox</h1>
+{% endblock title_header %}
+
+{% block body %}
+    {{ parent() }}
+
+    <section id='menu_general'>
+        <div class='table_zone_texte'>
+        {% if is_granted('ROLE_SUPERVISEUR') %}
+            <form name='MyForm' method='post' action="{{ path('ipc_gestionRapport') }}">
+                Date du rapport : <input type='date' class='inputText' name='dateRapport' value='{{ "yesterday"|date('d/m/Y') }}' />
+                <table class='table_emails'>
+                    <tr><td class='decalageGauche'>Envoi d'un email de test</td>
+                        <td><input type='radio' name='typeAction' value='testMail' checked /></td/></tr>
+                    <tr><td class='decalageGauche'>Envoi du rapport Système</td>
+                        <td><input type='radio' name='typeAction' value='rapportSystem' /></td/></tr>
+                    <tr><td class='decalageGauche'>Envoi du rapport Journalier</td>
+                        <td><input type='radio' name='typeAction' value='rapportJournalier' /></td/></tr>
+                    <tr><td class='decalageGauche'>Envoi du rapport d'Analyse</td>
+                        <td><input type='radio' name='typeAction' value='rapportAnalyse' /></td/></tr>
+                    <tr><td class='decalageGauche'>Envoi du rapport de Sécurité</td>
+                        <td><input type='radio' name='typeAction' value='rapportSecurite' /></td/></tr>
+                </table>
+                <textarea cols='5'>{{ texte_logs }}</textarea>
+            </form>
+        {% endif %}
+        </div>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' id='bouton_soumettre' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.valider"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+
+        function validationFormulaire() {
+            attente();
+            setTimeout(function() {
+                document.getElementById('bouton_soumettre').disabled=true;
+                document.forms['MyForm'].submit();
+            },200);
+        }
+    </script>
+{% endblock %}
+

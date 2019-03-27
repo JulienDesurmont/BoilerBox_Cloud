@@ -1,0 +1,15 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/addFichierRapport.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Gestion des Sites {% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+
+    {{ form_start(form) }}
+    	{{ form_errors(form) }}
+    	{{ form_label(form.file) }} : {{ form_widget(form.file) }}
+    	{{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock body %}

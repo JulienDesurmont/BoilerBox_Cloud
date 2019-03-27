@@ -1,0 +1,86 @@
+{# src/Ipc/RapportsBundle/Resources/views/Rapports/index.html.twig #}
+
+{% extends "IpcRapportsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+	
+{% block title_header %}
+    <h1>{{ 'label.titre.rapport'|trans }}</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+	<section id='menu_general'>
+		<select name='select_rapports' id='select_rapports'>
+			<option class='optionTitre' disabled selected>{{ 'label.titre.rapport'|trans }}</option>
+			{#<option value="{{ path('ipc_modify_intervention') }}">{{ 'label.ajout_rapport'|trans }}</option>#}
+			<option value="{{ path('ipc_view_interventions') }}">{{ 'label.visualisation_rapport'|trans }}</option>
+			<option value="appel_js">{{ 'label.export_rapport'|trans }}</option>
+		</select>
+	</section>
+
+	<section id='pre_export_rapport' class='cacher'>
+		<form method='get' action="{{ path('ipc_export_rapports') }}" name="myForm">
+			<div><span class='choix_date'>date de début : </span><input class='inputText grise' type='date' id='export_date_debut' name='date_debut' value='YYYY/MM/DD' onfocus="enterTextBox('export_date_debut');" onblur="leaveTextBox('export_date_debut');" /></div>
+			<div><span class='choix_date'>date de fin : </span><input class='inputText grise' type='date' id='export_date_fin' name='date_fin' value='YYYY/MM/DD' onfocus="enterTextBox('export_date_fin');" onblur="leaveTextBox('export_date_fin');" /></div>
+		</form>
+	</section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+       <a href='#' class='right' onClick="exportation();return false;" ><div class='bouton blue smallbouton'><div class='smallbgbouton'>{{ "bouton.export"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+		$(function() {
+			$('#select_rapports').change(function() {
+				if ($('#select_rapports').val() != 'appel_js') {
+					attente();
+					setTimeout(function() {
+						var $url_configuration = $('#select_rapports').val();
+						window.location.href = $url_configuration;
+					}, 100);
+				} else {
+					$('#pre_export_rapport').removeClass('cacher');
+				}
+			});
+		});
+
+	    function exportation() {
+			attente();
+			if ($('#export_date_debut').hasClass("grise")) {
+                $('#export_date_debut').val('');
+            }
+            if ($('#export_date_fin').hasClass("grise")) {
+                $('#export_date_fin').val('');
+            }
+			setTimeout(function(){
+				document.forms['myForm'].submit();
+				fin_attente();
+			}, 500);
+		}
+
+		function enterTextBox($idTextBox) {
+			if ($('#' + $idTextBox).hasClass("grise")) {
+				$('#' + $idTextBox).val('');
+				$('#' + $idTextBox).removeClass('grise');
+			}
+		}
+
+		function leaveTextBox($idTextBox) {
+			if ($('#' + $idTextBox).val() == '') {
+				$('#' + $idTextBox).val('YYYY-MM-DD');
+				$('#' + $idTextBox).addClass('grise');
+			}
+        }
+
+	</script>
+{% endblock bodyjavascript %}

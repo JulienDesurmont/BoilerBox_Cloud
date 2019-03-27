@@ -1,0 +1,28 @@
+{# src/Ipc/OutilsBundle/Resources/views/secondLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapport - {% endblock %}
+
+{% block body %}
+	<span id='pageOutilsView' class='cacher'></span>
+{% endblock body %}
+
+	
+{# Suppression des menus #}
+{% block left_menu %}
+{% endblock left_menu %}
+
+{% block progJavascript %}
+{% endblock progJavascript %}
+
+{% block bodyjavascript %}
+    <script type='text/javascript'>
+        $('page').addClass('noLeftMenus');
+    </script>
+
+    {% javascripts output='js/outils.js'
+        'bundles/ipcoutils/js/outils.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock bodyjavascript %}

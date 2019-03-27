@@ -1,0 +1,132 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/addDonneeLive.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+
+{% block title_header %}
+    <h1>Gestion des données Live</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+	<div id='newLiveField'>
+		<div id='liveContainer'>
+			<div id='accueilDonneeLive1'>
+				<h1>Nouvelle donnée live</h1>
+				<div id='accueilDonneeLive2'>
+					{{ form_start(form) }}
+						{{ form_errors(form) }}
+						<table class='tableMoyenne'>
+						<tr>
+							<td>{{ form_label(form.localisation) }}</td>
+						</tr>
+						<tr>
+							<td>{{ form_widget(form.localisation,{'attr':{'class':'widgetMoyen'}}) }}</td>
+						</tr>
+						<tr class='errors'>
+							<td><span>{{ form_errors(form.localisation) }}</span></td>
+						</tr>
+						</table>
+						Tuile / En-tête<br />
+						<select id='selectEnteteLive' name='selectEnteteLive'>
+							{% for keyDesignation,descriptionEnteteLive in tabDesEnteteLive %}
+								<option value="{{ keyDesignation }}" >{{ descriptionEnteteLive }}</option>
+							{% endfor %}
+						</select>
+						<br /><br />
+						{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}<br />
+						{{ form_rest(form) }}
+					{{ form_end(form) }}
+				</div>
+			</div>
+			<div id='donneesLiveCrees1'>
+				<h1>Données live</h1>
+				<form method='get' name='changeDonneeLive' id='changeDonneeLive' action="{{ path('ipc_change_tuileLive') }}" />
+					<div id='donneesLiveCrees2'>
+						<table>
+						{% for tuile in entitiesTuile %}
+							<tr>
+								<td class='tdRadio'><input type='radio' name='choixTuile' value="{{ tuile.id }}" onClick="validFormulaire()"; /></td>
+								<td>{% if tuile.placement|lower == 'entete' %}En-tête{% else %}[{{ tuile.categorie.designation }}]{% endif %}</td>
+								<td>{% if tuile.placement|lower == 'entete' %}{{ tuile.famille|slice(6) }}{% else %}{{ tuile.label }}{% endif %}</td>
+							</tr>
+						{% endfor %}
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+
+		$(document).ready(function(){
+			var $last_loc_graph_id = {{ last_loc_graph_id }};
+            $('#ReadLocalisation_localisation option[value="' + $last_loc_graph_id + '"]').prop('selected',true);
+
+			$('#ReadLocalisation_localisation').change(function(e){
+			attente();
+			var $idLocalisation = $('#ReadLocalisation_localisation').val();
+				$.ajax({
+					url : "{{ path('ajaxGetTypeGenerateur') }}",
+					type : 'GET',
+					dataType : 'html',
+					data : 'idLocalisation=' + $idLocalisation,
+					complete : function(code_html, statut) {
+					if (statut == 'success') {
+						var $retour = $.parseJSON(code_html.responseText);
+						var $html = "";
+						var $retourAutomate = $retour[0];
+						$.each($retourAutomate,function(index,value) {
+							$html = $html + "<option value='" + index + "'>" + value + "</option>";
+						});
+						$('#selectEnteteLive').html($html);
+						var $html = "<table>";
+						var $retourTuile = $retour[1];
+						$.each($retourTuile,function(index,value) {
+							$html = $html + "<tr><td class='tdRadio'><input type='radio' name='choixTuile' value='" + index +"' onClick='validFormulaire()'; /></td>";
+							$html = $html + "<td class='tdSmallText'>" + value['placement'] + "</td><td>" + value['label'] + "</td></tr>";
+						});
+						$html = $html + "</table>";
+						$('#donneesLiveCrees2').html($html);
+							fin_attente();
+						} else {
+							alert('Erreur réseau');
+							alert(dump(code_html.responseText));
+							fin_attente();
+						}
+					}
+				});
+			});
+		});
+
+		function validFormulaire() {
+			attente();
+			$('#changeDonneeLive').submit();
+		}
+
+		function annuler(url) {
+			attente();
+			window.location.href = url;
+		}
+	</script>
+{% endblock bodyjavascript %}

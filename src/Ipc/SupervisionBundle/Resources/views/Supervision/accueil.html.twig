@@ -1,0 +1,325 @@
+{# /src/Ipc/SupervisionBundle/Supervision/accueil.html.twig #}
+
+{% extends 'IpcSupervisionBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ num_affaire }} - Données Live{% endblock title %}
+
+{% block headJavascript %}
+	{{ parent() }}
+
+	{% javascripts filter='jsqueeze' output='js/live_graphique.js'
+		'bundles/ipcgraphique/js/highstock.js'
+		'bundles/ipcgraphique/js/chargement.js'
+	%}	
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock headJavascript %}
+
+{% block body %}
+	<div id="js-vars" data-vars="{{ service_js_traductions.variables | json_encode | e('html_attr') }}" data-translations="{{ service_js_traductions.translations | json_encode | e('html_attr') }}" />
+
+	<span id='pageSupervisionView' class='cacher'></span>
+
+	{% if tabModbus|length != 0 %}
+		{% set automateDesignation = tabModbus[indexAutomate].getDesignation %}
+		{% set messageModbus = tabModbus[indexAutomate].getMessage %}
+	{% endif %}
+
+	<div id='allPage'>
+		<div class='loader'>
+		    <span id="loader"><img src="{{ asset('images/icones/small_loader.gif') }}" alt="loading" /></span>
+		</div>
+	</div>
+
+	<div class="site-container">
+		<div class="site-pusher">
+			<!-- Header : Menu principal - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+			<header>
+				<div class="headflex">
+					<a id="logo-IBC" href="#" title="Menu principal">
+						<img class="img svg" src="{{ asset('bundles/ipcsupervision/svg/LogoIBC.svg') }}" alt="IBC"  onerror="imgError(this);" />
+						<div class="txt"><span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL</div>
+					</a>
+                 	{# 
+					<!--Language-->
+                    <div id="choix-langue">
+                        <a href="{{ path('ipc_selectLangue', {'langue':'fr', 'site':'boilerboxlive'}) }}" title="francais"><span class='iconeFrancais'></span></a>
+                        <a href="{{ path('ipc_selectLangue', {'langue':'en', 'site':'boilerboxlive'}) }}" title="anglais"><span class='iconeAnglais'></span></a>
+                        <a href="{{ path('ipc_selectLangue', {'langue':'es', 'site':'boilerboxlive'}) }}" title="espagnol"><span class='iconeEspagnol'></span></a>
+                        <a href="{{ path('ipc_selectLangue', {'langue':'de', 'site':'boilerboxlive'}) }}" title="allemand"><span class='iconeAllemand'></span></a>
+                    </div>
+					#}
+					<div class="title">
+						<div id="description">{{ 'live.label.titre.principal'|trans }}</div>
+						<div id="nom-affaire">{{ nom_affaire }}</div>
+						<div id="num-affaire">Live {{ num_affaire }} <div id="automate-actif" class="menuaccess"></div></div>
+					</div>
+				</div>
+				<div id='ping' data-url="{{ path('ipc_ajax_test_ping') }}">
+				</div>
+				<!-- Header/Nav : Navigation du header - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+				<nav>
+					<ul>
+						<li>
+							<div class="menuaccess"><a href="#" class="header__icon" id="header__icon">Menu</a>
+            	        		<div class="menu_mobile">
+									<ul class="menu">
+										{% for key,Modbus in tabModbus %}
+											{% if Modbus.getLocalisation().getAdresseIp() in tabLocalisationLive %}
+												<li>
+													<a href="#" {% if key == indexAutomate %}class='active'{% endif %} title="Automate" onclick="changeAutomate({{ key }});return(false);">
+														<img class="img svg" src="{{ asset('bundles/ipcsupervision/svg/CH.svg') }}" alt="" onerror="imgError(this);" />
+														<div class="txt">{{ Modbus.localisation.designation }}</div>
+													</a>
+												</li>
+											{% endif %}
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+							<ul class="menu menu_site">
+								{% for key,Modbus in tabModbus %}
+									{# Affichage des localisations autorisées #}
+									{% if Modbus.getLocalisation().getAdresseIp() in tabLocalisationLive %}
+										<li><a href="#" {% if key == indexAutomate %}class='active'{% endif %} title="Automate" onclick="changeAutomate({{ key }});return(false);">
+												<img class="img svg" src="{{ asset('bundles/ipcsupervision/svg/CH.svg') }}" alt="" onerror="imgError(this);" />
+												<div class="txt">
+													{{ Modbus.getLocalisation().getDesignation() }}
+												</div>
+											</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</li>
+					</ul>
+				</nav>
+				<!-- /Nav -->
+			</header>
+			<!-- /Header -->
+			<div class="page">
+    			<span class='cacher' id='ipc_supervision_get_infosModbus' data-url="{{ path('ipc_supervision_get_infosModbus') }}"></span>
+    			<span class='cacher' id='ipc_ajax_getEvenements2' data-url="{{ path('ipc_ajax_getEvenements2') }}"></span>
+    			<span class='cacher' id='ipc_set_liveModules' data-url="{{ path('ipc_set_liveModules') }}"></span>
+    			<span class='cacher' id='ipc_supervision_reinit_session' data-url="{{ path('ipc_supervision_reinit_session') }}"></span>
+    			<span class='cacher' id='ipc_set_indexAutomate' data-url="{{ path('ipc_set_indexAutomate') }}"></span>
+    			<span class='cacher' id='ipc_supervision_modbus_cloture_ftp' data-url="{{ path('ipc_supervision_modbus_cloture_ftp') }}"></span>
+	
+				<div id='divMessageBox'>
+					{% for message in app.session.flashbag.get('info') %}
+						{{ message }}.
+					{% endfor %}
+				</div>
+
+				<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Aside : Panneau des alarmes -->
+				<div id="null">
+					<aside>
+						<div id='searchModbus' style='display:none;'>Actualisation</div>
+
+						<div id='beforeAside' {% if sessionAside == true %}class='cacher'{% endif %}>
+							{% if activation_modbus == 1 %}
+								<input type='button' class='btnBeforeAside' value="{{ 'live.bouton.afficher_evenements'|trans }}" onClick="affichage_evenement();" />
+							{% else %}
+								<input type='button' class='btnBeforeAside' value="{{ 'live.bouton.afficher_evenements'|trans }}" onClick="show_aside();" />
+							{% endif %}
+						</div>
+
+						<div id='aside' {% if sessionAside == false %}class='cacher'{% endif %} data-url="{{ path('ipc_ajax_set_sessionAside') }}" >
+							<input type='checkbox' id='infoAside' name='chkInfosAside' onChange="setInfosAsideStatut();changeAside();" data-url="{{ path('ipc_ajax_set_infosAside') }}"/>{{ 'live.bouton.masquer_evenements'|trans }}
+							<div id='allAside'>
+								<span id='lastEvenement' data-url="{{ path('ipc_ajax_get_lastTimeEvenement') }}">{% if not last_time_evenement is null %}{{ last_time_evenement|raw }}{% endif %}</span>
+								<nav>
+									<ul>
+										<li id='titreEvenement' class='latestEventsTitle' onClick="changeEvenement('evenements');">{{ 'live.label.evenements'|trans }}</li>
+										<li id='titreAlarme' class='latestEventsTitle' onClick="changeEvenement('alarmes');">{{ 'live.label.alarmes'|trans }}</li>
+										<li id='titreDefaut' class='latestEventsTitle' onClick="changeEvenement('defauts');">{{ 'live.label.defauts'|trans }}</li>
+									</ul>
+									{% if activation_modbus == 1 %}
+										<a href="#" class="refresh" id='supervision_refresh' onClick="supervision_refresh();return false;" title="{{ 'live.lien.label.rapatrier_messages'|trans }}">
+											<img class="img svg" src="{{ asset('bundles/ipcsupervision/svg/Refresh.svg') }}" alt="" onerror="imgError(this);" />
+										</a>
+									{% endif %}
+								</nav>
+								<div class="line"></div>
+								<div id="alarme">
+									{% if tabEvenements | length > 0 %}
+										<ul>
+											{% for key,evenement in tabEvenements %}
+												<li>
+													<div class="calendar" style="background:{{ evenement['couleur'] }};">
+														<div class="day">{{ evenement['horodatage']|date("j") }}</div>
+														<div class="month">{{ evenement['moisFr'] }} {{ evenement['horodatage']|date("y") }}</div>
+													</div>
+													<div class="message">
+														<time>{{ evenement['horodatage']|date("H:i:s") }}.{{ evenement['cycle'] }}</time>
+														<h1>{{ evenement['module'] }}</h1>
+														<p>{{ evenement['message'] }}</p>
+													</div>
+												</li>
+											{% endfor %}
+										</ul>
+									{% else %}
+										<ul>
+											<li>{{ 'live.label.aucun_message'|trans }}</li>
+										</ul>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</aside>
+				</div>
+				<!-- /Aside -->
+
+				<!-- Section : Contenu principal - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+				<section>
+					<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Section/Nav : Navigation Etat/Graphique -->
+					{% if lienLive == true %}<div id="lien_live"><a href="{{ path('ipc_download_lien_live') }}">Téléchargement du lien live</a></div>{% endif %}
+					<div id='enTeteSection'>
+						<div id='live_titre'>
+							{# Emplacement du bouton de switch entre les Listing et les Graphiques #}
+							<span class='validation_live'>
+								<nav>
+									<span id='supervision_live_change'>
+									</span>
+								</nav>
+							</span>
+							<div id='supervision_live_titre'><span id='automateDesignation'>{% if automateDesignation is defined %}{{ automateDesignation }}{% endif %}</span></div>
+							{# Messages en cas de non récupération des informations Modbus #}
+							<div id='supervision_info_listing' class='cacher'>{% if messageModbus is defined %}{{ messageModbus|raw }}{% endif %}</div>
+						</div>
+						<div id='seriesGraphiques' class='cacher'>
+							<select id='selectSeriesGraphiques' name='seriesGraphiques' data-value='{{ descriptionLiveModules }}'>
+								{% for laSerie in tabTitreSeries %}
+									{% if laSerie.name == descriptionLiveModules %}
+										<option value='{{ laSerie.name }}' data-number='{{ laSerie.number }}' selected >{{ laSerie.name }}</option>
+									{% else %}
+										<option value='{{ laSerie.name }}' data-number='{{ laSerie.number }}' >{{ laSerie.name }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div id="live_options_graphiques" class='cacher'>
+						<div id='supervision_info2_graphique'>
+							<input type='checkbox' id='infoTooltip' name='chkInfosBulles' onChange="setInfosBullesStatut();changeTooltip();" data-url="{{ path('ipc_ajax_set_infosBulles') }}" />{{ 'live.checkbox.label.masquer_infobulles'|trans }}
+						</div>
+						<span><a href='#' onclick="resetChart();return false;">{{ 'live.bouton.reset'|trans }}</a></span>
+					</div>
+					<div id='live_listing' class='cacher'>
+						<div id="generalinfo">
+							{% if fichierInclude != null %}
+								{% include fichierInclude %}
+							{% endif %}
+						</div>
+						<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Section/Tuiles : Affichage des tuiles -->
+						<input type="checkbox" onclick="hideTitle();" name='chkShowtitle' checked /><span>{{ 'live.checkbox.label.afficher_titretuiles'|trans }}</span>
+						<div id="tuiles">
+							<div id='tuilesSansTitre' class='cacher'>
+								<ul>
+									{% for key,categorieLive in tabDesCategoriesLive %}
+										{% if not tabModbus is empty %}
+											{% for donneeLive in tabModbus[indexAutomate].getDonneesLive() %}
+													{% if donneeLive.placement != 'enTete' %}
+													{% if donneeLive.categorie.designation|lower == categorieLive|lower %}
+														<li class="{{ donneeLive.categorie.classe|lower }}">
+															{# chemin des icônes : bundles/ipcsupervision/svg/tu/tuiles-compteur.svg #}
+															{% set imgSrc = asset(donneeLive.icone.url) %}
+															<img src="{{ imgSrc }}" class="img svg" alt="{{ donneeLive.icone.alt }}" onerror="imgError(this);" />
+															<div class="txt">
+																<h2>{{ donneeLive.label }}</h2>
+																<div class="var_{{ donneeLive.famille|upper }}">
+																	<p>
+																		{% if (donneeLive.valeurEntreeVrai == NULL) or (donneeLive.valeurEntreeVrai == donneeLive.valeur) %}
+																			{% if donneeLive.valeurSortieVrai != NULL %}
+																				{{ donneeLive.valeurSortieVrai }}
+																			{% else %}
+																				{{ donneeLive.valeur }}&nbsp;{{ donneeLive.unite }}
+																			{% endif %}
+																		{% else %}
+																				{# VALEURENTREE NON NULLE ET NON EGALE A LA VALEUR #}
+																			{% if donneeLive.valeurSortieFaux != NULL %}
+																				{{ donneeLive.valeurSortieFaux }}
+																			{% else %}
+																				{{ donneeLive.valeur }}&nbsp;{{ donneeLive.unite }}
+																			{% endif %}
+																		{% endif %}
+																	</p>
+																</div>
+															</div>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
+							<div id='tuilesAvecTitre'>
+								{% for key,categorieLive in tabDesCategoriesLive %}
+								<h1 onClick='toggleCategorie({{ key }});'>{{ categorieLive|capitalize }}</h1>
+									<div id="categorie{{ key }}">
+										<ul>
+											{% if not tabModbus is empty %}
+												{% for donneeLive in tabModbus[indexAutomate].getDonneesLive() %}
+													{% if donneeLive.placement != 'enTete' %}
+														{% if donneeLive.categorie.designation|lower == categorieLive|lower %}
+															<li class="{{ donneeLive.categorie.classe|lower }}">
+																{% set imgSrc = asset(donneeLive.icone.url) %}
+																<img src="{{ imgSrc }}" class="img svg" alt="{{ donneeLive.icone.alt }}" onerror="imgError(this);" />
+																<div class="txt">
+																	<h2>{{ donneeLive.label }}</h2>
+																	<div class="var_{{ donneeLive.famille|upper }}">
+																		<p>
+																			{% if (donneeLive.valeurEntreeVrai == NULL) or (donneeLive.valeurEntreeVrai == donneeLive.valeur) %}
+																				{% if donneeLive.valeurSortieVrai != NULL %}
+																					{{ donneeLive.valeurSortieVrai }}
+																				{% else %}
+																					{{ donneeLive.valeur }}&nbsp;{{ donneeLive.unite }}
+																				{% endif %}
+																			{% else %}
+																				{# VALEURENTREE NON NULLE ET NON EGALE A LA VALEUR #}
+																				{% if donneeLive.valeurSortieFaux != NULL %}
+																					{{ donneeLive.valeurSortieFaux }}
+																				{% else %}
+																					{{ donneeLive.valeur }}&nbsp;{{ donneeLive.unite }}
+																				{% endif %}
+																			{% endif %}
+																		</p>
+																	</div>
+																</div>
+															</li>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+										</ul>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div id='hideChart'></div>
+					<div id='container_live' data-path="{{ path('ipc_ajax_set_tabZoom') }}"></div>	
+				</section>
+			</div>
+		</div>
+	</div>
+{% endblock body %}
+
+
+{% block bodyJavascript %}
+	<script type='text/javascript'>
+		var valScrollTop = {{ valScrollTop|json_encode|raw }};
+	</script>
+
+	{% javascripts output='js/live_aside.js' filter='jsqueeze'
+		'bundles/ipcsupervision/js/aside.js'
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	{#<script type="text/javascript" src="{{ asset('bundles/ipcsupervision/js/aside.js') }}"></script>#}
+
+	{% include "Supervision/imagesEntete.js"  %}
+	{% include "Supervision/supervision.js" %}
+	{% include "Supervision/gestionCourbes.js" %}
+{% endblock bodyJavascript %}

@@ -1,0 +1,146 @@
+{# src/Ipc/ConfigurationBundle/Resources/views/Configuration/autorisationClient.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Autorisations{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des accès Client</h1>
+{% endblock title_header %}
+
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+	   	<form method='post' name='MyForm' action={{ path('ipc_autorisationClient') }} />
+			<table class='table_autorisation'>
+                <tr>    <td class='decalageGauche'>Module Listing</td>    <td><input type="checkbox" name="listing" /></td>       </tr>
+                <tr>    <td class='decalageGauche'>Module Courbes</td>    <td><input type="checkbox" name="graphique" /></td>     </tr>
+			</table>
+			<br />
+			{# Choix des options accordées pour les listing #}
+			<div id='listing' class='cacher'>
+		    	<h3>Autorisations sur le module Listing</h3>
+		    	<table class="table_autorisation">
+		    	    <tr><th colspan='2'>Genres Autorisés</th></tr>
+					{% for genres in liste_genres %}
+			    		<tr>    
+			        		<td class='firstTd decalageGauche'><label for="{{ genres.intitule_genre}}">{{ genres.intitule_genre}}</label></td>
+                           	{# Si le genre fait partie des genres autorisés : Coche du checkbox #}
+			        		{% set autorisation = 0 %}
+			        		{% for key,liste_genre in liste_genres_listing_autorises %}
+			            		{% if liste_genre == genres.id %}
+			                		{% set autorisation = 1 %}
+				    			{% endif %}
+			        		{% endfor %}
+			        		{% if autorisation == 1 %}
+                                <td><input type="checkbox" name="{{ genres.intitule_genre }}" id="{{ genres.intitule_genre }}" value="{{ genres.id }}" checked /></td>
+                            {% else %}
+                                <td><input type="checkbox" name="{{ genres.intitule_genre }}" id="{{ genres.intitule_genre }}" value="{{ genres.id }}" /></td>
+                            {% endif %}
+			    		</tr>
+					{% endfor %}
+		    	</table>
+				<table class="table_autorisation">
+					<tr><th>Impression</th></tr>
+					<tr><td class='firstTd decalageGauche'>Impression autorisée</td>
+				    	{% if impression_listing == 1 %}
+				    		<td><input type="checkbox" name="impression_listing" id="impression_listing" checked /></td>
+				    	{% else %}
+				    		<td><input type="checkbox" name="impression_listing" id="impression_listing" /></td>
+				    	{% endif %}
+					</tr>
+				</table>
+			</div>
+            {# Choix des options accordées pour les graphiques #}
+            <div id='graphique' class='cacher'>
+                <table class="table_autorisation">
+					<h3>Autorisations sur le module Courbes</h3>
+                    <tr><th colspan='2'>Genres Autorisés</th></tr>
+                    {% for genres in liste_genres %}
+                        <tr>    
+							<td class='firstTd decalageGauche'><label for="graph_{{ genres.intitule_genre}}">{{ genres.intitule_genre}}</label></td>
+							{# Si le genre fait partie des genres autorisés : Coche du checkbox #}
+							{% set autorisation = 0 %}
+							{% for key,liste_genre in liste_genres_graphique_autorises %}
+                                {% if liste_genre == genres.id %}
+                                    {% set autorisation = 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if autorisation == 1 %}
+                                <td><input type="checkbox" name="graph_{{ genres.intitule_genre }}" id="graph_{{ genres.intitule_genre }}" value="{{ genres.id }}" checked /></td>
+							{% else %}
+				    			<td><input type="checkbox" name="graph_{{ genres.intitule_genre }}" id="graph_{{ genres.intitule_genre }}" value="{{ genres.id }}" /></td>
+							{% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                <table class="table_autorisation">
+                    <tr><th>Impression</th></tr>
+                    <tr><td class='firstTd decalageGauche'>Impression autorisée</td>
+		    			{% if impression_graphique == 1 %}
+                    	    <td><input type="checkbox" name="impression_graphique" id="impression_graphique" checked /></td>
+						{% else %}
+			    			<td><input type="checkbox" name="impression_graphique" id="impression_graphique" /></td>
+						{% endif %}
+                   	</tr>
+                </table>
+            </div>
+			<br />
+		</form>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.enregistrer"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+    	function goBack() {
+    	    var url_intervention = $('#Configurations').attr('href');
+    	    window.location.href = url_intervention;
+    	}
+
+        $('input[type="checkbox"][name="listing"]').attr('checked',false);
+        $('input[type="checkbox"][name="graphique"]').attr('checked',false);
+
+        $(document).ready(function() {
+            $('input[type="checkbox"][name="listing"]').click(function(){
+				if ($('input[type="checkbox"][name="graphique"]').is(':checked') == true) {
+	       		    $('input[type="checkbox"][name="graphique"]').attr('checked',false);
+		    		$('#graphique').hide();
+				}
+            	if ($(this).is(':checked') == true) {
+            	   $('#listing').show();
+            	} else {
+            	   $('#listing').hide();
+            	}
+        	});
+        	$('input[type="checkbox"][name="graphique"]').click(function(){
+				if ($('input[type="checkbox"][name="listing"]').is(':checked') == true) {
+				    $('input[type="checkbox"][name="listing"]').attr('checked',false);
+				    $('#listing').hide();
+				}
+        		if ($(this).is(':checked') == true) {
+        		    $('#graphique').show();
+        		} else {
+        		    $('#graphique').hide();
+        		}
+    		});
+        });
+        function validationFormulaire() {
+	    	attente();
+	    	setTimeout(function(){
+	    	    document.forms["MyForm"].submit();
+	    	}, 200);
+        }
+    </script>
+{% endblock bodyjavascript %}

@@ -1,0 +1,233 @@
+{# /src/Ipc/GraphiqueBundle/Resources/views/Graphique/graphique.html.twig #}
+
+{% extends 'IpcGraphiqueBundle::thirdLayout.html.twig' %}
+
+{% block title %}{{ parent() }}Affichage{% endblock title %}
+
+{% block title_header %}
+    <span id="pageGraphiqueView" class="cacher"></span>
+    <input type='hidden' id='derniereSerie' />
+    <input type='hidden' id='tableauZoom' />
+    <input type='hidden' id='indiceZoom' />
+    {# Si le temps max d'execution des requêtes a été dépassé #}
+    {% if tempMax %}
+        <p>{{ 'label.requete_timeout'|trans }}</p>
+    {% else %}
+        <h1>{{ 'label.titre.courbe'|trans }}
+            <div id="boutontitre" class='notToBePrinted'>
+                <form name='myForm2' method='post' action="{{ path('ipc_graphAnalyse') }}">
+                    <input type='hidden' name="choixSubmit" id="choixSubmit" />
+                    <input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_graphique|length }}' >
+                    <input type='hidden' id='refresh_graphique' name='refresh_graphique' value='' />
+                    <ul>
+                        {% if activation_modbus == 1 %}
+							<li>
+								<a href='#' class='right' onClick="$('#choixSubmit').val('Recherche'); $('#refresh_graphique').val('refresh'); refresh('myForm2'); return false;" >
+									<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
+									<span>{{ 'label.info.rafraichissement'|trans }}</span>
+								</a>
+							</li>
+						{% endif %}<!--
+                        --><li>
+							<a href="{{ path('ipc_accueilGraphique') }}" onClick='actionMenu(this.href,this.title); return false;'>
+								<div class='boutonTitreEdition'><img src="{{ asset('bundles/ipcgraphique/images/modification.png') }}" alt='modification' /></div>
+								<span>{{ 'label.info.modification.courbe'|trans }}</span>
+							</a>
+						</li><!--
+                        --><li>
+							<a href="#" onClick="switchPopupCompression(); return false">
+								<div class='boutonTitreCompress'><img src="{{ asset('bundles/ipcgraphique/images/compression.png') }}" alt='compression' /></div>
+								<span>{{ 'label.info.compression'|trans }}</span>
+							</a>
+						</li><!--
+                        --><li>
+							<a href="#" onClick="reinitialiseGraphique(); return false;">
+								<div class='boutonTitreReinitialise'><img src="{{ asset('bundles/ipcgraphique/images/reinitialisation.png') }}" alt='reinitialisation' /></div>
+								<span>{{ 'label.info.reinitialisation'|trans }}</span>
+							</a>
+						</li><!--
+                        --><li>
+							<a href="#" onClick="newTitle('{{ service_session.get('pageTitle').title }}_Courbes'); preimpression(); impression_graphique(); return false;">
+								<div class='boutonTitrePrint'><img src="{{ asset('bundles/ipcgraphique/images/impression.png') }}" alt='impression' /></div>
+								<span>{{ 'label.info.impression'|trans }}</span>
+							</a>
+						</li><!--
+                        --><li>
+							<a href="#" onClick="return false;">
+								<div class='boutonTitreDownload'><img src="{{ asset('bundles/ipcgraphique/images/exportation.png') }}" alt='exportation' /></div>
+							</a>
+                            <ul class='niveau2'>
+                                <li><a href="#" onClick="imprimeCsv('yesCsv', 'myForm'); return false;">{{ 'label.info.export_csv'|trans }}</a></li>
+                                <li><a href="#" onClick="imprimeCsv('yesPCsv', 'myForm'); return false;">{{ 'label.info.export_page_csv'|trans }}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </h1>
+        <div class='notToBePrinted'>
+            <section id='sectionOptionsGraphiques'>
+                <div class='debutLigne'>
+                    Zoom
+                    <span id='zoomPrecedent' class='btn-disable'>
+						<a href='#' onclick="setNewZoom('precedent'); return false;">
+							< {{ 'lien.precedent'|trans|lower }}
+						</a>
+					</span>
+                    <span id='zoomSuivant'   class='btn-disable'>
+						<a href='#' onclick="setNewZoom('suivant'); return false;">
+							{{ 'lien.suivant'|trans|lower }} >
+						</a>
+					</span>
+                </div>
+                <div class='milieuLigne'>
+                    {{ 'label.legende.checkbox'|trans }} :
+                    <span>
+						<input type='checkbox' name='infoLegende' id='infoLegende' onClick="changeLegende()"; checked>
+						{{ 'checkbox.legende'|trans|lower }}
+					</span>
+                    {{ 'label.infos_bulles'|trans }} :
+                    <span>
+						<input type='checkbox' name='infoTooltip' id='infoTooltip' onClick="changeTooltip();" checked>
+						{{ 'checkbox.afficher'|trans|lower }}
+					</span>
+                    <span>
+						<input type='checkbox' name='infoTooltipSize' id='infoTooltipSize' onClick="minimiseInfoTooltip();">
+						{{ 'checkbox.minimiser'|trans|lower }}
+					</span>
+                </div>
+                <div class='finLigne'>
+                    {{ 'checkbox.uniformiser'|trans }} 
+					<input type='checkbox' name='infoEchelle' id='infoEchelle' onClick="changeEchelle('modify');" /> :
+                    {{ 'textbox.bas'|trans|lower }} 
+					<input type='text' class='inputText'  name='echelleMin' id='echelleMin' value='-100' maxlength='7' size='3' onChange="changeEchelle('maj');" />
+					{{ 'textbox.haut'|trans|lower }} 
+					<input type='text' class='inputText' name='echelleMax' id='echelleMax' value='100' maxlength='7' size='3' onChange="changeEchelle('maj');" />
+					{{ 'textbox.pas'|trans|lower }} 
+					<input type='text' class='inputText' name='echellePas' id='echellePas' class='pas' value='10' maxlength='7' size='3' onChange="changeEchelle('maj');" />
+                </div>
+            </section>
+        </div>
+	{% endif %}
+{% endblock title_header %}
+
+{% block body %}
+    <div class='pagePayasage'>
+		{% if not tempMax %}
+			<div id='container'></div>
+			<div id='legendeGraphique' class='notToBePrinted'></div>
+    	{% endif %}
+ 	</div>
+{% endblock body %}
+
+{% block footerPopup %}
+    <form method='post' name='myForm' action="{{ path('ipc_graphAnalyse') }}">
+    	<input type='hidden' name='impression' value='yes' id='impression' />
+    	<div class='titre'>
+			<h2>COMPRESSION</h2>
+	    	<!--<div class="info">--><div class="icone-info">?<help>Pour chaque courbe, il est possible d'effectuer une compression du nombre de points (Minimium, Moyenne ou Maximum), en fonction du pas choisi.</help></div></div><!--
+	    	--><div class="actions"><a href="#"><div class="bouton red" onClick="closePopupCompression();return false;" ><div class="bgbouton"><!--&xvee;-->X</div></div></a></div>
+			<div id="compression" class="mCustomScrollbar" data-mcs-theme="dark">
+	    		<table>
+            	<thead>
+                    <tr>
+                        <th class="localisation">{{ "label.localisation" | trans}}</th>
+                        <th class="code">{{ "label.code_message" | trans}}</th>
+                        <th class="designation">{{ "label.designation" | trans}}</th>
+                        <th class="compression">{{ "label.compression" | trans}}</th>
+                        <th class="point">{{ "label.points" | trans}}</th>
+                    </tr>
+                </thead>
+				<!--<div style="height:60px; display:block; background:#F39;">-->
+				<tbody>
+		    		{% set loopIndex = 0 %}
+		    		{% for requete in liste_req_pour_graphique %}
+		    			{# Si la requête ne comporte aucun point : pas d'affichage de celle-ci à l'écran #}
+                        {% if requete['MaxDonnees'] == 0 %}
+                            {% set loopIndex = loopIndex-1 %}
+                        {% else %}
+			    			<input type='hidden' name="correspondance_{{ loop.index0 }}" value="{{ loopIndex }}" />
+                            <input type='hidden' name="tabCourbe_{{ loopIndex }}_X" id="tabCourbe_{{ loopIndex }}_X" />
+                            <input type='hidden' name="tabCourbe_{{ loopIndex }}_Y" id="tabCourbe_{{ loopIndex }}_Y" />
+                            <input type='hidden' name="tabCourbe_{{ loopIndex }}_init" id="tabCourbe_{{ loopIndex }}_init" value="true" />
+			    			{# Récupération de la localisation sur laquelle porte la requête ( = 1 element du texte de la requete avant les : #}
+                            {% set localisation = requete['Texte']|raw|split(':',2)|first %}
+                            <input type='hidden' name="tabCourbe_{{ loopIndex }}_Localisation" id="tabCourbe_{{ loopIndex }}_Localisation" value="{{ localisation }}" />
+			    			<tr>
+			    				<td class="localisation"><div class="txtlocalisation">{{ requete['numero_localisation'] }}</div></td>	
+			    				<td class="code">{{ requete['code_message'] }}</div></td>
+			    				<td class="designation">{{ requete['Texte'] | trans }}<br /><div id="typeRecherche{{ loopIndex }}">( {{ requete['TexteRecherche'] | trans | raw }}. )</div></td>
+			    				<td class="compression {{ loopIndex }}">
+                        			<div class="aff-select-point">{{ 'label.afficher'|trans|capitalize }}
+                                	    <select name="{{ loopIndex }}" id="compression_{{ loopIndex }}">
+               	       	        			<option value="all">{{ "periode.compression.points.complete" | trans }}</option>
+											<option value="average">{{ "periode.compression.points.moyen" | trans }}</option>
+               	                			<option value="high">{{ "periode.compression.points.maximum" | trans }}</option>
+               	               				<option value="low">{{ "periode.compression.points.minimum" | trans }}</option>
+				    					</select>
+                                	</div>
+									<div class="select-pas">
+                            		    <div id="select-pas_{{ loopIndex }}" class="cacher">sur un pas de 
+                                	        <select name="pas_{{ loopIndex }}" id="pas_{{ loopIndex }}">
+				    	    					<option value="5_second">05 {{ "periode.duree.pluriel.seconde" | transchoice(5) }}</option>
+                                	    	    <option value="10_second">10 {{ "periode.duree.pluriel.seconde" | transchoice(10) }}</option>
+                                	    	    <option value="30_second">30 {{ "periode.duree.pluriel.seconde" | transchoice(30) }}</option>
+                                	    	    <option value="1_minute">01 {{ "periode.duree.pluriel.minute" | transchoice(1) }}</option>
+                                	    	    <option value="5_minute">05 {{ "periode.duree.pluriel.minute" | transchoice(5) }}</option>
+                                	    	    <option value="10_minute" selected>10 {{ "periode.duree.pluriel.minute" | transchoice(10) }}</option>
+                                	    	    <option value="30_minute">30 {{ "periode.duree.pluriel.minute" | transchoice(30) }}</option>
+                                	    	    <option value="1_hour">01 {{ "periode.duree.pluriel.heure" | transchoice(1) }}</option>
+                                	    	    <option value="6_hour">06 {{ "periode.duree.pluriel.heure" | transchoice(6) }}</option>
+                                	    	    <option value="12_hour">12 {{ "periode.duree.pluriel.heure" | transchoice(12) }}</option>
+                                	    	    <option value="1_day">01 {{ "periode.duree.pluriel.jour" | transchoice(1) }}</option>
+                                	    	    <option value="15_day">15 {{ "periode.duree.pluriel.jour" | transchoice(15) }}</option>
+                                	    	    <option value="1_month">01 {{ "periode.duree.pluriel.mois" | transchoice(1) }}</option>
+                                	            <option value="3_month">03 {{ "periode.duree.pluriel.mois" | transchoice(3) }}</option>
+                                	            <option value="6_month">06 {{ "periode.duree.pluriel.mois" | transchoice(6) }}</option>
+                                	    	</select>
+                                	    </div>
+			        				</div>
+                            	</td>
+			   			 		<td class="point"><span id="nbPoints_{{ loopIndex }}">{{ requete['NbDonnees'] }}</span> / {{ requete['MaxDonnees'] }}
+			    			</tr>
+						{% endif %}
+						{% set loopIndex = loopIndex+1 %}
+		    		{% endfor %}
+				</tbody>
+	    		</table>
+			</div>
+    	</div>
+    </form>
+{% endblock footerPopup %}
+
+{% block progJavascript %}
+{% endblock progJavascript %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+    {% include "Graphique/gestioncourbes.js" %}
+
+	 <script type='text/javascript'>
+
+        /* Simulation sur click de la vue Restreinte */
+        $('#vueRestreinte').click();
+
+        $(document).ready(function() {
+            /* Récupération de l'heure de la dernière donnée enregistrée en base */
+            var $urlGetLastData = $('#datas').attr('data-urlGetLastData');
+            $.ajax({
+                url: $urlGetLastData,
+                method: 'post'
+            })
+            .done(function($message, $status) {
+                $('#message_last_data').html($message);
+            })
+            .fail(function($xhr, $status, $error) {
+                alert('Non récupéré');
+            });
+            /**********************************/
+        });
+    </script>
+{% endblock bodyjavascript %}
+

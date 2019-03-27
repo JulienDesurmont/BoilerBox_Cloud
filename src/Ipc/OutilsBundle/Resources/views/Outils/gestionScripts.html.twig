@@ -1,0 +1,73 @@
+{# /src/Ipc/OutilsBundle/Resources/views/Outils/gestionScripts.html.twig #}
+
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Scripts{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des scripts</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+    {{ parent() }}
+
+    <section id='menu_general'>
+        <div class='gestion_infosScripts'>
+            <table class='table_gestion_scripts'>
+                <tr>
+                    <th class='nom'>Script</th>
+                    <th class='description'>Description</th>
+                    <th>Execution</th>
+                    <th>Script Admin</th>
+                    <th>Action</th>
+                </tr>
+                {% for script,tabExecution in tabDesScripts %}
+                 {# Affichage des scripts d'admin seulement pour les comptes héritant des droits Admin #}
+                 <tr>
+                    <td class='nom gauche'>{{ script }}</td>
+                    <td class='description gauche'>{{ tabExecution.description }}</td>
+                    <td class='execution'><span class='{{ script }}'>{% if tabExecution.value == true %}Actif{% else %}Inactif{% endif %}</span></td>
+                    <td class='admin'>{% if tabExecution.scriptAdmin %}X{% endif %}</td>
+                    <td class='action'>
+                        {% if tabExecution.value == true %} <div class='boutonSwitch on' id='{{ script }}'>
+                        {% else %} <div class='boutonSwitch off' id='{{ script }}'>
+                        {% endif %}
+                        {% if tabExecution.scriptAdmin %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class='on_off' onclick="buttonSwitch('{{ script }}');"><div class='background'><div class='slideur'><div class='pastille'></div></div></div></div>
+                            {% else %}
+                                <div class='on_off disabled' onclick="buttonSwitch('{{ script }}');"><div class='background'><div class='slideur'><div class='pastille'></div></div></div></div>
+                            {% endif %}
+                        {% else %}
+                            <div class='on_off' onclick="buttonSwitch('{{ script }}');"><div class='background'><div class='slideur'><div class='pastille'></div></div></div></div>
+                        {% endif %}
+                        </div>
+                    </td>
+                 </tr>
+                {% endfor %}
+                {% if is_granted('ROLE_ADMIN') %}
+                 <tr>
+                    <td colspan='6'>Tous : Activer<input type='radio' name='allActiv' value='sall' onclick="buttonSwitch('all');" />Désactiver<input type='radio' name='allActiv' value='aall' onclick="buttonSwitch('all');" /></td>
+                 </tr>
+                {% endif %}
+            </table>
+        </div>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+    </script>
+{% endblock bodyjavascript %}
+

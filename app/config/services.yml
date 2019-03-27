@@ -1,0 +1,71 @@
+services:
+    ipc_prog.traduction:
+        class: "%traduction.class%"
+        arguments: ["@translator"]
+    ipc_prog.connectbd:
+        class: "%connectbd.class%"
+        arguments: ["@doctrine", "@ipc_prog.session", "%database_name%", "%socket_unix%"]
+    ipc_prog.log:
+        class: "%log.class%"
+        arguments: ["@ipc_prog.connectbd"]
+    ipc_prog.importbin:
+        class: "%importbin.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.fillnumbers"]
+    ipc_prog.rattrapimportbin:
+        class: "%rattrapimportbin.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.log", "@ipc_prog.fillnumbers"]
+    ipc_prog.importipc:
+        class: "%importipc.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.log", "@ipc_prog.mailing", "@ipc_prog.fillnumbers", "@security.context"]
+    ipc_prog.rapports:
+        class: "%rapports.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.log", "@ipc_prog.mailing", "@ipc_prog.fillnumbers"]
+    ipc_prog.etats:
+        class: "%etats.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.log", "@ipc_prog.configuration", "@ipc_prog.fillnumbers"]
+    ipc_prog.fillnumbers:
+        class: "%fillnumber.class%"
+    ipc_prog.transformeTexte:
+        class: "%transformeTexte.class%"
+    ipc_prog.requetesType:
+        class: "%requeteType.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.fillnumbers"]
+    ipc_user.form.registration:
+        class: "%registration.class%"
+        tags:
+            - { name: form.type, alias: ipc_user_registration }
+    ipc_prog.mailing:
+        class: "%mailing.class%"
+        arguments: ["@mailer", "@templating", "@ipc_prog.log", "@ipc_prog.connectbd"]
+    ipc_prog.password:
+        class: "%password.class%"
+    ipc_prog.transfertFtp:
+        class: "%transfertftp.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.log", "@ipc_prog.mailing", "@ipc_prog.fillnumbers"]
+    ipc_prog.modbus:
+        class: "%modbus.class%"
+        arguments: ["@ipc_prog.connectbd", "@ipc_prog.transfertFtp", "@ipc_prog.log", "@ipc_prog.mailing"]
+    ipc_prog.session:
+        class: "%ipcsession.class%"
+        arguments: ["@security.context", "@session"]
+    ipc_prog.session.boilerbox:
+        class: "%sessionboilerbox.class%"
+        arguments: ["@ipc_prog.connectbd", "@security.context", "@ipc_prog.session", "@ipc_prog.fillnumbers", "@ipc_prog.traduction"]
+    ipc_prog.configuration:
+        class: "%configuration.class%"
+        arguments: ["@ipc_prog.connectbd", "@security.context", "@ipc_prog.session"]
+    ipc_user.detect.login:
+         class: "Ipc\UserBundle\Services\detectLogin"
+    ipc_user.detect.login.listener:
+        class: "Ipc\UserBundle\Services\detectLoginListener"
+        arguments: ["@ipc_user.detect.login"]
+        tags:
+            - { name:kernel.event_listener, event:security.authentication.success, method:successLogin, priority:2 }
+            - { name:kernel.event_listener, event:security.authentication.failure, method:failedLogin, priority:2 }
+    ipc_prog.fichiers:
+        class: "%service_fichiers.class%"
+    kernel.listener.TwigExceptionListener:
+        class: 'Ipc\ProgBundle\Listener\Security\ExceptionListener'
+        arguments: ["@templating"]
+        tags:
+            - { name:kernel.event_listener, event:kernel.exception, method:onKernelException }

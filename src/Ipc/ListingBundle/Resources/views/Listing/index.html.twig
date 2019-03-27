@@ -1,0 +1,136 @@
+{# /src/Ipc/ListingBundle/Resources/views/Listing/index.html.twig #}
+{% extends 'IpcListingBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+{% block title_header %}
+    <h1 class='grandScreen'>{{ 'label.titre.listing' | trans }}</h1>
+    <span id="pageListingIndex" class="cacher"></span>
+
+    <div id="regRequest">
+        {# Select des requêtes personnelles #}
+        <select id='selectRegPerso' name='selectRegPerso' data-url="{{ path('ipc_selectRequest', {'page':'listing'}) }}" onChange="selectRequest();">
+            <option value='noselected' disabled selected style='color:blue'>
+				{% if compte_requete_perso|lower == 'client' %}
+					{{ 'select.requetes_client.titre.listing'|trans }} 
+				{% else %}
+					{{ 'select.requetes_perso.titre.listing'|trans }}
+				{% endif %}
+			</option>
+            {% for key,requeteValue in tab_requetes_perso %}
+                <option value="{{ requeteValue }}">{{ requeteValue }}</option>
+            {% endfor %}
+        </select>
+        {% if is_granted('ROLE_TECHNICIEN') %}
+            {{ 'checkbox.requetes_client'|trans }} <input type='checkbox' id='requeteClient' name='requeteClient' onClick="addCompteRequest('listing');" {% if compte_requete_perso|lower == 'client' %} checked {% endif %} /><br />
+            <input type='button' id='checkSaveRequest' name='enregistrementRequete' value="{{ 'bouton.requetes_client.enregistrement'|trans }}" onClick="creerRequetePerso('listing');" />
+            <input type='button' id='deleteSaveRequest' name='suppressionRequete' value="{{ 'bouton.requetes_client.suppression'|trans }}" onClick="supprimeRequetePerso('listing');" />
+        {% endif %}
+    </div>
+{% endblock title_header %}
+
+{% block body %}
+	<div id='listingperso'>
+		<div class='requetemessage'>
+			<table>
+				<thead>
+					<tr>
+						<th class="localisation">{{ 'label.localisation'|trans }}</th>
+						<th class="code">{{ 'label.code_message'|trans }}</th>
+						<th class="designation">{{ 'label.designation'|trans }}</th>
+						{% if is_granted('ROLE_TECHNICIEN') %}<th class="actions">{{ 'label.action'|trans }}</th>{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for donnee in tab_requetes %}
+						<tr>
+							<td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+							<td class="code">{{ donnee['code'] }}</td>
+							<td class="designation">{{ donnee['message'] }}</td>
+							{% if is_granted('ROLE_TECHNICIEN') %}
+								<td class="actions">
+									<a class="bouton" href="{{ path('ipc_listing') }}" target='_blank' name="modRequete_{{ donnee['numrequete'] }}" onClick="declanchementUpdateAjaxForm(1, 'ipc_listing', 'listing', this.name, {{ loop.index0 }}, 'modificationRequete');return false;" >
+										<div class="bouton editer"></div>
+										<div class="boutonname">{{ "bouton.editer_requete"|trans|upper }}</div>
+									</a>
+									<a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="declanchementDeleteAjaxForm(1, 'listing', this.name, 'suppressionRequete');return false;"> 
+										<div class="bouton supprimer"></div>
+										<div class="boutonname">{{ "bouton.supprimer_requete"|trans|upper }}</div>
+									</a>
+								</td>
+							{% endif %}
+						</tr>
+					{% endfor %}
+					{% if is_granted('ROLE_TECHNICIEN') %}
+						<tr>
+							<td colspan="3" class="texte">{{ "label.ajout_listing"|trans }}</td>
+							<td class="actions">
+								<a class='bouton' href="{{ path('ipc_listing') }}" target='_blank' onClick="appelPopup('ipc_listing', 'Sélection des requêtes de listing');return false;">
+									<div class="bouton ajouter"></div>
+									<div class="boutonname">{{ "bouton.ajouter_requete"|trans|upper }}</div>
+								</a>
+							</td>
+						</tr>
+					{% endif %}
+					<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ tab_requetes|length }}' >
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<input type="hidden" name="tabloRequete" id="tabloRequete" value="{{ strTab_requetes }}" />
+{% endblock body %}
+
+{% block choix_validation %}
+    <form name='myForm2' method='get' action="{{ path('ipc_listing') }}">
+        <input type="hidden" name="choixSubmit" id="choixSubmit" />
+        <div id='validation'>
+            <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Recherche';validationPopup('myForm2');return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div></a>
+            {% if is_granted('ROLE_TECHNICIEN') %}
+                <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='RAZ';resetAjaxForm('listing');return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.raz"|trans|upper }}</div></div></a>
+            {% endif %}
+        </div>
+    </form>
+{% endblock choix_validation %}
+
+{% block popup_small %}
+	{% include 'IpcConfigurationBundle:Configuration:popupNouvelleRequetePerso.html.twig' %}
+{% endblock popup_small %}
+
+
+{% block progJavascript %}
+    {{ parent() }}
+{% endblock progJavascript %}
+
+
+{% block bodyjavascript %}
+	{# Fonctions et variables communes aux index listing et graphique #}
+    {% javascripts output='js/listingAndGraphiqueCommun.js' filter='jsqueeze'
+        'bundles/ipcprog/js/listingAndGraphiqueCommun.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {#<script type="text/javascript" src="{{ asset('bundles/ipcprog/js/listingAndGraphiqueCommun.js') }}"></script>#}
+
+	<script type='text/javascript'>
+		$('page').addClass('noLeftMenus');
+		$(document).ready(function() {
+			preparePopup('ipc_listing');
+			ajaxSetChoixLocalisation();
+
+			/* Récupération de l'heure de la dernière donnée enregistrée en base */
+			var $urlGetLastData = $('#datas').attr('data-urlGetLastData');
+			$.ajax({
+	            url: $urlGetLastData,
+	            method: 'post'
+	        })
+	        .done(function($message, $status) {
+				$('#message_last_data').html($message);
+	        })
+	        .fail(function($xhr, $status, $error) {
+	            alert('Non récupéré');
+	        });
+			/**********************************/
+		});
+	</script>
+{% endblock bodyjavascript %}
+

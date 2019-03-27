@@ -1,0 +1,33 @@
+# BEGIN Expire headers
+<ifModule mod_expires.c>
+ExpiresActive On
+#ExpiresDefault "access plus 7200 seconds"
+</ifModule>
+# END Expire headers
+
+
+# BEGIN Cache-Control Headers
+<IfModule mod_headers.c>
+ <FilesMatch "\\.(php)$">
+    Header set Cache-Control "max-age=2592000, private"
+ </FilesMatch>
+# <filesMatch "\\.(twig)$">
+#    Header set Cache-Control "max-age=7200, public"
+# </filesMatch>
+</ifModule>
+# END Cache-Control Headers
+
+# KILL THEM ETAGS
+Header unset ETag
+Header unset Last-Modified
+FileETag none
+
+# protect the htaccess file
+<files .htaccess>
+order allow,deny
+deny from all
+</files>
+
+# protection de la lecture des répertoires
+Options -Indexes
+

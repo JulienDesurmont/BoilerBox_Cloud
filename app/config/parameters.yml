@@ -1,0 +1,46 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+#    database_host: 127.0.0.1
+    database_host: localhost
+    database_port: null
+    database_name: boilerbox_c782
+    database_user: cargo
+    database_password: adm5667
+    mailer_transport: smtp
+    mailer_user: LCI-group
+    mailer_password: adm5667
+    mailer_host: smtpcorp.com
+    mailer_delivery: Assistance_IBC@lci-group.fr
+    mailer_disable: false
+    mailer_sender: adminIpc@cargo-france.fr
+    mailer_auth: login
+    mailer_port: 2525
+    locale: fr
+    secret: ThisTokenIsNotSoSecretChangeIt
+    socket_unix: '/var/run/mysqld/mysqld.sock'
+
+    change_db.class: Ipc\ProgBundle\Services\ChangeDB\ServiceChangeDB
+    configuration.class: Ipc\ProgBundle\Services\Configuration\ServiceConfiguration
+    connectbd.class: Ipc\ProgBundle\Services\Connexion\ServiceConnexion
+    detectLocaleListener.class: Ipc\ProgBundle\Listener\Locale\LocaleListener
+    etats.class: Ipc\EtatBundle\Services\ServiceEtatQueries
+    fillnumber.class: Ipc\ProgBundle\Services\FillNumbers\ServiceFillNumbers
+    importbin.class: Ipc\ProgBundle\Services\ImportBin\ServiceImportBin
+    importipc.class: Ipc\ProgBundle\Services\ImportIpc\ServiceImportIpc
+    ipcsession.class: Ipc\ProgBundle\Services\Session\ServiceSession
+    log.class: Ipc\ProgBundle\Services\GestionLog\ServiceGestionLog
+    mailing.class: Ipc\ProgBundle\Services\Mailing\ServiceMailing
+    modbus.class: Ipc\ProgBundle\Services\ModBus\ServiceModBus
+    password.class: Ipc\ProgBundle\Services\Password\ServicePassword
+    rapports.class: Ipc\ProgBundle\Services\Rapports\ServiceRapports
+    rattrapimportbin.class: Ipc\ProgBundle\Services\RattrapImportBin\ServiceRattrapImportBin
+    registration.class: Ipc\UserBundle\Form\Type\RegistrationType
+    requeteType.class: Ipc\ProgBundle\Services\RequeteType\ServiceRequeteType
+    security.authentication.listener.form.class: Ipc\ProgBundle\Listener\Security\UsernamePasswordFormAuthenticationListener
+    security.logout_listener.class: Ipc\ProgBundle\Listener\Security\LogoutListener
+    service_fichiers.class: Ipc\ProgBundle\Services\Fichiers\ServiceFichiers
+    sessionboilerbox.class: Ipc\ProgBundle\Services\Session\ServiceSessionBoilerBox
+    traduction.class: Ipc\ProgBundle\Services\Traduction\ServiceTraduction
+    transformeTexte.class: Ipc\ProgBundle\Services\TransformeTexte\ServiceTransformeTexte
+    transfertftp.class: Ipc\ProgBundle\Services\TransfertFtp\ServiceTransfertFtp

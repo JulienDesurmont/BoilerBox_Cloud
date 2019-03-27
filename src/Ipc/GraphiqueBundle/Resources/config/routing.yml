@@ -1,0 +1,17 @@
+ipc_graphAnalyse:
+    path: /analyse
+    defaults: { _controller: IpcGraphiqueBundle:Graphique:analyse }
+ipc_graphListReqSelect:
+    path: /getListReq
+    defaults: { _controller: IpcGraphiqueBundle:Graphique:getListReq }
+ipc_accueilGraphique:
+    path: /index
+    defaults: { _controller: IpcGraphiqueBundle:Graphique:index}
+    requirements:
+        _method: GET
+ipc_graphiques:
+    path: /affiche/{page}
+    defaults: { _controller: IpcGraphiqueBundle:Graphique:afficheGraphique, page:'0' }
+    requirements:
+        page: \d+
+        _method: GET

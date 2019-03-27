@@ -1,0 +1,7 @@
+parameters:
+#    ipc_rapports.example.class: Ipc\RapportsBundle\Example
+
+services:
+#    ipc_rapports.example:
+#        class: %ipc_rapports.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

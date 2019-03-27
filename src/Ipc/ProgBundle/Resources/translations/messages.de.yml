@@ -1,0 +1,196 @@
+# /src/Ipc/ProgBundle/Resources/translations/messages.de.yml
+entete:
+    menu:
+        etat: Staat
+        courbe: Kurven
+        rapport: Beritche
+        listing: Listing
+        outil: Werkzeugen
+        bruleur: Brenner
+        configuration: Konfiguration
+    lien:
+        deconnexion: Ausloggen
+        connexion: login
+
+periode:
+    bouton:
+        attention: Achtung
+        modifier: Ändern
+        valider: Validiert
+    info:
+        chargement: Laden
+        none: Eine keine bestimmte Periode
+
+info:
+    rapport:
+        enregistrer: Aufgenommener Bericht
+        modifier: Geänderter Bericht
+        none: Kein gefundener Bericht
+        tailleDocuments: "Les documents joints sont trop volumineux. Taille maximum autorisée : %maxUploadedFileSize%"
+        trigrammeIntervention:
+            absent_base: Module %trigrammeIntervention% non présent en base de donnée - Rapport non enregistré
+            absent_configuration: "Paramètre de configuration [trigramme_intervention] manquant - Rapport non enregistré"
+            erreur_configuration: "Paramètre de configuration [trigramme_intervention] mal déclaré (%trigrammeIntervention%) - Rapport non enregistré"
+    erreur:
+        titre: "Error"
+        recherche_fichier: "File not found"
+        import_fichier: "Error : File not imported"
+    periode:
+        none: Please choose a period
+
+
+select:
+    points: 
+        tous: Alle punkte
+        moyen: Der durchschnittliche punkt
+        minimum: Der minimale punkt
+        maximum: Der maximale punkt
+    pas:
+        titre: Auf einem schritt
+        seconde: Sekunde
+        minute: Minute
+        heure: Stunde
+        jour: Tag
+        mois: Monat
+    requetes_client:
+        titre:
+           listing: Listing requests
+           graphique: Chart requests
+    requetes_perso:
+        titre:
+           listing: Persönliche Bitten
+           graphique: Persönliche Bitten
+    popup:
+        tous_genres: Alle formen
+        tous_modules: Alle module
+        tous_messages: Alle nachrichten
+
+lien:
+    precedent: Präzedenzfall
+    suivant: Nächster
+    ajout_fichier: Eine Datei hinzufügen
+    supprimer: Löschen
+
+checkbox:
+    requetes_client: Requête cliente :
+    afficher: Anzeigen
+    minimiser: Minimieren
+    uniformiser: Vereinheitlichen
+    legende: Fill / Clear
+
+textbox:
+    bas: Unten
+    haut: Oben
+    pas: Pas
+
+bouton:
+    requetes_client:
+        enregistrement: Enregistrer la requête
+        suppression: Supprimer la requête
+    ajouter_requete: Hinzufüge
+    supprimer_requete: Löschen
+    editer_requete: Herausgeben
+    rechercher: Suchen
+    raz: Raz
+    retour: Rückkehr
+    afficher: Anzeigen
+    modifier: Ändern
+    recalculer: Neuberechnen
+    enregistrer: Speichern
+    export: Exporter
+    popup:
+        valider: Validieren
+        fermer: Schlieben
+
+label:
+    oui: Ja
+    non: Nein
+    chargement: Laden ...
+    legende:
+        requetes: Anfragen
+        localisations: Lokalisierung
+        genres: Arten
+        checkbox: Legend
+    titre:
+        principal: Analyse des données d’exploitation
+        legende: Legende
+        courbe: Kurven
+        listing: Listing
+        rapport: "Rapports d'intervention"
+        nouveau_rapport: "Nouveau rapport d'intervention"
+        vue_rapport: "Liste des rapports d'intervention"
+        pas_de_donnee: Keine gefundene Angabe
+        page_inexistante: Page %page% inexistante
+    export_rapport: Exportation des rapports
+    site: Standort
+    localisation: Lokalisierung
+    localisation_reduit: Loc.
+    code_message: Kode der nachricht
+    designation: Bezeichnung
+    action: Aktion
+    genre: Art
+    module: Module
+    message: Nachricht
+    valeur1: Wert 1
+    valeur2: Wert 2
+    horodatage: Zeitmarkierung
+    points: Points
+    compression: Compression
+    ajout_listing: Ajouter un listing
+    ajout_courbe: Ajouter une courbe
+    ou: Oder
+    et: Und
+    donnee: Donnée|]1,+Inf]Données
+    requete_timeout: "Temps d'execution maximum des requêtes dépassé"
+    afficher: Anzeigen
+    infos_bulles: Infos-bulles
+    ajout_rapport: Einen bericht hinzufügen
+    visualisation_rapport: Einen bericht sichtbar machen
+    info:
+        points_max: Pour afficher le graphique, le nombre de points par courbe est limité à %limit%. Au delà, il est nécessaire de compresser la courbe pour réduire le nombre de points.
+        modification:
+            listing: Änderung
+            courbe: Änderung
+        rafraichissement: Auffrischen
+        impression: Drucken
+        compression: Kompression
+        reinitialisation: Rücksetzen
+        export_csv: Export des données au format csv
+        export_page_csv: Export de la page au format csv
+    popup:
+        titre:
+            listing: Einen Ausdruck hinzufügen
+            courbe: Eine Krümmung hinzufügen
+            filtre: Filtrer les données
+            mots_cle: Suche von Wörtern Schlüssel
+            selection_message: Eine Nachricht auswählen
+            ajout_requete_personnelle: Ajouter une requête personnelle
+        filtre:
+            superieur:
+                designation: Vorgesetzte
+                description: Accepte tous les messages dont la valeur %numero% est supérieure à
+            compris:
+                designation: Zwischen
+                description: Accepte tous les messages dont la valeur %numero% est comprise entre
+            inferieur:
+                designation: Unteren
+                description: Accepte tous les messages dont la valeur %numero% est inférieure à
+        textbox:
+            intitule_requete: Intitulé de la requête
+
+    rapport:
+        recherche: Suche die Berichte
+        titre: Titel
+        horodatage: "Date de l'intervention"
+        zone_rapport: Bericht
+        equipement: Intervention effectuée sur un équipement en particulier
+        intervenant: Autor
+        fichiers_inclus: Fichier(s) associé(s) au rapport
+        fichiers_lies: Fichier lié|]1,+Inf]Fichiers liés
+        titre_vue: Rapport de %auteur% fait le %horodatage% 
+        titre_vue_equipement: sur %equipement%
+        titre_vue_tousEquipements: sur tous les équipements
+
+
+Enregistrer: Enregistrer
+Retour: Retour

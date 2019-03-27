@@ -1,0 +1,1 @@
+var $chargementSupervision = true;

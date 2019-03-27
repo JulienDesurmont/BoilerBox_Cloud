@@ -1,0 +1,687 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% block head %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	<title>{% block title %}{% if service_session.get('pageTitle').affaire is defined %}{{ service_session.get('pageTitle').affaire }} - {% endif %}{% endblock title %}</title>
+
+    {% stylesheets  filter="cssrewrite, scssphp" output="css/maincommun.css"
+        'bundles/ipcprog/css/calendar.css'
+        'bundles/ipcprog/css/jquery.mCustomScrollbar.css'
+        'bundles/ipcprog/css/jquery-ui.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+    {% endstylesheets %}
+    {# <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> #}
+
+
+	{#
+	{% stylesheets  filter="cssrewrite, scssphp" output="css/mainscreen.css" 
+		'bundles/ipcprog/css/screen-export-01.css' 
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+	{% endstylesheets %} 
+	#}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcprog/css/screen-export-01.css') }}" media="screen" />
+
+	{#
+	{% stylesheets  filter="cssrewrite, scssphp" output="css/mainprint.css" 
+		'bundles/ipcprog/css/print-export-01.css' 
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="print" />
+	{% endstylesheets %}
+	#}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcprog/css/print-export-01.css') }}" media="print" />
+
+{% endblock head %}
+
+{% block link %}{% endblock link %}
+</head>
+
+<body>
+	<div class='cacher' id='datas' data-urlGetLastData={{ path('ipc_conf_ajax_get_lat_data') }}></div>
+    <div id="js-vars" data-vars="{{ service_js_traductions.variables | json_encode | e('html_attr') }}" data-translations="{{ service_js_traductions.translations | json_encode | e('html_attr') }}" />
+	<div id='siteIpc'>
+       	<input type='hidden' id='lien_url_ajax' 
+			data-urlAccueil={{ path('ipc_prog_homepage') }}
+			data-urlTrieDonnees={{ path('ipc_trie_donnees') }} 
+			data-urlGetMessages={{ path('ipc_get_messages') }} 
+			data-urlGetInfosPeriode={{ path('ipc_get_infos_periode') }}
+			data-urlConfMajPeriodeAnalyse={{ path('ipc_conf_majPeriodeAnalyse') }}
+            data-urlCheckMaxRequetes={{ path('ipc_check_max_requetes') }}
+            data-urlGetInfosSession={{ path('ipc_get_infos_session') }}
+            data-urlGetDate={{ path('ipc_get_date') }}
+            data-urlDefineDates={{ path('ipc_define_dates') }}
+			data-urlDefinePageActive={{ path('ipc_define_page_active') }}
+			data-urlConfChangeMaxExecTime={{ path('ipc_confChangeMaxExecTime') }}
+			data-urlConfigSelect={{ path('ipc_configSelect') }}
+            data-urlAccueilGraphique={{ path('ipc_accueilGraphique') }}
+            data-urlAccueilListing={{ path('ipc_accueilListing') }}
+            data-urlListing={{ path('ipc_listing') }}
+            data-urlGraphiques={{ path('ipc_graphiques') }}
+			data-urlModbusClotureFtp={{ path('ipc_modbus_cloture_ftp') }}
+			data-urlReadModbus={{ path('ipc_read_modbus') }}
+			data-urlSetScript={{ path('ipc_set_script') }}
+			data-urlEtat={{ path('ipc_etat') }}
+			data-urlSaveListingPersoRequest={{ path('ipc_saveRequest', {'page':'listing'}) }}
+			data-urlSaveGraphiquePersoRequest={{ path('ipc_saveRequest', {'page':'graphique'}) }}
+			data-urlDeleteListingPersoRequest={{ path('ipc_deleteRequest', {'page':'listing'}) }}
+			data-urlDeleteGraphiquePersoRequest={{ path('ipc_deleteRequest', {'page':'graphique'}) }}
+ 			data-urlGetRequetesPerso={{ path('ipc_getRequetePerso') }}
+			data-urlRegister={{ path('fos_user_registration_register') }}
+			data-urlCreationUtilisateur={{ path('ipc_createUser') }}
+			data-urlTraduction={{ path('ipc_traduire') }}
+		/>
+		{% if service_session.get('page_active') is not defined %}{% set pageActive = null %}{% else %}{% set pageActive = service_session.getStr('page_active') %}{% endif %}
+        <input type='hidden' id='pageActive' value="{{ pageActive }}" data-urlRestoreDate={{ path('ipc_restoreSessionDate') }}  data-urlSaveDate={{ path('ipc_saveSessionDate') }} />
+		<input type='hidden' id='pingTimeout' value="{{ service_session.get('ping_timeout') }}">
+		<input type='hidden' id='pingIntervalle' value="{{ service_session.get('ping_intervalle') }}">
+		<div id='headprint'>
+			<div id='pagePrincipaleHeader'>
+				<div id='ping' data-url="{{ path('ipc_ajax_test_ping') }}"></div>
+				{% if service_session.get('page_active') is not defined %}{% set pageActive = null %}{% else %}{% set pageActive = service_session.getStr('page_active') %}{% endif %}
+				<!-- Header : Menu principal - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+				<header>
+					<!--Logo-IBC-->
+                    <div id='logo-IBC'>
+                        <div class='grandScreen'>
+							<a href="{{ path('ipc_prog_homepage') }}" title="Retour au menu principal"><img src="{{ asset('bundles/ipcprog/images/ipcWeb/Layout_IPC.png') }}" alt='IPC' /></a>
+							<div class='iconeBoilerbox'>
+								<div class='txt'>
+									<span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL
+								</div>
+							</div>
+						</div>
+						<div id='message_last_data' class='notToBePrinted'></div>
+                        <div class='petitScreen'>
+                            <a href="{{ path('ipc_prog_homepage') }}" title="Retour au menu principal"><div class='iconeBoilerbox'><div class='txt'><span>I B C</span></div></div></a>
+                        </div>
+                    </div>
+                    <!--Titre de l'affaire-->
+                    <div id='title'>
+                        <div id='enTeteInitial' class='titreBoilerInitial'>
+                            {% include 'IpcProgBundle:Prog:enTete.html.twig' with {'titre_de_la_page' : service_session.get('pageTitle').title} %}
+                        </div>
+                        <div id='enTeteTitre' class='cacher titreBoilerTitre'>
+                            {% include 'IpcProgBundle:Prog:enTeteTitre.html.twig' with {'titre_de_la_page' : service_session.get('pageTitle').title} %}
+                        </div>
+                        {% if is_granted('ROLE_TECHNICIEN') and tabSessions is defined %}
+                            <div id='div_session_ipc' class='sessionIpc notToBePrinted'>
+                                <div>
+									<select id='select_session' name='session' data-url="{{ path('ipc_ajax_change_session') }}" onChange="changeSession();">
+                                    	{% for sessionName in tabSessions %}
+                                    	    <option value="{{ sessionName }}" {% if sessionName == sessionCourante %}selected{% endif %}>{{ sessionName }}</option>
+                                    	{% endfor %}
+                                	</select>
+								</div>
+                                <div><span>Nouvelle session : </span><input type='checkbox' name='chkNewSession' onClick="newSession();"/></div>
+								<div id='vueRestreinte' onClick='vueRestreinte();'><span>Vue Restreinte</span></div>
+                            </div>
+                        {% endif %}
+                    </div>
+					<!--Identification-->
+					<div id='encart_login'>
+					<div id='login'>
+						<div class='user' id='headerUser'>
+							{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+								<span id='userLabel' data-label={{ service_session.get('label') }} >{{ service_session.get('label') }}</span>
+								{% if is_granted('ROLE_ADMIN') %}
+									(Administrateur)
+								{% elseif is_granted('ROLE_SUPERVISEUR') %}
+									(Superviseur)
+								{% elseif is_granted('ROLE_TECHNICIEN') %}
+									(Technicien)
+								{% else %}
+									(Client)
+								{% endif %}
+							{% endif %}
+							<div class='heureImpression'>Impression du {{ "now" | date('d/m/Y') }}</div>
+                        </div>
+						<div class='logout notToBePrinted'>
+							{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+								<a id='lienDeconnexion' href="{{ path('fos_user_security_logout') }}" title='Déconnexion' onClick='stopPing();'>{{ 'entete.lien.deconnexion'|trans }}</a>
+							{% else %}
+								<a href="{{ path('fos_user_security_login') }}" title='Connexion'>{{ 'entete.lien.connexion'|trans }}</a>
+							{% endif %}
+							<br /><span style='font-size:12px;'>{% if service_session.get('pageTitle').version is defined %}{{ service_session.get('pageTitle').version }}{% endif %}</span>
+                        </div>
+					</div>
+                    <div class='box grandScreen'>
+                       {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                {% if is_granted('ROLE_SUPERVISEUR') %}
+                                    <div class='iconeAdministrateur'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/login_admin.png') }}" alt='administrateur' /></div>
+                                {% elseif is_granted('ROLE_TECHNICIEN') %}
+                                    <div class='iconeTechnicien'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/login_technicien.png') }}" alt='technicien' /></div>
+                                {% else %}
+                                    <div class='iconeClient'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/login_client.png') }}" alt='client' /></div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+					</div>
+				</header>
+				<menus>
+					<!--Menu-->
+					<div id='menu'>
+						<ul>
+							{% if is_granted('ROLE_TECHNICIEN') %}
+							<li class='menuleft'>
+								<a href="{{ path('ipc_etat_affiche') }}" id="Etats" title="Etats" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+									{% if pageActive == 'Etats' %}
+										<div class='img etats-active'></div>
+										<div class='txt pageactive'>{{ 'entete.menu.etat'|trans }}</div>
+									{% else %}
+										<div class='img etats'></div>
+										<div class='txt'>{{ 'entete.menu.etat'|trans }}</div>
+									{% endif %}
+								</a>
+							</li>
+                            <li>
+                                <a href="{{ path('ipc_analyse_bruleurs') }}" id="Bruleurs" title="Bruleurs" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                                    {% if pageActive == 'Bruleurs' %}
+                                        <div class='img bruleurs-active'></div>
+                                        <div class='txt pageactive'>{{ 'entete.menu.bruleur'|trans }}</div>
+                                    {% else %}
+                                        <div class='img bruleurs'></div>
+                                        <div class='txt'>{{ 'entete.menu.bruleur'|trans }}</div>
+                                    {% endif %}
+                                </a>
+                            </li>
+							<li>
+							{% else %}
+        	                <li class='menuleft'>
+							{% endif %}
+								<a href="{{ path('ipc_accueilListing') }}" id="Listing" title='Listing' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');"  onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                            	    {% if pageActive == 'Listing' %}
+                            	        <div class='img listing-active'></div>
+                            	        <div class='txt pageactive'>{{ 'entete.menu.listing'|trans }}</div>
+                            	    {% else %}
+                            	        <div class='img listing'></div>
+                            	        <div class='txt'>{{ 'entete.menu.listing'|trans }}</div>
+                            	    {% endif %}
+                            	</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('ipc_accueilGraphique') }}" id='Courbes' title='Courbes' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                                    {% if pageActive == 'Courbes' %}
+                                        <div class='img courbes-active'></div>
+                                        <div class='txt pageactive'>{{ 'entete.menu.courbe'|trans }}</div>
+                                    {% else %}
+                                        <div class='img courbes'></div>
+                                        <div class='txt'>{{ 'entete.menu.courbe'|trans }}</div>
+                                    {% endif %}
+                                </a>
+                            </li>
+							<li>	
+        	                    <a href="{{ path('ipc_rapports_conf') }}" id='Rapports' title='Rapports' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+        	                        {% if pageActive == 'Rapports' %}
+        	                            <div class='img rapports-active'></div>
+        	                            <div class='txt pageactive'>{{ 'entete.menu.rapport'|trans }}</div>
+        	                        {% else %}
+        	                            <div class='img rapports'></div>
+        	                            <div class='txt'>{{ 'entete.menu.rapport'|trans }}</div>
+        	                        {% endif %}
+        	                    </a>
+        	                </li>
+							{% if is_granted('ROLE_SUPERVISEUR') %}
+                                <li>
+                                    <a href="{{ path('ipc_outils_conf') }}" id='Outils' title='Outils' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                                        {% if pageActive == 'Outils' %}
+                                            <div class='img outils-active'></div>
+                                            <div class='txt pageactive'>{{ 'entete.menu.outil'|trans }}</div>
+                                        {% else %}
+                                            <div class='img outils'></div>
+                                            <div class='txt'>{{ 'entete.menu.outil'|trans }}</div>
+                                        {% endif %}
+                                    </a>
+                                </li>
+								<li> 
+									<a href="{{ path('ipc_conf') }}" id='Configurations' title='Configurations' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'> 
+										{% if pageActive == 'Configurations' %}
+											<div class='img configurations-active'></div>
+											<div class='txt pageactive'>{{ 'entete.menu.configuration'|trans }}</div>
+										{% else %}
+											<div class='img configurations'></div>
+											<div class='txt'>{{ 'entete.menu.configuration'|trans }}</div>
+										{% endif %}
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</div>
+				</menus>
+				<!-- /Header -->
+			
+				<!-- Période : Configuration de la période - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+				<configperiode>
+					{% spaceless %}
+						<div class='date'>
+							<div id='definitionPeriode' class='cacher'>
+								<label for="date">Du </label>
+								<div class="box">
+									<input type="text" onclick="addCloseCalendarFunction();ds_hi(2);ds_sh(this,1);" name="date_d" id="date_d" readonly="readonly" style="cursor: text" value="" />
+									<div class='calendrier'>
+										<table class="ds_box cacher" cellpadding="0" cellspacing="0" id="ds_conclass" >
+										<tr>
+											<td id="ds_calclass"></td>
+										</tr>
+										</table>
+									</div>
+								</div>
+								<label for="date">à</label>
+								<select name="heure_d" id="heure_d">
+									{% for heure in 0..23 %}
+										<option value="{{ heure }}">{{ heure }}</option>
+									{% endfor %}
+								</select>
+								:
+								<select name="minute_d" id="minute_d">
+								{% for minute in 0..59 %}
+									<option value="{{ minute }}">{{ minute }}</option>
+								{% endfor %}
+								</select>
+								<label for="date">Au</label>
+								<div class="box">
+									<input type="text" onclick="addCloseCalendarFunction();ds_hi(1);ds_sh(this,2);" name="date_f" id="date_f" readonly="readonly" style="cursor: text" value="" />
+									<div class='calendrier'>
+										<table class="ds_box cacher" cellpadding="0" cellspacing="0" id="ds_conclass2" >
+										<tr>
+											<td id="ds_calclass2"></td>
+										</tr>
+										</table>
+									</div>
+								</div>
+								<label for="date">à</label>
+								<select name="heure_f" id="heure_f">
+								{% for heure in 0..23 %}
+									<option value="{{ heure }}">{{ heure }}</option>
+								{% endfor %}
+								</select>
+								:
+								<select name="minute_f" id="minute_f">
+								{% for minute in 0..59 %}
+									<option value="{{ minute }}">{{ minute }}</option>
+								{% endfor %}
+								</select>
+							</div>
+							<div id='periodeDefinie' >
+								{% if messagePeriode is defined %}
+									<div class='entetePeriode'>
+										{{ messagePeriode }}
+									</div>
+								{% else %}
+									<br />
+								{% endif %}
+							</div>
+						</div>
+						<div class="configbouton" id='choixSelectionPeriode'>
+							<div class="bouton redNb"><div id='boutonInfoPeriode' class='bgbouton cacher'><a href="#" class="right" onClick="infoPeriode();return false;" >{{ 'periode.bouton.attention'|trans }}</a></div></div>
+							<div class="bouton blueC"><div id='boutonModificationPeriode' class='bgbouton'><a href="#" class="right" onClick="modificationPeriode('modifier');return false;" >{{ 'periode.bouton.modifier'|trans }}</a></div></div>
+						</div>
+					{% endspaceless %}
+				</configperiode>
+				<!-- /Période -->
+			</div>
+		</div>
+		<!-- Menu à gauche de la page (Utilisé pour les ETATS) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		{% block left_menu %}
+			<menu_gauche>
+				<div id='menuGauche'>
+					{% block menu_gauche %}
+					{% endblock menu_gauche %}
+				</div>
+			</menu_gauche>
+		{% endblock left_menu %}
+		<!-- /Menu -->
+		<!-- Menu à droite de la page (Utilisé pour les ETATS) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		{% block right_menu %}
+			<menu_droite>
+				{% block menu_droite %}
+				{% endblock menu_droite %}
+				<div id='menuDroite'>
+					{% block choix_validation %}
+					{% endblock choix_validation %}
+				</div>
+			</menu_droite>
+		{% endblock right_menu %}
+		<!-- /Menu -->
+		<!-- Page -->
+		<page class='pageDefaut'>
+            <div id='title_header'>
+                {% block title_header %}
+                {% endblock title_header %}
+            </div>
+
+			<div id='pagePrincipaleBody'>
+				{% spaceless %}
+					{% block body %}
+					{% endblock body %}
+				{% endspaceless %}
+			</div>
+			<div id='lightbox' class='cacher'>
+				{% block popup %}
+				{% endblock popup %}
+			</div>
+			<!-- Messages d'information - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+			<div id='messagebox' class='cacher'>
+				<div id='messageboxTexte'>
+					<div id='messageboxInfos'>
+						{% set nb_messagesbox = 0 %}
+						{% for message in app.session.flashbag.get('info') %}
+							{% set nb_messagesbox = nb_messagesbox + 1 %}
+							<div id='divMessageBox'>
+								{{ message|raw }}.
+							</div>
+						{% endfor %}
+						{% for message in app.session.flashbag.get('precision') %}
+							{% set nb_messagesbox = nb_messagesbox + 1 %}
+							{{ message }}.
+						{% endfor %}
+					</div>
+				</div>
+				<div class='right'><a href='#' style="height:30px;" id='lienMessageBox' onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>ok</div></div></a></div>
+			</div>
+			<!-- /Messages - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --->
+			<span id='verificationLoad' class='cacher'></span>
+		</page>
+		<!-- /Page -->
+
+		<!-- Footer - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		<div id='blockPiedDePage'>
+		{% block pied_de_page %}
+			<footer>
+				{% block footer %}
+				{% endblock footer %}
+				<div id='lightboxFooter' class='cacher notToBePrinted'>
+					{% block footerPopup %}
+					{% endblock footerPopup %}
+				</div>
+			</footer>	
+		{% endblock pied_de_page %}
+		</div>
+		<!-- /Footer -->
+	</div>
+
+    <div id='lightboxSmall' class='cacher'>
+        {% block popup_small %}
+        {% endblock popup_small %}
+    </div>
+
+
+    {% javascripts output='js/main.js' filter='jsqueeze'
+        'bundles/ipcprog/js/jquery.js'
+        'bundles/ipcprog/js/jquery.mCustomScrollbar.concat.min.js'
+        'bundles/ipcprog/js/functions_boilerbox.js'
+        'bundles/ipcprog/js/jquery-ui.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{#
+        {% javascripts output='js/main_test.js' filter='jsqueeze'
+            'bundles/ipcprog/js/jquery.js'
+            'bundles/ipcprog/js/jquery.mCustomScrollbar.concat.min.js'
+            'bundles/ipcprog/js/jquery-ui.js'
+        %}
+            <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+        <script type='text/javascript' src="{{ asset('bundles/ipcprog/js/functions_boilerbox.js') }}"></script>
+#}
+
+
+	{% javascripts output='js/calendar.js' filter='jsqueeze'
+		'bundles/ipcprog/js/calendar.js'
+	%}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+
+	{% block verificationChargement %}
+	<script type='text/javascript'>
+		//	Vérifie si la page a bien chargée les fichiers javascript
+		function verificationLoad() {
+			// Vérification du chargement du fichier js principal
+            if (typeof($chargementJs) == "undefined") {
+				document.getElementById('prechargement').innerHTML = "Chargement des fichiers javascript ...";
+                location.reload();
+				return 1;
+            }
+            // Vérification du chargement du js de calendrier
+            if (typeof($chargementCalendar) == "undefined") {
+                document.getElementById('prechargement').innerHTML = "Chargement des fichiers javascript ...";
+                location.reload();
+                return 2;
+            }
+
+			// Vérification du chargement du fichier css
+			setTimeout(function() {
+				var $element = document.getElementById('verificationLoad');
+				var $styleElement = window.getComputedStyle($element, null).getPropertyValue("width");
+				if ($styleElement != '99px') {
+					document.getElementById('prechargement').innerHTML = "Chargement du css ...";
+					location.reload();
+					return 3;
+				}
+			}, 1000);
+
+
+
+			//	Vérification du chargement des scripts js des pages index listing et index graphique
+			if (document.getElementById('pageListingIndex')) {
+				if (typeof($chargementSelection) == "undefined") {
+					document.getElementById('prechargement').innerHTML = "Chargement du module listing ...";
+					location.reload();
+					return 4;
+				}
+			}
+
+            //  Vérification du chargement des scripts js des pages index listing et index graphique
+            if (document.getElementById('pageGraphiqueIndex')) {
+                if (typeof($chargementSelection) == "undefined") {
+					document.getElementById('prechargement').innerHTML = "Chargement du module courbes ...";
+                    location.reload();
+                    return 4;
+                }
+            }
+
+			// Vérification du chargement des scripts js de la page listing
+			if (document.getElementById('pageListingView')) {
+                if (typeof($chargementListing) == "undefined") {
+					document.getElementById('prechargement').innerHTML = "Chargement des listing ...";
+                    location.reload();
+                    return 5;
+                }
+			}
+
+            // Vérification du chargement des scripts js de la page listing
+            if (document.getElementById('pageGraphiqueView')) {
+                if (typeof($chargementGraphique) == "undefined") {
+					document.getElementById('prechargement').innerHTML = "Chargement des courbes ...";
+                    location.reload();
+                    return 5;
+                }
+				if (typeof($chargementGestionCourbes) == "undefined") {
+					document.getElementById('prechargement').innerHTML = "Chargement des données graphiques ...";
+					location.reload();
+					return 6;
+				}
+            }
+
+			// Vérification du chargement des scripts js du module configuration
+			if (document.getElementById('pageConfiguration')) {
+                document.getElementById('prechargement').innerHTML = "Chargement du module configuration ...";
+                if (typeof($chargementConfiguration) == "undefined") {
+                    location.reload();
+                    return 7;
+                }
+			}
+
+            // Vérification du chargement des scripts js du module rapport
+            if (document.getElementById('pageRapportsView')) {
+                document.getElementById('prechargement').innerHTML = "Chargement du module rapports ...";
+                if (typeof($chargementRapports) == "undefined") {
+                    location.reload();
+                    return 8;
+                }
+            }
+
+            // Vérification du chargement des scripts js du module outils
+            if (document.getElementById('pageOutilsView')) {
+                document.getElementById('prechargement').innerHTML = "Chargement du module outils ...";
+                if (typeof($chargementOutils) == "undefined") {
+                    location.reload();
+                    return 9;
+                }
+            }
+			
+			document.getElementById('prechargement').setAttribute('class','cacher');
+			return 0;
+		}
+
+		// Ajout l'événement d'écoute du chargement de la page. Spécificité IE prise en compte
+		function addEvent(obj, event, fct) {
+			if (obj.attachEvent) {
+				obj.attachEvent("on" + event, fct);
+			} else {
+				obj.addEventListener(event, fct, true);
+			}
+		}
+
+		//	Création de l'événement d'écoute du chargement de la page
+		addEvent(window, "load", verificationLoad);
+
+
+		var $commandePing;
+		var $reponsePing = true;
+		var $nbTimeoutPing = 0;
+		$(document).ready(function() {
+			var $url_ping = $("#ping").attr('data-url');
+			$ping_timeout = $("#pingTimeout").val();
+			$ping_intervalle  = $("#pingIntervalle").val();
+
+			if ($ping_timeout === null) {
+				alert("Le paramètre 'ping_timeout' est manquant : Valeur donnée : 5000");
+				$ping_timeout = 5000;
+			}
+
+			if ($ping_intervalle === null) {
+				alert("Le paramètre 'ping_intervalle' est manquant : Valeur donnée : 5001");
+    		    $ping_intervalle = 5000;
+    		}
+
+			$.ajax({
+				type: 'get',
+				url: $url_ping,
+				timeout: $ping_timeout,
+				success: function($data,$textStatus) {
+					$("#ping").attr('class', 'serveurActif');
+					$("#ping").text($data);
+				},
+				error: function(xhr, textStatus) {
+					$("#ping").attr('class', 'serveurInactif');
+					$("#ping").text('Serveur Inactif : ' + textStatus);
+				}
+			});
+
+	    	$commandePing = setInterval(function() {
+				//console.log('pi');
+				if ($reponsePing == false) {
+					$nbTimeoutPing = $nbTimeoutPing + 1;
+            		$("#ping").attr('class', 'serveurInactif');
+            		$("#ping").text('Serveur occupé');
+					return 1;
+				}
+				$nbTimeoutPing = 0;
+				//console.log('..ing');
+				$reponsePing = false;
+	    	    $.ajax({
+	    	        type: 'get',
+	    	        url: $url_ping,
+	    	        success: function($data,$textStatus) {
+                        //console.log('true ok');
+                        $reponsePing = true;
+	    	            $("#ping").attr('class', 'serveurActif');
+	    	            $("#ping").text($data);
+	    	        },
+	    	        error: function(xhr, textStatus, error) {
+                        //console.log('true nok : ' + textStatus + " -> " + error);
+                        $reponsePing = true;
+	    	            $("#ping").attr('class', 'serveurInactif');
+	    	            $("#ping").text('Serveur Inactif : ' + textStatus);
+	    	        }
+	    	    });
+	    	}, $ping_intervalle);
+		});
+	</script>
+	{% endblock verificationChargement %}
+
+	<script type='text/javascript'>
+		// Annulation de la commande du ping lors du chargement de la page
+		function stopPing(){
+			clearInterval($commandePing);
+		}
+		
+		function changeSession(){
+			attente();
+			var $urlChangeSession = $("#select_session").attr('data-url');
+			var $sessionSelected = $("#select_session option:selected").text();
+			$.ajax({
+				type: 'get',
+				url: $urlChangeSession,
+				data: {"nomSession":$sessionSelected},
+				success: function($data, $textStatus) {
+					location.reload();
+                },
+                error: function(xhr, textStatus, error) {
+					alert('error ' + textStatus + ' - '+ error);
+					fin_attente();
+                }
+            });
+		}
+
+		function newSession(){
+			attente();
+            var $urlChangeSession = $("#select_session").attr('data-url');
+			$.ajax({
+                type: 'get',
+                url: $urlChangeSession,
+                data: {"nomSession":"newSession"},
+                success: function($data, $textStatus) {
+					var $urlAccueil = $("#lien_url_ajax").attr('data-urlAccueil');
+					location.href = $urlAccueil;
+                },
+                error: function(xhr, textStatus, error) {
+                    alert('error ' + textStatus + ' - '+ error);
+                    fin_attente();
+                }
+            });
+		}
+
+		/* Fonction qui met ou enleve la classe vueRestreinte */
+		function vueRestreinte() {
+			$('#headprint').toggleClass("vueRestreinte");
+			$('#pagePrincipaleBody').toggleClass("vueRestreinte");
+			$('#blockPiedDePage').toggleClass("vueRestreinte");
+			$('#vueRestreinte').toggleClass("vueRestreinte");
+
+
+			$('.pageDefaut').toggleClass("vueRestreinte");
+			$('menus').toggleClass("vueRestreinte");
+			$('configperiode').toggleClass("vueRestreinte");
+		}
+	</script>
+
+	{% block progJavascript %}
+    	{% javascripts output='js/validation_popup.js' filter='jsqueeze'
+    	    'bundles/ipcprog/js/validation_popup.js'
+    	%}
+    	    <script src="{{ asset_url }}"></script>
+    	{% endjavascripts %}
+		{#<script type='text/javascript' src="{{ asset('bundles/ipcprog/js/validation_popup.js') }}"></script>#}
+	{% endblock progJavascript %}
+
+    {% block bodyjavascript %}
+    {% endblock bodyjavascript %}
+
+</body>
+</html>

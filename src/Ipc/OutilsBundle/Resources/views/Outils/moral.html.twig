@@ -1,0 +1,32 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/moral.html.twig #}
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+{% block title_header %}
+    <h1>Outils</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+	<section id='menu_general'>
+		<div class='imgMoral'></div>
+	</section>
+{% endblock body %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+        $(function() {
+            $('#select_outils').change(function() {
+                attente();
+                setTimeout(function() {
+                    var $url_outils = $('#select_outils').val();
+                    window.location.href = $url_outils;
+                }, 100);
+            });
+        });
+	</script>
+{% endblock bodyjavascript %}

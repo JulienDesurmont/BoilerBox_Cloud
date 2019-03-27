@@ -1,0 +1,1064 @@
+.border-bouton {
+  width: auto;
+  display: inline-block;
+  padding: 2px 8px 1px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  text-align: center;
+}
+.input-texte {
+  margin-left: 0;
+  background-color: #FFF;
+  color: #000000;
+  width: 180px;
+  height: 23px;
+  border: 1px solid #000000;
+}
+page table .genrebox {
+  width: 35px;
+  height: 35px;
+}
+a {
+  text-decoration: none;
+}
+button {
+  border: #006AB3 solid 3px;
+  border-radius: 3px;
+  color: #292929;
+  font-size: 18px;
+  margin: 0 5px;
+  width: 200px;
+}
+div.etatFonctionnementBruleur p>span:first-child {
+  display: inline-block;
+  width: 600px;
+}
+.bouton.afficher {
+  border: #0081c7 solid 4px;
+}
+.bouton.blue {
+  color: #006AB3;
+  border: #006AB3 solid 3px;
+}
+.bouton.blueC {
+  color: #0076DA;
+  border: #0076DA solid 3px;
+}
+.bouton.green {
+  color: #3FA740;
+  border: #3FA740 solid 3px;
+}
+.bouton.orange {
+  color: #EE921A;
+  border: #EE921A solid 3px;
+}
+.bouton.red {
+  color: #E42322;
+  border: #E42322 solid 3px;
+}
+.bouton.redNb {
+  color: #E42322;
+}
+.yellow {
+  color: #FCF809;
+}
+.black {
+  color: #000000;
+}
+.red {
+  color: #E42322;
+}
+.cacher {
+  display: none !important;
+}
+.souligne {
+  text-decoration: underline;
+}
+.genreAlarme {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -81px -36px;
+}
+.genreAnalogique {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -116px -36px;
+}
+.genreCommande {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -151px -36px;
+}
+.genreCritique {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -81px -70px;
+}
+.genreEvenement {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -116px -70px;
+}
+.genreParametre {
+  display: inline-block;
+  background-image: url(../images/ipcWeb/boutons-menu.png);
+  background-position: -151px -70px;
+}
+.iconeBoilerbox {
+  display: inline-block;
+  height: 82px;
+  width: 10px;
+}
+* {
+  box-sizing: border-box;
+}
+#logo-IBC .img {
+  position: absolute;
+  width: 81px;
+  height: 81px;
+  float: left;
+  background: no-repeat;
+  display: block;
+}
+#logo-IBC span {
+  color: #0076DA;
+}
+#login .logout {
+  text-align: right;
+}
+#login .logout a {
+  font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: #0076DA;
+  text-decoration: underline;
+}
+#login .logout span {
+  font-size: 15px;
+}
+#listingpreconf .localisation {
+  width: 75px;
+  text-align: center;
+}
+#listingpreconf .code {
+  width: 180px;
+  text-align: center;
+}
+#listingpreconf .designation {
+  text-align: left;
+}
+#listingpreconf .periodedate {
+  width: 180px;
+  margin-right: 60px;
+}
+#listingpreconf .periodeheure {
+  width: 60px;
+  text-align: center;
+  padding: 0 5px;
+}
+#listingpreconf .actions {
+  width: 60px;
+  padding-left: 10px;
+}
+#graphiqueperso .localisation {
+  width: 75px;
+  text-align: center;
+}
+#graphiqueperso .code {
+  width: 180px;
+  text-align: center;
+}
+#graphiqueperso .designation {
+  text-align: left;
+}
+#graphiqueperso .optimisation {
+  width: 240px;
+  text-align: center;
+}
+#graphiqueperso .actions {
+  width: 120px;
+}
+#listingmessage .localisation {
+  width: 20px;
+  text-align: center;
+  padding: 0 10px 0 10px;
+}
+#listingmessage .code {
+  width: 120px;
+  text-align: left;
+  padding: 0 5px 0 5px;
+}
+#listingmessage .designation {
+  text-align: left;
+  padding: 0 10px 0 10px;
+}
+#listingmessage .horodatage {
+  width: 135px;
+  text-align: left;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#listingmessage .valeurs {
+  width: 120px;
+  text-align: right;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+#listingmessage .indice {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+}
+#etatperso .localisation {
+  width: 20px;
+  text-align: center;
+  padding: 0 10px 0 10px;
+}
+#etatperso .code {
+  width: 120px;
+  text-align: center;
+  padding: 0 5px 0 5px;
+}
+#etatperso .designation {
+  text-align: left;
+  padding: 0 10px 0 10px;
+}
+#etatperso .optimisation {
+  width: 240px;
+  text-align: center;
+}
+#etatperso .actions {
+  width: 120px;
+  padding-left: 20px;
+  padding-right: 5px;
+}
+#ajoutetat .Pleft {
+  width: 490px;
+  display: inline-block;
+  vertical-align: top;
+}
+#ajoutetat .Pcenter {
+  width: 70px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  padding: 0 5px 0 5px;
+}
+#ajoutetat .Pright {
+  width: 490px;
+  display: inline-block;
+  vertical-align: top;
+}
+#ajoutetat .message {
+  margin-top: 20px;
+}
+#ajoutetat h1 {
+  text-align: center;
+  color: #000000;
+}
+#ajoutetat h2 {
+  font-size: 1.35em;
+}
+#afficheEtat thead th {
+  margin: 50px 0 0 0;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight: bold;
+  font-size: 40px;
+  color: #4b4b4b;
+  display: inline-block;
+  width: 100%;
+  text-transform: uppercase;
+  text-align: center;
+  height: 60px;
+  border: none;
+}
+#afficheEtat thead td {
+  margin: 30px 0 0 0;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #4b4b4b;
+  display: inline-block;
+  width: 100%;
+  text-transform: uppercase;
+  text-align: center;
+  height: 60px;
+}
+#afficheEtat tbody th {
+  margin: 50px 0 10px 0;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #4b4b4b;
+  display: inline-block;
+  width: 100%;
+  text-transform: uppercase;
+  text-align: left;
+  height: 30px;
+}
+#afficheEtat table .report td:first-child {
+  width: 800px;
+}
+#afficheEtat table .execution td:first-child {
+  width: 700px;
+}
+#legende_localisation {
+  display: inline;
+}
+#legende {
+  margin: 4px 0;
+  padding-bottom: 10px;
+  font-size: 0.8em;
+}
+#legende .genrebox {
+  width: 35px;
+  height: 33px;
+  margin: 0 5px;
+  position: absolute;
+  left: -43px;
+  top: -12px;
+}
+#legende .indice {
+  position: absolute;
+  top: -8px;
+  left: -10px;
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: #FFF;
+  font-size: 12px;
+  font-weight: bold;
+}
+header {
+  display: flex;
+  width: 85%;
+  height: 110px;
+  margin-top: 20px;
+  margin-left: 100px;
+  color: #4b4b4b;
+}
+menu_gauche {
+  display: none;
+  display: table-row-group;
+}
+menu_droite {
+  display: none;
+  display: table-row-group;
+}
+configperiode {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0;
+  width: 90%;
+  height: 23px;
+  display: block;
+  border-bottom: #000 solid 1px;
+  margin-left: 40px;
+  white-space: nowrap;
+}
+configperiode a {
+  color: #FFF;
+  text-transform: uppercase;
+}
+configperiode .date {
+  font-size: 14px;
+  text-align: left;
+  color: #4b4b4b;
+  display: inline-block;
+  width: 100%;
+}
+configperiode .configbouton {
+  display: inline-block;
+  width: 20%;
+  text-align: right;
+  display: none;
+}
+configperiode .bouton {
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 5px 15px 3px 15px;
+  border-radius: 15px;
+  border: #202a36 solid 3px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 14px;
+}
+configperiode .input {
+  height: 22px;
+  width: 170px;
+  text-align: center;
+}
+page {
+  min-width: 1024px;
+  display: table-row-group;
+  color: #4b4b4b;
+}
+footer {
+  display: table-footer-group;
+  text-align: left;
+}
+body {
+  margin: 0;
+  width: 100%;
+  font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+  counter-reset: numeroDePage;
+}
+h1 {
+  margin: 8px 0 0 0;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight: lighter;
+  font-size: 40px;
+  color: #4b4b4b;
+  clear: both;
+  width: 100%;
+}
+ul {
+  list-style: none;
+  margin: 0;
+}
+select {
+  color: #292929;
+  text-align: center;
+  font-size: 18px;
+  width: auto;
+  height: 30px;
+  text-align: left;
+  background: #FFF;
+  border: none;
+  border: #999 solid 3px;
+  border-radius: 3px;
+  margin: 0 5px;
+}
+input {
+  border: #999 solid 3px;
+  border-radius: 3px;
+  color: #292929;
+  font-size: 18px;
+  margin: 0 5px;
+  width: 200px;
+}
+thead {
+  border-bottom: #4b4b4b solid 2px;
+}
+thead .actions {
+  text-align: center;
+}
+thead .periodedate {
+  text-align: center;
+}
+th {
+  height: 18px;
+  font-family: "Myriad Pro", Verdana, Geneva, sans-serif;
+  font-weight: lighter;
+  font-size: 14px;
+  color: #4b4b4b;
+}
+th span:nth-child(0n+2) {
+  color: #999;
+}
+tbody tr {
+  height: 40px;
+  border-bottom: #000 solid 1px;
+}
+tbody .actions {
+  text-align: right;
+}
+tbody .periodedate {
+  text-align: left;
+}
+tbody .code {
+  padding-top: 8px;
+}
+td.localisation {
+  font-size: 30px;
+  border: none;
+  vertical-align: middle;
+  height: auto;
+}
+td.code {
+  font-size: 30px;
+  border: none;
+  height: auto;
+}
+td.designation {
+  white-space: nowrap;
+}
+td.periodedate {
+  font-size: 18px;
+  line-height: normal;
+  border: none;
+  height: auto;
+}
+td.periodeheure {
+  font-size: 18px;
+  line-height: normal;
+  height: auto;
+}
+td.actions {
+  font-size: 10px;
+  border: none;
+  height: auto;
+}
+td.texte {
+  font-size: 22px;
+}
+td.horodatage {
+  padding-top: 5px;
+}
+td.horodatage .date {
+  font-size: 14px;
+  line-height: 10px;
+}
+td.horodatage .heure {
+  font-size: 26px;
+}
+td.valeurs .valeur1 {
+  font-size: 20px;
+}
+td.valeurs .valeur2 {
+  font-size: 16px;
+  color: #999;
+}
+td.bouton {
+  width: 35px;
+  height: 35px;
+  margin: 9px 5px 5px 5px;
+  border-radius: 50%;
+}
+td.boutonname {
+  text-align: center;
+}
+a.bouton {
+  width: 55px;
+  height: auto;
+  display: inline-block;
+  border-radius: 0;
+  margin: 0;
+  color: #999;
+}
+a.disabled {
+  color: red;
+  pointer-events: none;
+}
+img.afficher {
+  background-repeat: no-repeat;
+  margin: 11px 0 0 6px;
+}
+img.ajouter {
+  background-repeat: no-repeat;
+  margin: 4px 4px 4px 4px;
+}
+img.editer {
+  background-repeat: no-repeat;
+  margin: 7px 7px 7px 7px;
+}
+img.supprimer {
+  background-repeat: no-repeat;
+  margin: 7px 7px 7px 7px;
+}
+div.etatSection {
+  background-color: #D8D8D8;
+  margin-top: 20px;
+  width: 80%;
+  border: 2px groove #D8D8D8;
+}
+div.etatSelectLocalisation {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+div.separation {
+  background-color: #D8D8D8;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 70%;
+  border: 2px groove #D8D8D8;
+}
+div.separation2 {
+  background-color: #D8D8D8;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 30%;
+  border: 2px groove #D8D8D8;
+}
+div.espace {
+  display: inline-block;
+  width: 1px;
+}
+div.finDePage {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  text-align: right;
+  margin-top: 100px;
+}
+div.finDePage:before {
+  counter-increment: numeroDePage;
+  content: "Page " counter(numeroDePage);
+}
+div.calendrier {
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+}
+div.etatPage {
+  page-break-before: always;
+  border: 2px solid white;
+  height: 1100px;
+}
+div.etatPage h1 {
+  font-size: 20px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+div.etatPage h2 {
+  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: normal;
+  text-decoration: underline;
+}
+div.etatPage h3 {
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  padding-left: 10px;
+}
+div.etatPage p {
+  margin: 0;
+  font-size: 14px;
+}
+div.etatPage p span {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+div.etatContainer {
+  margin-top: 30px;
+}
+div.etatFinPage {
+  page-break-after: always;
+  text-align: right;
+  border: 2px solid white;
+  margin-bottom: 10px;
+}
+div.etatCompteur p>span:first-child {
+  display: inline-block;
+  width: 300px;
+}
+table {
+  border-collapse: collapse;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+table.pageEtat {
+  position: relative;
+  page-break-before: always;
+  height: 1450px;
+}
+table.pageEtat1 {
+  position: relative;
+  height: 1450px;
+}
+table.pageEtat th {
+  height: 50px;
+  border-bottom: 1px dashed black;
+}
+table.pageEtat td {
+  height: 10px;
+}
+table.footerEtat {
+  position: relative;
+  height: 100px;
+}
+span.etatNombre {
+  display: inline-block;
+  width: 60px;
+  text-align: right;
+}
+.bouton.ajouter {
+  border: #3fa740 solid 4px;
+}
+.bouton.editer {
+  border: #0081c7 solid 4px;
+}
+.bouton.supprimer {
+  border: #e63d43 solid 4px;
+}
+.titreBoilerInitial {
+  font-size: 20px;
+  font-weight: bold;
+}
+.titreBoilerTitre {
+  font-size: 18px;
+  font-weight: bold;
+}
+.afficher {
+  display: inline-block;
+}
+.notToBePrinted {
+  display: none;
+}
+.iconeAdministrateur {
+  display: inline-block;
+  height: 38px;
+  width: 38px;
+}
+.iconeTechnicien {
+  display: inline-block;
+  height: 38px;
+  width: 38px;
+}
+.iconeClient {
+  display: inline-block;
+  height: 38px;
+  width: 38px;
+}
+.txtlocalisation {
+  position: relative;
+  font-weight: bold;
+}
+.etatTitre label {
+  display: inline-block;
+  width: 200px;
+}
+.etatTitre input {
+  margin-left: 30px;
+  border: 1px solid blue;
+  background-color: white;
+  color: black;
+  width: 600px;
+  border: 1px solid black;
+}
+.etatPeriode label {
+  display: inline-block;
+  width: 200px;
+}
+.etatPeriode input[type='text'] {
+  margin-left: 30px;
+  border: 1px solid blue;
+  background-color: white;
+  color: black;
+  width: 40px;
+  border: 1px solid black;
+}
+.etatPeriode span.vide {
+  display: inline-block;
+  width: 300px;
+}
+.etatPeriode span.space {
+  display: inline-block;
+  width: 100px;
+}
+.etatPeriode select {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.etatSelectLocalisation {
+  padding-right: 97px;
+  text-align: left;
+  margin-bottom: 19px;
+}
+.etatSelectLocalisation label {
+  display: inline-block;
+  width: 100px;
+}
+.etatSelectLocalisation select {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.etatSelectMessage {
+  padding-right: 97px;
+  text-align: left;
+  margin-bottom: 19px;
+}
+.etatSelectMessage label {
+  display: inline-block;
+  width: 100px;
+}
+.etatSelectMessage select {
+  margin-left: 30px;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.etatSelectMessage input {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.etatSelectMessage div.Pleft select {
+  display: inline-block;
+  width: 200px;
+}
+.etatSelectMessage div.message select {
+  display: inline-block;
+  width: 900px;
+}
+.etatDesignationModule {
+  margin-bottom: 20px;
+  width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.etatDesignationModule label {
+  display: inline-block;
+  width: 200px;
+}
+.etatDesignationModule input {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.etat_container {
+  width: 98%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.smallContainer {
+  display: inline-block;
+  height: 300px;
+  width: 49%;
+}
+.largeContainer {
+  display: inline-block;
+  height: 300px;
+  width: 100%;
+}
+.sous_titre {
+  text-decoration: underline;
+  font-weight: bold;
+}
+.petitScreen {
+  display: none;
+}
+.pagePaysage {
+  margin-left: 40px;
+  height: 850px;
+}
+#logo-IBC {
+  width: 250px;
+}
+#logo-IBC .txt {
+  padding: 18px 0 0 18px;
+  color: #FFF;
+  line-height: 15pt;
+}
+#headprint {
+  display: table-header-group;
+  margin-bottom: 10px;
+}
+#boutontitre {
+  display: none;
+}
+#title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#enTeteInitial {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#headerUser {
+  font-size: 20px;
+}
+#headerUser div.heureImpression {
+  padding-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+#login {
+  padding-top: 5px;
+  text-align: right;
+  width: 200px;
+}
+#login .box {
+  margin: 0 0 0 10px;
+  width: 47px;
+  height: 47px;
+  float: right;
+  border: solid 3px #4b4b4b;
+  border-radius: 10px;
+}
+#login .box img {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+#ping {
+  display: none;
+}
+#menu {
+  display: none;
+}
+#validation {
+  margin-top: 15px;
+  display: block;
+  background: #F90;
+}
+#validation .bouton {
+  width: auto;
+  float: right;
+  font-size: 16px;
+  text-align: center;
+  margin-left: 10px;
+  padding: 5px 15px 3px 15px;
+  border-radius: 15px;
+  border: #dbdada solid 3px;
+  line-height: 14px;
+}
+#validation a {
+  color: #FFF;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#listingperso .localisation {
+  width: 75px;
+  text-align: center;
+}
+#listingperso .code {
+  width: 180px;
+  text-align: center;
+}
+#listingperso .designation {
+  text-align: left;
+}
+#listingperso .optimisation {
+  width: 240px;
+  text-align: center;
+}
+#listingperso .actions {
+  width: 120px;
+}
+#listingmessage {
+  width: 90%;
+  margin: auto;
+}
+#listingmessage .genre {
+  width: 10px;
+  text-align: center;
+}
+#listingDeDonnees table tr {
+  border: none;
+}
+#listingDeDonnees table td {
+  padding-bottom: 15px;
+}
+#legende {
+  margin-left: 50px;
+}
+#legende ul {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+#legende li {
+  list-style: none;
+  display: inline;
+  margin-left: 45px;
+  position: relative;
+}
+#legende li .block {
+  list-style: none;
+  display: block;
+  margin-left: 152px;
+  position: relative;
+}
+#legende #legende_zone_genre .legende_zone_infos {
+  margin-top: 10px;
+}
+#legende_requete {
+  display: inline;
+  margin-left: 25px;
+}
+#legende_genre {
+  display: inline;
+  margin-left: 70px;
+}
+#siteIpc {
+  display: table-header-group;
+  width: 100%;
+}
+#title_header {
+  margin-left: 0;
+}
+#title_header h1 {
+  font-size: 28px;
+  width: 100%;
+  text-align: center;
+}
+#afficheEtat table {
+  border-collapse: collapse;
+}
+#afficheEtat table tr {
+  height: 10px;
+  border: 0px;
+}
+#afficheEtat table.compteur td:first-child {
+  width: 480px;
+}
+#legendeGraphique {
+  display: inline-block;
+  position: relative;
+  font-size: 12px;
+  margin-left: 50px;
+}
+#TableEtat1 table tr {
+  page-break-inside: avoid;
+}
+#blockPiedDePage {
+  display: table-footer-group;
+}
+#blockPiedDePage:after {
+  display: inline-block;
+  counter-increment: numeroDePage;
+  content: "Page " counter(numeroDePage);
+  width: 98%;
+  text-align: right;
+  margin-top: 50px;
+}
+#etat1Affichage {
+  display: table;
+  margin-left: 100px;
+}
+#etatHeader {
+  display: table-header-group;
+  height: 100px;
+  text-align: center;
+}
+#etatHeader h1 {
+  font-size: 30px;
+}
+#etatHeader h2 {
+  font-size: 25px;
+}
+#etatBody {
+  display: table-cell;
+}
+#etatPartieFonctionnement p>span:first-child {
+  display: inline-block;
+  min-width: 350px;
+}
+#resultatDebut {
+  width: 90%;
+  margin: auto;
+}

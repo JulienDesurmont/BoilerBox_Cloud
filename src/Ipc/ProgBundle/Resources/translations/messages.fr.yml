@@ -1,0 +1,220 @@
+# /src/Ipc/ProgBundle/Resources/translations/messages.fr.yml
+entete:
+    menu:
+        etat: Etat
+        courbe: Courbes
+        rapport: Rapports
+        listing: Listings
+        outil: Outils
+        bruleur: Brûleurs
+        configuration: Configuration
+    lien:
+        deconnexion: Déconnexion
+        connexion: Connexion
+
+periode:
+    duree:
+        seconde: seconde
+        minute: minute
+        heure: heure
+        jour: jour
+        mois: mois
+        pluriel:
+            seconde: seconde|]1,+Inf]secondes
+            minute: minute|]1,+Inf]minutes
+            heure: heure|]1,+Inf]heures
+            jour: jour|]1,+Inf]jours
+            mois: mois|]1,+Inf]mois
+    bouton:
+        attention: Attention
+        modifier: Modifier
+        valider: Valider
+    info:
+        chargement: Chargement
+        none: Aucune période définie
+    compression:
+        moyenne: Moyenne par  
+        maximum: Maximum par 
+        minimum: Minimum par 
+        complete: Recherche complète
+        points:
+            moyen: point moyen
+            maximum: point maximum
+            minimum: point minimum
+            complete: tous les points
+info:
+    rapport:
+        enregistrer: Rapport enregistré
+        modifier: Rapport modifié
+        none: Aucun rapport trouvé
+        tailleDocuments: "Les documents joints sont trop volumineux. Taille maximum autorisée : %maxUploadedFileSize%"
+        trigrammeIntervention:
+            absent_base: Module %trigrammeIntervention% non présent en base de donnée - Rapport non enregistré
+            absent_configuration: "Paramètre de configuration [trigramme_intervention] manquant - Rapport non enregistré"
+            erreur_configuration: "Paramètre de configuration [trigramme_intervention] mal déclaré (%trigrammeIntervention%) - Rapport non enregistré"
+    erreur:
+        titre: "Erreur"
+        recherche_fichier: "Fichier non trouvé"
+        import_fichier: "Erreur : Fichier non importé"
+    periode:
+        none: Veuillez sélectionner une période de recherche
+
+select:
+    points: 
+        tous: Tous les points
+        moyen: Le point moyen
+        minimum: Le point minimum
+        maximum: Le point maximum
+    pas:
+        titre: Sur un pas de
+        seconde: Seconde
+        minute: Minute
+        heure: Heure
+        jour: Jour
+        mois: Mois
+    requetes_client:
+        titre:
+           listing: Requêtes listing du compte client
+           graphique: Requêtes graphiques du compte client
+    requetes_perso:
+        titre:
+           listing: Requêtes personnelles
+           graphique: Requêtes personnelles
+    popup:
+        tous_genres: Tous les genres
+        tous_modules: Tous les modules
+        tous_messages: Tous les messages
+
+lien:
+    precedent: Précédent
+    suivant: Suivant
+    ajout_fichier: Ajouter un fichier
+    supprimer: Supprimer
+
+checkbox:
+    requetes_client: Requête cliente :
+    afficher: Afficher
+    minimiser: Minimiser
+    uniformiser: Uniformiser toutes les échelles
+    legende: Toutes / Aucune
+
+textbox:
+    bas: Bas
+    haut: Haut
+    pas: Pas
+
+bouton:
+    requetes_client:
+        enregistrement: Enregistrer
+        suppression: Supprimer
+    ajouter_requete: Ajouter
+    supprimer_requete: Supprimer
+    editer_requete: Editer
+    rechercher: Rechercher
+    raz: Raz
+    retour: Retour
+    afficher: Afficher
+    modifier: Modifier
+    recalculer: Recalculer
+    enregistrer: Enregistrer
+    nouveau: Nouveau
+    export: Exporter
+    valider: Valider
+    transferer: Transférer
+    popup:
+        valider: Valider
+        fermer: Fermer
+
+label:
+    oui: Oui
+    non: Non
+    sur: sur 
+    chargement: Chargement ...
+    legende:
+        checkbox: Courbes affichées
+        requetes: Requêtes
+        localisations: Localisations
+        genres: Genres
+    titre:
+        principal: Analyse des données d’exploitation
+        legende: Légende
+        courbe: Courbes
+        listing: Listings
+        rapport: "Rapports d'intervention"
+        nouveau_rapport: "Nouveau rapport d'intervention"
+        vue_rapport: "Liste des rapports d'intervention"
+        pas_de_donnee: Aucune donnée trouvée
+        page_inexistante: Page %page% inexistante
+        compression: COMPRESSION
+    export_rapport: Exportation des rapports
+    site: Site
+    localisation: Localisation
+    localisation_reduit: Loc.
+    code_message: Code message
+    designation: Désignation
+    action: Action
+    genre: Genre
+    module: Module
+    message: Message
+    valeur1: Valeur 1
+    valeur2: Valeur 2
+    horodatage: Horodatage
+    points: Points
+    compression: Compression
+    ajout_listing: Ajouter un listing
+    ajout_courbe: Ajouter une courbe
+    ou: ou
+    et: et
+    donnee: Donnée|]1,+Inf]Données
+    requete_timeout: "Temps d'execution maximum des requêtes dépassé"
+    afficher: Afficher
+    infos_bulles: Infos-bulles
+    ajout_rapport: "Ajout d'un rapport"
+    visualisation_rapport: "Visualisation d'un rapport"
+    info:
+        points_max: Pour afficher le graphique, le nombre de points par courbe est limité à %limit%. Au delà, il est nécessaire de compresser la courbe pour réduire le nombre de points.
+        modification:
+            listing: Modifier la recherche
+            courbe: Modifier la recherche
+        rafraichissement: Rafraichissement
+        impression: Impression
+        compression: Compression
+        reinitialisation: Réinitialisation
+        export_csv: Exportation des toutes les données
+        export_page_csv: Exportation des données affichées
+    popup:
+        titre:
+            listing: Listings
+            courbe: Courbes
+            filtre: Filtrer les données
+            mots_cle: Recherche par mots clé
+            selection_message: Sélectionner un message
+            ajout_requete_personnelle: Ajouter une requête personnelle
+        filtre:
+            superieur:
+                designation: Supérieure
+                description: Accepte tous les messages dont la valeur %numero% est supérieure à
+            compris:
+                designation: Comprise
+                description: Accepte tous les messages dont la valeur %numero% est comprise entre
+            inferieur:
+                designation: Inférieure
+                description: Accepte tous les messages dont la valeur %numero% est inférieure à
+        textbox:
+            intitule_requete: Intitulé de la requête
+            
+    rapport:
+        recherche: Recherche de rapports
+        titre: Titre
+        horodatage: "Date de l'intervention"
+        zone_rapport: Rapport
+        equipement: Intervention effectuée sur un équipement en particulier
+        intervenant: Utilisateur
+        fichiers_inclus: Fichier(s)
+        fichiers_lies: Fichier lié|]1,+Inf]Fichiers liés
+        titre_vue: Rapport de %auteur% fait le %horodatage% 
+        titre_vue_equipement: sur %equipement%
+        titre_vue_tousEquipements: sur tous les équipements
+
+Enregistrer: Enregistrer
+Retour: Retour

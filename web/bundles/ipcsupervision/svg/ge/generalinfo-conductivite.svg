@@ -1,0 +1,8 @@
+<svg version="1.1" class="Conductivite" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 80 160" xml:space="preserve">
+	<style type="text/css">
+		.svg-ge-conductivite			{fill:none; stroke:#007edf; /*stroke:#FFFFFF;*/ stroke-width:4; stroke-miterlimit:10;}
+		.svg-ge-conductivite-eclair		{fill:#FFFFFF; /*stroke:#007edf;*/ stroke:#FFFFFF; stroke-width:2; stroke-miterlimit:10;}
+	</style>
+	<path class="svg-ge-conductivite" d="M80,52.2c-6.5,0-11.4-5.7-17.7-5.8c-3.3,0-8.9,4-14.3,4.4c-4.2,0.3-7.6-3.1-12.8-3 c-8.6,0.1-10.1,4.5-14.2,4.5c-1.7,0-3.2-0.1-4.5-0.3c-3.9,8.7-6.1,18.3-6.1,28.4c0,38.4,31.1,69.6,69.6,69.6"/>
+	<polygon class="svg-ge-conductivite-eclair" points="58.6,64.6 48.6,84 57,88.4 45.4,101.7 55,107.2 44.2,124.1 61.9,106.2 54.2,100.7 68.1,86.1 59.3,80.9 70,66.4 "/>
+</svg>

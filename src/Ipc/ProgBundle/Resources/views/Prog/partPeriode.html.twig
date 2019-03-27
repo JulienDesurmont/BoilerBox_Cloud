@@ -1,0 +1,64 @@
+<div class='date'>
+	<div id='definitionPeriode' class='cacher'>
+		<label for="date">Du </label>
+		<div class="box">
+			<input type="text" onclick="addCloseCalendarFunction();ds_hi(2);ds_sh(this,1);" name="date_d" id="date_d" readonly="readonly" style="cursor: text" value="" />
+			<div class='calendrier'>
+				<table class="ds_box cacher" cellpadding="0" cellspacing="0" id="ds_conclass" >
+				<tr>
+					<td id="ds_calclass"></td>
+				</tr>
+				</table>
+			</div>
+		</div>
+		<label for="date">à</label>
+		<select name="heure_d" id="heure_d">
+		{% for heure in 0..23 %} 
+			<option value="{{ heure }}">{{ heure }}</option>
+		{% endfor %}
+		</select>
+		:
+		<select name="minute_d" id="minute_d">
+		{% for minute in 0..59 %}
+			<option value="{{ minute }}">{{ minute }}</option>
+		{% endfor %}
+		</select>
+		<label for="date">Au</label>
+		<div class="box">
+			<input type="text" onclick="addCloseCalendarFunction();ds_hi(1);ds_sh(this,2);" name="date_f" id="date_f" readonly="readonly" style="cursor: text" value="" />
+			<div class='calendrier'>
+				<table class="ds_box cacher" cellpadding="0" cellspacing="0" id="ds_conclass2" >
+				<tr>
+					<td id="ds_calclass2"></td>
+				</tr>
+				</table>
+			</div>
+		</div>
+		<label for="date">à</label>
+		<select name="heure_f" id="heure_f">
+		{% for heure in 0..23 %}
+			<option value="{{ heure }}">{{ heure }}</option>
+		{% endfor %}
+		</select>
+		:
+		<select name="minute_f" id="minute_f">
+		{% for minute in 0..59 %}
+			<option value="{{ minute }}">{{ minute }}</option>
+		{% endfor %}
+		</select>
+	</div>
+	<div id='periodeDefinie' class='cacher'>
+		{% if messagePeriode is defined %}
+			<div class='entetePeriode'>
+				{{ messagePeriode }}
+			</div>
+		{% else %}
+			{#Aucune période définie#}
+			<br />
+		{% endif %}
+	</div>
+</div>
+<div class="configbouton" id='choixSelectionPeriode'>
+	<div class="bouton redNb"><div id='boutonInfoPeriode' class='bgbouton cacher'><a href="#" class="right" onClick="infoPeriode();return false;" >Attention</a></div></div>
+	<div class="bouton blueC"><div id='boutonModificationPeriode' class='bgbouton'><a href="#" class="right" onClick="modificationPeriode('modifier');return false;" >modifier</a></div></div>
+</div>

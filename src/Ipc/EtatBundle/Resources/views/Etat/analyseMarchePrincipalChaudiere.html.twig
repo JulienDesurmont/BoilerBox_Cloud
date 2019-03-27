@@ -1,0 +1,540 @@
+<form name='myForm' method='post' action="{{ path('ipc_createEtat') }}">
+    <div id='etat'>
+        <div id='ajoutetat'>
+	    	<input type='hidden' name='numeroCalcul' value='1' />
+            <input type='hidden' name='choixSubmit' id='choixSubmit_add' />
+            <input type='hidden' name='modificationRequete' id='modificationRequete' />
+	    	<input type='hidden' name='nombre_requetes' id='nombre_requetes' />
+
+			<input type='hidden' name='listeUrl' id='listeUrl' data-url-etat="{{ path('ipc_gestionEtatQueries') }}" />
+	    	<h1>Etat : Analyse de marche chaudière</h1>
+	    	<div class='etatSection'>
+            	<div class='etatTitre'>
+            	    <div class='titre'>Titre</div>
+					<input type='text' class='inputText' name='titre' id='titre' maxLength='50' onChange="addTitle(this.value);"/>
+            	</div>
+	    	</div>
+	    	<div class='etatSection'>
+	    		<div class='etatPeriode'>
+					<div class='titre'>Période</div>
+		    		<input type='radio' name='choixPeriode' value='unique' checked />
+        	    	<label>Date de début de période</label><input type='datetime' class='inputText' name='dateDeb' />
+		    		<span class='space'></span>
+        	    	<label>Date de fin de période</label><input type='datetime' class='inputText' name='dateFin' /> ( dd-mm-aaaa hh:ii:ss )
+				</div>
+            	<div class='etatPeriode'>
+            	    <input type='radio' name='choixPeriode' value='periodique' />
+	    	    	Tous les <input type='text' name='nbOccurencesFrequence' maxLength='3' />
+		    		<select name='frequence'>	
+						<option value='jour'>jour(s)</option>
+						<option value='semaine'>semaine(s)</option>
+						<option value='mois'>mois</option>
+		    		</select>
+		    		<span class='space'></span>
+		    		Sur une période de <input type='text' name='nbOccurencesPeriode' maxLength='3' />
+		    		<select name='periode'>	
+						<option value='jour'>jour(s)</option>
+						<option value='semaine'>semaine(s)</option>
+                        <option value='mois'>mois</option>
+                    </select>
+	        	</div>
+	    	</div>
+	    	<div class='etatSection'>
+				<div class='titre'>Localisation</div>
+				<div class='etatSelectLocalisation'>
+		    		<select name="idLocalisation1" id="localisations1" size=1 style="width:290px" OnChange="resetAjaxForm('etat');etatSelection(4,'genre',true);">
+                    	{% for localisation in liste_localisations %}
+                            <option value="{{ localisation['id'] }}">{{ localisation['numero_localisation'] ~ " - " ~ localisation['designation'] }}</option>
+                        {% endfor %}
+                    </select>
+				</div>
+	    	</div>
+	    	<div class='etatSection'>
+            	{# On affiche la liste déroulante des localisations si il y a plus d'une localisation sur le site #}
+				<div class='titre'>Module 1 (Chaudière en marche - Phase d'exploitation)</div>
+            	<div class='etatDesignationModule'>
+            	    <label for='designation1'>Désignation du message</label>
+            	    <input type='text' class='inputText' name='designation1' class='inputText' id='designation1' size='50'/>
+            	</div>
+	    		<div class='etatSelectMessage'>
+            		<div class='Pleft left'>
+                	    <h3>Sélectionner un message</h3>
+                	    <label for='genres'>Genre :</label>
+                	    <select name='listeGenres1' id='genres1' size=1 OnChange="etatSelection(1,'genre',true);">
+                	    	<option value='all' selected>Tous les genres</option>
+                	    	{% for genre in liste_genres %}
+                	            <option value="{{ genre.id }}">{{ genre.intitule_genre }}</option>
+                	    	{% endfor %}
+                	    </select><br />
+                	    <label for='modules'>Module :</label>
+                	    <select name='listeModules1' id='modules1' size=1 OnChange="etatSelection(1,'module',true);">
+                	    	<option value='all' selected>Tous les modules</option>
+                	    	{% for intitule in liste_nomsModules %}
+                	            <option value="{{ intitule }}">{{ intitule }}</option>
+                	    	{% endfor %}
+                	    </select>
+            		</div>
+            		<div class='Pcenter'>
+                    	<div class='line' style='height:20px;'></div>
+                    	<div class='circle'>OU</div>
+                    	<div class='line' style='height:20px;'></div>
+            		</div>
+            		<div class='Pright center'>
+                	    <h3>Recherche par mot clé</h3>
+                	    <input type='text' id='codeModule1' class='inputText' name='codeModule1' value="" maxlength='33' size='34'  onkeyup="etatSelectionMessage(1,'ipc_etat');" />
+            		</div>
+            		<div class='message left'>
+                	    <label for='messages'>Message :</label>
+                	    <select name='idModule1' id='messages1' size=1 onkeypress='return false;'>
+                	    	{% for id,message in liste_messagesModules %}
+                	            <option value="{{ id }}">{{ message }}</option>
+                	    	{% endfor %}
+                	    </select>
+            		</div>
+	    			<div class='Pleft left'>
+		    			<label for='condValeur1'>Valeur 1 : </label>
+		    			<input name='condValeur1' id='condValeur1' type='text' class='inputText' size='5' />( =x ; >(=)x ; <(=)x ; x<>y )  
+	    			</div>
+	    		</div>
+	    	</div>
+	    	<div class='etatSection'>
+				<div class='titre'>Module 2 (Présence flamme)</div>
+               	<div class='etatDesignationModule'>
+               	    <label for='designation2'>Désignation du message</label>
+               	    <input type='text' name='designation2' id='designation2' class='inputText' size='50'/>
+            	</div>
+            	<div class='etatSelectMessage'>
+            		<div class='Pleft left'>
+                   		<h3>Sélectionner un message</h3>
+                   		<label for='genres2'>Genre :</label>
+                   		<select name='listeGenres2' id='genres2' size=1 OnChange="etatSelection(2,'genre',true);">
+                   			<option value='all' selected>Tous les genres</option>
+                   			{% for genre in liste_genres %}
+                           		<option value="{{ genre.id }}">{{ genre.intitule_genre }}</option>
+                   			{% endfor %}
+                   		</select><br />
+                   		<label for='modules2'>Module :</label>
+                   		<select name='listeModules2' id='modules2' size=1 OnChange="etatSelection(2,'module',true);">
+                   			<option value='all' selected>Tous les modules</option>
+                   			{% for intitule in liste_nomsModules %}
+                           		<option value="{{ intitule }}">{{ intitule }}</option>
+                       		{% endfor %}
+                   		</select>
+            		</div>
+            		<div class='Pcenter'>
+                   		<div class='line' style='height:20px;'></div>
+                   		<div class='circle'>OU</div>
+                   		<div class='line' style='height:20px;'></div>
+               		</div>
+               		<div class='Pright center'>
+                   		<h3>Recherche par mot clé</h3>
+                   		<input type='text' id='codeModule2' class='inputText' name='codeModule2' value="" maxlength='33' size='34'  onkeyup="etatSelectionMessage(2,'ipc_etat');" />
+            		</div>
+            		<div class='message left'>
+                   		<label for='messages2'>Message :</label>
+                   		<select name='idModule2' id='messages2' size=1 onkeypress='return false;'>
+                   			{% for id,message in liste_messagesModules %}
+                           		<option value="{{ id }}">{{ message }}</option>
+                       		{% endfor %}
+                   		</select>
+           	 		</div>
+            		<div class='Pleft left'>
+                   		<label for='condValeur2'>Valeur 1 : </label>
+                   		<input name='condValeur2' id='condValeur2' type='text' class='inputText' size='5'/>( =x ; >(=)x ; <(=)x ; x<>y )
+            		</div>
+            	</div>
+	    	</div>
+	    	Chaudière Bi-Foyer : <input type='checkbox' name='bifoyer' id='bifoyer'  onclick="addModuleBiFoyer();"/>
+            <div id='moduleBiFoyer' class='etatSection cacher'>
+				<div class='titre'>Module 2 bis (Présence flamme - Bruleur 2)</div>
+               	<div class='etatDesignationModule'>
+                   	<label for='designation3'>Désignation du message</label>
+                   	<input type='text' name='designation3' id='designation3' class='inputText' size='50'/>
+               	</div>
+               	<div class='etatSelectMessage'>
+               		<div class='Pleft left'>
+                   		<h3>Sélectionner un message</h3>
+                   		<label for='genres3'>Genre :</label>
+                   		<select name='listeGenres3' id='genres3' size=1 OnChange="etatSelection(3,'genre',true);">
+                       		<option value='all' selected>Tous les genres</option>
+                       		{% for genre in liste_genres %}
+                           		<option value="{{ genre.id }}">{{ genre.intitule_genre }}</option>
+                       		{% endfor %}
+                   		</select><br />
+                   		<label for='modules3'>Module :</label>
+                   		<select name='listeModules3' id='modules3' size=1 OnChange="etatSelection(3,'module',true);">
+                       		<option value='all' selected>Tous les modules</option>
+                       		{% for intitule in liste_nomsModules %}
+                           		<option value="{{ intitule }}">{{ intitule }}</option>
+                       		{% endfor %}
+                   		</select>
+               		</div>
+               		<div class='Pcenter'>
+                   		<div class='line' style='height:20px;'></div>
+                   		<div class='circle'>OU</div>
+                   		<div class='line' style='height:20px;'></div>
+               		</div>
+               		<div class='Pright center'>
+                   		<h3>Recherche par mot clé</h3>
+                   		<input type='text' id='codeModule3' name='codeModule3' class='inputText' value="" maxlength='33' size='34'  onkeyup="etatSelectionMessage(3,'ipc_etat');" />
+               		</div>
+               		<div class='message left'>
+                   		<label for='messages3'>Message :</label>
+                   		<select name='idModule3' id='messages3' size=1 onkeypress='return false;'>
+                       		{% for id,message in liste_messagesModules %}
+                           		<option value="{{ id }}">{{ message }}</option>
+                       		{% endfor %}
+                   		</select>
+                		</div>
+       				<div class='Pleft left'>
+                   		<label for='condValeur3'>Valeur 1 : </label>
+                   		<input name='condValeur3' id='condValeur3' type='text' class='inputText' size='5'/>( =x ; >(=)x ; <(=)x ; x<>y )
+               		</div>
+               	</div>
+            </div>
+	    	<h2>Modules de type Défaut récurrents</h2>
+	    	<div class='etatExclusion'>
+	    		<table>
+	    			<tr><td><input type='checkbox' name='defChaudiere1' id='defChaudiere1' onClick="exclusion('defChaudiere1');" /><label for='defChaudiere1'>Défaut chaudière 1</label></td>
+						<td><span id='namedefChaudiere1'></span><input type='hidden' name='iddefChaudiere1' id='iddefChaudiere1' /></td>
+	    			</tr>
+	    			<tr><td><input type='checkbox' name='defChaudiere2' id='defChaudiere2' onClick="exclusion('defChaudiere2');" /><label for='defChaudiere2'>Défaut chaudière 2</label></td>
+						<td><span id='namedefChaudiere2'></span><input type='hidden' name='iddefChaudiere2' id='iddefChaudiere2' /></td></tr>
+	    			</tr>
+	    			<tr><td><input type='checkbox' name='defBruleur1' id='defBruleur1' onClick="exclusion('defBruleur1');" /><label for='defBruleur1'>Défaut bruleur 1</label></td>
+						<td><span id='namedefBruleur1'></span><input type='hidden' name='iddefBruleur1' id='iddefBruleur1' /></td>
+	    			</tr>
+            		<tr><td><input type='checkbox' name='defBruleur2' id='defBruleur2' onClick="exclusion('defBruleur2');" /><label for='defBruleur2'>Défaut bruleur 2</label></td>
+						<td><span id='namedefBruleur2'></span><input type='hidden' name='iddefBruleur2' id='iddefBruleur2' /></td>
+	    			</tr>
+	    		</table>
+	    	</div>
+
+            <h2>Modules de type Alarme récurrents</h2>
+            <div class='etatExclusion'>
+            	<table>
+            		<tr><td><input type='checkbox' name='defKlaxon' id='defKlaxon' onClick="exclusion('defKlaxon');" /><label for='defKlaxon'>Avertisseur klaxon</label></td>
+               			<td><span id='namedefKlaxon'></span><input type='hidden' name='iddefKlaxon' id='iddefKlaxon' /></td>
+            		</tr>
+            		<tr><td><input type='checkbox' name='defGyrophare' id='defGyrophare' onClick="exclusion('defGyrophare');" /><label for='defGyrophare'>Avertisseur gyrophare</label></td>
+                			<td><span id='namedefGyrophare'></span><input type='hidden' name='iddefGyrophare' id='iddefGyrophare' /></td></tr>
+            		</tr>
+           		 </table>
+           	 </div>
+	    	<h2>Module de réarmement</h2>
+	    	<div class='etatAcquittement'>
+	        	<table>
+		    		<tr><td><input type='checkbox' name='defAcquittement' id='defAcquittement' onClick="exclusion('defAcquittement');" /><label for='defAcquittement'>Réarmement</label></td>
+               			<td><span id='namedefAcquittement'></span><input type='hidden' name='iddefAcquittement' id='iddefAcquittement' /></td>
+                	</tr>
+               	</table>
+	    	</div>
+    	    <h2>Modules supplémentaires</h2>
+    	    <div id='listingperso'>
+        		<div class='requetemessage'>
+					<table>
+            		<thead>
+                   		<tr>
+							<td>
+			   					<table>
+									<tr>
+               		    				<th class="localisation">Localisation</th>
+               		   	 				<th class="code">Code message</th>
+               		    				<th class="designation">Désignation</th>
+               		    				<th class="actions">Actions</th>
+									</tr>
+		    					</table>
+							</td>
+           	    		</tr>
+          			</thead>
+           			<tbody>
+                        <tr>
+                            <td>
+                                <div id='divEtatCombustibleB1'>
+                                    <table>
+                                        <tr>
+                                            <td colspan="3" class="texte">Ajouter un combustible du brûleur 1</td>
+                                            <td class="actions">
+                                                <a class='bouton' href="{{ path('ipc_etat') }}" target='_blank' onClick="appelPopup('ipc_etat','Sélection des requêtes etat');setTimeout(function(){etatSetTypePopup('combustibleB1');},1000);return false;">
+                                                    <div class="bouton ajouter"></div>
+                                                    <div class="boutonname">AJOUTER</div>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% for donnee in tab_requetes_combustibleB1 %}
+                                            <tr>
+                                                <td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+                                                <td class="code">{{ donnee['code'] }}</td>
+                                                <td class="designation">{{ donnee['message'] }}</td>
+                                                <td class="actions">
+                                                    <a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="etatDeclanchementDeleteAjaxForm(1, this.name, 'suppressionRequete', 'combustibleB1');return false;">
+                                                        <div class="bouton supprimer"></div>
+                                                        <div class="boutonname">SUPPRIMER</div>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                    <input type='hidden' id='nombre_requetes_combustibleB1' name='nombre_requetes_combustibleB1' value='{{ tab_requetes_combustibleB1|length }}' >
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id='trEtatCombustibleB2' class='cacher'>
+                            <td>
+                                <div id='divEtatCombustibleB2' class='cacher'>
+                                    <table>
+                                        <tr>
+                                            <td colspan="3" class="texte">Ajouter un combustible du brûleur 2</td>
+                                            <td class="actions">
+                                                <a class='bouton' href="{{ path('ipc_etat') }}" target='_blank' onClick="appelPopup('ipc_etat', 'Sélection des requêtes etat');setTimeout(function(){etatSetTypePopup('combustibleB2');}, 1000);return false;">
+                                                    <div class="bouton ajouter"></div>
+                                                    <div class="boutonname">AJOUTER</div>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% for donnee in tab_requetes_combustibleB2 %}
+                                            <tr>
+                                                <td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+                                                <td class="code">{{ donnee['code'] }}</td>
+                                                <td class="designation">{{ donnee['message'] }}</td>
+                                                <td class="actions">
+                                                    <a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="etatDeclanchementDeleteAjaxForm(1, this.name, 'suppressionRequete', 'combustibleB2');return false;">
+                                                        <div class="bouton supprimer"></div>
+                                                        <div class="boutonname">SUPPRIMER</div>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                    <input type='hidden' id='nombre_requetes_combustibleB2' name='nombre_requetes_combustibleB2' value='{{ tab_requetes_combustibleB2|length }}' >
+                                </div>
+                            </td>
+                        </tr>
+		   				<tr>
+							<td>
+                       	    	<div id='divEtatCompteur'>
+                      	        	<table>
+                       		    		<tr>
+                           	        		<td colspan="3" class="texte">Ajouter un compteur</td>
+                           	        		<td class="actions">
+                               				    <a class='bouton' href="{{ path('ipc_etat') }}" target='_blank' onClick="appelPopup('ipc_etat','Sélection des requêtes etat');setTimeout(function(){etatSetTypePopup('compteur');},1000);return false;">
+                                   			    	<div class="bouton ajouter"></div>
+                                   			    	<div class="boutonname">AJOUTER</div>
+                               	 			    </a>
+                           	    			</td>
+                       		    		</tr>
+                       		    		{% for donnee in tab_requetes_compteur %}
+                           	    			<tr>
+                               				    <td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+                               				    <td class="code">{{ donnee['code'] }}</td>
+                               				    <td class="designation">{{ donnee['message'] }}</td>
+                               				    <td class="actions">
+                                   	    			<a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="etatDeclanchementDeleteAjaxForm(1, this.name, 'suppressionRequete', 'compteur');return false;">
+                                       				    <div class="bouton supprimer"></div>
+                                      				    <div class="boutonname">SUPPRIMER</div>
+                                   	    			</a>
+                               		    		</td>
+                           	    			</tr>
+                      		    		{% endfor %}
+                       	        	</table>
+                       	        	<input type='hidden' id='nombre_requetes_compteur' name='nombre_requetes_compteur' value='{{ tab_requetes_compteur|length }}' >
+                      	    	</div>
+							</td>
+			   			</tr>
+			   			<tr>
+							<td>
+			       				<div id='divEtatTest'>
+                      				<table>
+                       		    		<tr>
+                          					<td colspan="3" class="texte">Ajouter un test</td>
+                          						<td class="actions">
+                               		    		<a class='bouton' href="{{ path('ipc_etat') }}" target='_blank' onClick="appelPopup('ipc_etat','Sélection des requêtes etat');setTimeout(function(){etatSetTypePopup('test');},1000);return false;">
+                                  					<div class="bouton ajouter"></div>
+                                   					<div class="boutonname">AJOUTER</div>
+                               		    		</a>
+                           					</td>
+                       		    		</tr>
+                       		    		{% for donnee in tab_requetes_test %}
+                           					<tr>
+                              		    		<td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+                               		    		<td class="code">{{ donnee['code'] }}</td>
+                               		    		<td class="designation">{{ donnee['message'] }}</td>
+                               		    		<td class="actions">
+                                   					<a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="etatDeclanchementDeleteAjaxForm(1, this.name, 'suppressionRequete', 'test');return false;">
+                                      		    		<div class="bouton supprimer"></div>
+                                       		    		<div class="boutonname">SUPPRIMER</div>
+                                   					</a>
+                               		    		</td>
+                          					</tr>
+                       		    		{% endfor %} 
+			   						</table>
+									<input type='hidden' id='nombre_requetes_test' name='nombre_requetes_test' value='{{ tab_requetes_test|length }}' >
+			    				</div>
+							</td>
+			   			</tr>
+		   				<tr>
+							<td>
+			   	   				<div id='divEtatForcage'>
+                           			<table>
+                           	    		<tr>
+                           					<td colspan="3" class="texte">Ajouter un forçage</td>
+                           					<td class="actions">
+                                 	    		<a class='bouton' href="{{ path('ipc_etat') }}" target='_blank' onClick="appelPopup('ipc_etat','Sélection des requêtes etat');setTimeout(function(){etatSetTypePopup('forcage');},1000);return false;">
+                                    				<div class="bouton ajouter"></div>
+                                       				<div class="boutonname">AJOUTER</div>
+                                   	    		</a>
+                               				</td>
+                           		    	</tr>
+                           		    	{% for donnee in tab_requetes_forcage %}
+                               				<tr>
+                                   	    		<td class="localisation"><div class="txtlocalisation">{{ donnee['localisation'] }}</div></td>
+                                   		   		<td class="code">{{ donnee['code'] }}</td>
+                                   		   		<td class="designation">{{ donnee['message'] }}</td>
+                                   		   		<td class="actions">
+                                       				<a class="bouton" href="#" target='_blank' name="suppRequete_{{ donnee['numrequete'] }}" onClick="etatDeclanchementDeleteAjaxForm(1, this.name, 'suppressionRequete', 'forcage');return false;">
+                                           			    <div class="bouton supprimer"></div>
+                                      	 	    		<div class="boutonname">SUPPRIMER</div>
+                                  	 				</a>
+                                   		   		</td>
+                               				</tr>
+                           		    	{% endfor %}
+			   						</table>
+			   						<input type='hidden' id='nombre_requetes_forcage' name='nombre_requetes_forcage' value='{{ tab_requetes_forcage|length }}' >
+			   	    			</div>
+							</td>
+			   			</tr>
+					</tbody>
+       			 	</table>
+    			</div>
+       		</div>
+    	</div>
+    </div>
+	<input type="hidden" name="choixSubmit" id="choixSubmit" />
+    <div id='validation'>
+		<a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Save';checkAndSendFormulaire('myForm');return false;" ><div class='bouton blue'><div class='bgbouton'>ENREGISTRER</div></div></a>
+      	<a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Recherche';checkAndSendFormulaire('myForm');return false;" ><div class='bouton blue'><div class='bgbouton'>RECHERCHE</div></div></a>
+   		<a href='#' class='right' onClick="document.getElementById('choixSubmit').value='RAZ';etatResetAjaxForm('etat');return false;" ><div class='bouton orange'><div class='bgbouton'>RAZ</div></div></a>
+ 	</div>
+</form>
+
+
+
+{% block bodyjavascript %}
+	{# Fonctions et variables communes aux index listing et graphique #}
+	{% javascripts output='js/listingAndGraphiqueCommun.js' filter='jsqueeze'
+	    'bundles/ipcprog/js/listingAndGraphiqueCommun.js'
+	%}
+	    <script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	{#<script type="text/javascript" src="{{ asset('bundles/ipcprog/js/listingAndGraphiqueCommun.js') }}"></script>#}
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+	    var titre = $('#titre').val();
+	    if (titre != '') {
+	        $('#ajoutetat h1').text('Etat : ' + titre);
+	    }
+    	preparePopup('ipc_etat');
+	etatSelection(4,'genre',true);
+	});
+
+	/* Fonction qui vérifie que les champs obligatoire sont bien remplis */
+	function checkAndSendFormulaire() {
+		var $validation = true;
+		var $messageErreur = '';
+
+		// Analyse du titre
+		var $titre = $('#titre').val().trim();
+		if ($titre == '') {
+			$messageErreur = $messageErreur + "Le titre n'est pas renseigné\n";
+			$validation = false;
+		}
+		// Analyse de la période 
+		var $periode = $('input[name=choixPeriode]:checked').val();
+		if ($periode == 'unique') {
+			$patternDate = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}$/;
+			var $match = $patternDate.exec($('input[name=dateDeb]').val());
+			if ($match == null) {
+				$validation = false;
+				$messageErreur = $messageErreur + "Format de la date de début incorrect.\n";
+            }
+			var $match = $patternDate.exec($('input[name=dateFin]').val());
+            if ($match == null) {
+				$validation = false;
+				$messageErreur = $messageErreur + "Format de la date de fin incorrect.\n";
+            }
+		} else {
+			if (($('input[name=nbOccurencesFrequence]').val().trim() == '') || ($('input[name=nbOccurencesPeriode]').val().trim() == '')){ 
+				$validation = false;
+				$messageErreur = $messageErreur + "Au moins un champs de la période n'est pas renseigné.\n";
+			} else {
+				$patternPeriode = /^\d+$/;
+				var $match = $patternPeriode.exec($('input[name=nbOccurencesFrequence]').val().trim());
+				if ($match == null) {
+                	$validation = false;
+                	$messageErreur = $messageErreur + "Indicateur de fréquence manquant.\n";
+            	}
+                var $match = $patternPeriode.exec($('input[name=nbOccurencesPeriode]').val().trim());
+                if ($match == null) {
+                    $validation = false;
+                    $messageErreur = $messageErreur + "Indicateur de période manquant.\n";
+                }
+			}
+		}
+
+		if (($('input[name=designation1]').val().trim() == '') || ($('input[name=condValeur1]').val().trim() == '')) {
+			$validation = false;
+			$messageErreur = $messageErreur + "Tous les champs du module 'Chaudière en marche' ne sont pas renseignés.\n";
+		} 
+        if (($('input[name=designation2]').val().trim() == '') || ($('input[name=condValeur2]').val().trim() == '')) {
+            $validation = false;
+            $messageErreur = $messageErreur + "Tous les champs du module 'Présence flamme' ne sont pas renseignés.\n";
+        }
+		if ($('#bifoyer').is(':checked')) {
+        	if (($('input[name=designation3]').val().trim() == '') || ($('input[name=condValeur3]').val().trim() == '')) {
+        	    $validation = false;
+        	    $messageErreur = $messageErreur + "Tous les champs du module 'Présence flamme - Bruleur 2' ne sont pas renseignés.\n";
+        	}
+		}
+
+		if ($validation == true) {
+			submitForm('myForm');
+			return 0;
+		} else {
+			alert($messageErreur);
+			return 1;
+		}
+	}	
+
+	function addTitle(titre) {
+	    $('#ajoutetat h1').text('Etat : ' + titre);
+	}
+
+	function addModuleBiFoyer() {
+	    if ($('#bifoyer').is(':checked')) {
+	        $('#moduleBiFoyer').removeClass('cacher');
+	        $('#etatArretBruleur2').removeClass('cacher');
+			$('#divEtatCombustibleB2').removeClass('cacher');
+			$('#trEtatCombustibleB2').removeClass('cacher');
+	    } else {
+	        $('#moduleBiFoyer').addClass('cacher');
+	        $('#etatArretBruleur2').addClass('cacher');
+			$('#divEtatCombustibleB2').addClass('cacher');
+			$('#trEtatCombustibleB2').addClass('cacher');
+	    }
+	}
+
+	function exclusion(moduleAExclure) {
+	    if ($('#' + moduleAExclure).is(':checked')) {
+	        appelPopup('ipc_etat', 'Sélection des requêtes etat');
+	        setTimeout(function() {
+	            etatSetTypePopupExclusion(moduleAExclure);
+	        }, 1000);
+	    } else {
+	        $('#name' + moduleAExclure).html('');
+	        $('#id' + moduleAExclure).attr('value', '');
+	    }
+	}
+</script>
+{% endblock bodyjavascript %}
+

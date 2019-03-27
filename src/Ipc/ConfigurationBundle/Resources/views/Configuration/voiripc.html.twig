@@ -1,0 +1,22 @@
+{# /src/Ipc/ConfigurationBundle/Configuration/Resources/views/voiripc.html.twig #}
+
+{% extends "IpcProgBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Bdd Ipc{% endblock title %}
+
+{% block body %}
+	{% for fichier in liste_fichiers %}
+		<p> Fichier {{ fichier.nom }} traité </p>
+		<p> Nombre de données : {{ fichier.nombreMessages }}</p>
+		{% if fichier.nombreVides is defined %}
+			<p> Nombre vide : {{ fichier.nombreVides }}
+		{% endif %}
+	{% endfor %}
+	
+	{% if liste_erreurs is defined %}
+		{% for errors in liste_erreurs %}
+			<li>{{ errors  }}</li>
+		{% endfor %}
+	{% endif %}
+	<li><a href="{{ path('ipc_prog_homepage') }}">Retour Accueil</a></li>
+{% endblock body %}

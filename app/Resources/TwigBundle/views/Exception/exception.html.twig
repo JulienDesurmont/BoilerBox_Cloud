@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/screen-export-01.css') }}" media='screen' />
+</head>
+
+<body>
+<div class="block_exception">
+    <div>
+        <div class="block_exception_message">
+            <h1>
+                IpcWeb : {{ exception.message | nl2br | format_file_from_text }}
+            </h1>
+            <div>
+            	<strong>{{ status_code }}</strong> {{ status_text }}<br />
+            	Merci de corriger l'erreur ou de la signaler à l'administrateur.<br />
+            	Nous ferons tout pour résoudre rapidement l'incident. Veuillez nous excuser pour le dérangement.
+            </div>
+	</div>
+    </div>
+</div>
+</body>
+</html>

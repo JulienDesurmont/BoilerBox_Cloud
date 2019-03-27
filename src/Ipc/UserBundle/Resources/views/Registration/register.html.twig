@@ -1,0 +1,71 @@
+{# src/Ipc/UserBundle/Resource/views/Registration #}
+
+{% extends "IpcUserBundle::secondConfigurationLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Gestion des Utilisateurs{% endblock title %}
+
+{% block title_header %}
+    <h1>Nouvel utilisateur</h1>
+{% endblock title_header %}
+
+{% block body %}
+	<section>
+		<div id="ajout">
+			<div class='gestion_ajout_utilisateur'>
+				<form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" name="ipc_user_registration"> {# class="fos_user_registration_register"> #}
+					<table class="table_gestion_utilisateur">
+            	        <tr>
+            	            <td>{{ form_label(form.username) }}</td>
+            	            <td>{{ form_widget(form.username,{'attr':{'class':'inputText'}}) }}</td>
+            	        </tr>
+            	        <tr>
+            	            <td>{{ form_label(form.plainPassword.first) }}</td>
+            	            <td>{{ form_widget(form.plainPassword.first,{'attr':{'class':'inputText'}}) }}</td>
+            	        </tr>
+            	        <tr>
+            	            <td>{{ form_label(form.plainPassword.second) }}</td>
+            	            <td>{{ form_widget(form.plainPassword.second,{'attr':{'class':'inputText'}}) }}</td>
+            	        </tr>
+            	        <tr>
+            	            <td>{{ form_label(form.email) }}</td>
+            	            <td>{{ form_widget(form.email,{'attr':{'class':'inputText'}}) }}</td>
+            	        </tr>
+						<tr>
+            				<td>{{ form_label(form.roles) }}</td>
+            				<td>{{ form_widget(form.roles) }}</td>
+						</tr>
+					</table>
+    				{{ form_rest(form) }}
+					{{ form_errors(form) }}
+				</form>
+			</div>
+		</div>
+	</section>
+{% endblock body %}
+
+{% block choix_validation %}
+        <div id='validation'>
+            <a href='#' class='right' onClick="validFormulaire('ipc_user_registration');return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.valider"|trans|upper }}</div></div></a>
+        	<a href='#' class='right' onClick="annulation();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+        </div>
+{% endblock choix_validation %}
+
+
+
+{% block bodyjavascript %}
+	<script type="text/javascript">
+		function validFormulaire(formName) {
+        	attente();
+        	setTimeout(function(){
+        	    document.forms[formName].submit();
+        	}, 200);
+    	}
+
+    	//      Lors du click sur le bouton Ajouter
+    	function annulation() {
+    	    var $urlCancelRegistration = $("#lien_url_ajax").attr('data-urlCreationUtilisateur');
+    	    document.location.href = $urlCancelRegistration;
+    	}
+
+	</script>
+{% endblock bodyjavascript %}

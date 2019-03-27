@@ -1,0 +1,6 @@
+# /web/images
+
+# KILL THEM ETAGS
+Header unset ETag
+Header unset Last-Modified
+#FileETag none

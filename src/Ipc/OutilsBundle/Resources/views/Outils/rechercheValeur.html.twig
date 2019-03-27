@@ -1,0 +1,87 @@
+{# /src/Ipc/OutilsBundle/Resources/views/Outils/rechercheValeur.html.twig #}
+
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Recherche de Valeur{% endblock title %}
+
+	
+{% block title_header %}
+    <h1>Recherche de valeurs</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+		<form method='post' name='MyForm' action="{{ path('ipc_search_value') }}">
+			<input type="hidden" name="date_recherche" id="date_recherche" readonly="readonly" style="cursor:none" value="{{ datedebut }}" />
+	    	<div class='gestion_recherche_valeurs'>
+				<h1>Recherche d'une valeur à la date précédente le {{ datedebut }}</h1>
+				<p>Module <input type='text' class='inputTextInParagraphe' name='codeModule' size='6' maxlength='6' value="{{ code_module }}" /> sur 
+					<select name="listeLocalisations" id="localisations" size=1 style="width:250px">
+                        {% for localisation in liste_localisations %}
+                             <option value="{{ localisation['id'] }}">{{ localisation['numero_localisation'] ~ " - " ~ localisation['designation'] }}</option>
+                        {% endfor %}
+                    </select>
+				</p>
+			</div>
+			{% if tabDonnee | length != 0 %}
+				{% if tabDonnee['horodatage'] is not null %}
+    				<div class='gestion_affichage_valeurs'>
+						<h1>Une donnée a été trouvée pour le module {{ tabDonnee['codeModule'] }}</h1>
+						<p>Le {{ tabDonnee['horodatage'] | date("d/m/Y H:i:s") }}.{{ tabDonnee['cycle'] }} sur la localisation numéro {{ tabDonnee['numero_localisation'] }}</p>
+						<p>[{{ tabDonnee['intitule_genre'] }}] 
+						   	{% if (tabDonnee['intitule_genre'] == 'Défaut' or tabDonnee['intitule_genre'] == 'Alarme') %}
+                				{% if tabDonnee['valeur1'] == 0 %}
+                		        	{{ tabDonnee['message']|replace({'$':'Désactivation ','£':tabDonnee['valeur2']}) }}
+                		    	{% elseif tabDonnee['valeur1'] == 1 %}
+                		     		{% if tabDonnee['intitule_genre'] == 'Alarme' %}
+                		        	    {{ tabDonnee['message']|replace({'$':'Activation ','£':tabDonnee['valeur2']}) }}
+                		        	{% else %}
+                		        	    {{ tabDonnee['message']|replace({'$':'Activation ','£':tabDonnee['valeur2']}) }}
+                		        	{% endif %}
+                		    	{% endif %}
+                		   	{% else %}
+                		      	{{ tabDonnee['message']|replace({'$':tabDonnee['valeur1'],'£':tabDonnee['valeur2']}) }}
+                		   	{% endif %}
+						</p>
+						<p>Valeur 1 : {{ tabDonnee['valeur1'] }}</p>
+						<p>Valeur 2 : {{ tabDonnee['valeur2'] }}</p>
+					</div>
+				{% endif %}
+			{% else %}
+				<div class='gestion_affichage_valeurs'>
+					<p>{{tabDonnee | length }}Aucune donnée n'a été trouvée pour le module {{ tabDonnee['codeModule'] }}</p>
+				</div>
+			{% endif %}
+		</form>
+    </section>
+{% endblock body %}
+
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+
+        function validationFormulaire() {
+            attente();
+            setTimeout(function() {
+				document.forms['MyForm'].submit();
+            },100);
+        }
+    </script>
+{% endblock %}
+

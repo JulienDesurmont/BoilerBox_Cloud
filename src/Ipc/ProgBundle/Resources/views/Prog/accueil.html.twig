@@ -1,0 +1,52 @@
+{# src/Ipc/ProgBundle/Resources/views/Prog/accueil.html.twig #}
+
+{% extends "IpcProgBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Accueil{% endblock title %}
+
+{% block body %}
+    <div id='accueilBoiler' class='pageAccueil'>
+    </div>
+    <input type='hidden' name='setSessionVars' id='setSessionVars' data-url="{{ path('ipc_setSessionVars') }}"  />
+
+ 	{#
+	Partie pour insérer une liste déroulante pour switcher de site
+	{{ form(frm_listeDesSites) }}
+	#}
+	
+{% endblock %}
+
+{% block bodyjavascript %}
+	<script type='text/javascript'>
+        $(document).ready(function(){
+            var hauteur_fenetre = $(window).height();
+            var largeur_fenetre = $(window).width();
+            var hauteur = $(window).height()+'px';
+            var largeur = $(window).width()+'px';
+            $('#siteIpc').width(largeur);
+            $('#siteIpc').height(hauteur);
+            var hauteurBoiler = $('#accueilBoiler').height();
+            var largeurBoiler = $('#accueilBoiler').width();
+            var haut = (hauteur_fenetre / 2) - (hauteurBoiler / 2);
+            var gauche = (largeur_fenetre / 2) - (largeurBoiler / 2);
+            $('#accueilBoiler').css('position','fixed');
+            $('#accueilBoiler').css('top',haut);
+            $('#accueilBoiler').css('left',gauche);
+            $('#accueilBoiler').text('BoilerBox');
+        });
+
+
+        function setSessionVars() {
+            var $url = $('#setSessionVars').attr('data-url');
+            $.ajax({
+                url: $url,
+                async: false,
+                timeout: 20000
+            });
+        }
+
+        $('#prechargement').html(traduire('label.chargement'));
+
+        setSessionVars();
+	</script>
+{% endblock bodyjavascript %}

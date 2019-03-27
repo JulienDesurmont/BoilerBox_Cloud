@@ -1,0 +1,42 @@
+{# src/Ipc/UserBundle/Resources/views/layout.html.twig #}
+
+{% extends "::layout.html.twig" %}
+
+{% block body %}
+
+        <div class='pageIcone'>
+                <img src="{{ asset('images/icones/V3-web-configuration-ttl.png') }}" class="icone" alt="icone_accueil" />
+        </div>
+        <div class='pageTitle'><h1 class='title'>{{ pageTitle }}</h1></div>
+        <br />
+        {#	
+	<div class='messagePeriode'>
+		<span id="loader" style="display: none;"><img src="{{ asset('images/icones/loader.gif') }}" alt="loading" /></span>
+        </div>
+	#}
+	<div class='loader'>
+		<span id="loader" style="display: none;"><img src="{{ asset('images/icones/loader.gif') }}" alt="loading" /></span>
+	</div>
+        <br />
+	
+	<div class="blanc">
+	  	{# On affiche les messages flash que définissent les contrôleurs du bundle #}
+	  	{% for key, message in app.session.flashbag.all() %}
+	  		<div>
+	      			{{ message|trans({}, 'FOSUserBundle') }}
+	    		</div>
+	  	{% endfor %}
+
+		{# if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+	    		Connecté en tant que {{ app.user.username }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+		{% else %}
+	    		<a href="{{ path('fos_user_security_login') }}">Connexion</a>
+		{% endif #}
+	</div>
+
+  	{# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+  	{% block fos_user_content %}
+  	{% endblock fos_user_content %}
+
+{% endblock %}
+

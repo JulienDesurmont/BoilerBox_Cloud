@@ -1,0 +1,39 @@
+{# src/Ipc/ProgBundle/Resources/views/loginLayout.html.twig #}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<title>{% block title %}{{ affaire }} - {% endblock title %}</title>
+
+	{% stylesheets filter="cssrewrite, scssphp" output="css/login.css" 
+		'bundles/ipcprog/css/login.css'
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" />
+	{% endstylesheets %}
+	{#<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcprog/css/login.css') }}" />#}
+</head>
+
+<body>
+<div id='siteIpc'>
+	{% block body %}
+	{% endblock body %}
+
+	{# Popup qui s'ouvre lorsque le login/mdp est incorrect #}
+	<div id='messagebox' class='cacher'>
+		<div id='messageboxTexte'></div>
+		<div class='right'><a href='#' style="height:30px;" id='lienMessageBox' onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>ok</div></div></a></div>
+	</div>
+</div>
+
+{% block javascript %}
+	{% javascripts filter="jsqueeze" output='js/login.js'
+		'bundles/ipcprog/js/jquery.js'
+		'bundles/ipcprog/js/connexion.js'
+	%}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock javascript %}
+</body>
+</html>

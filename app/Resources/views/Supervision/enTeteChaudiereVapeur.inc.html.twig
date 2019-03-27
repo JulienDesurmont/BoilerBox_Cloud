@@ -1,0 +1,129 @@
+<ul>
+    {% for key,liveEnTete in tabLiveEnTetes %}
+    	{% if liveEnTete.famille == "enTeteGenerateur" %}
+	    	<li id="{{ liveEnTete.id }}" class="generateur green">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-generateur.svg') }}" alt="Ge"  onerror="imgError(this);" />
+				<div class="txt">
+		    		<h1>{{ liveEnTete.label }}</h1>
+		    		<p class="small ">{{ liveEnTete.label1 }}</p>
+				</div>
+	    	</li>
+		{% elseif liveEnTete.famille == "enTeteBruleur" %} 
+	    	<li id="{{ liveEnTete.id }}" class="bruleur">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-bruleur.svg') }}" alt="Br"  onerror="imgError(this);" />
+				<div class="txt double">
+		    		<h1>{{ liveEnTete.label }}</h1>
+		    		<p>{{ liveEnTete.label1 }}{% if liveEnTete.label1 != 'Eteint' %}<span>%</span>{% endif %}</p>
+				</div>
+	    	</li>
+        {% elseif liveEnTete.famille == "enTeteBruleurBiFoyer" %}
+            <li id="{{ liveEnTete.id }}" class="bruleur">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-bruleur.svg') }}" alt="Br"  onerror="imgError(this);" />
+                <div class="txt double">
+                    <h1>{{ liveEnTete.label0 }}</h1>
+                    <p>{{ liveEnTete.label1 }}{% if liveEnTete.label1 != 'Eteint' %}<span>%</span>{% endif %}</p>
+                    <h1>{{ liveEnTete.label }}</h1>
+                    <p>{{ liveEnTete.label2 }}{% if liveEnTete.label2 != 'Eteint' %}<span>%</span>{% endif %}</p>
+                </div>
+            </li>
+		{% elseif liveEnTete.famille == "enTeteNiveau" %}
+	    	{# Pour les chaudières Vapeur #}
+	    	<li id="{{ liveEnTete.id }}" class="niveau">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-niveau.svg') }}" alt="Nv"  onerror="imgError(this);" />
+				<div class="txt">
+		   		 	<h1>{{ liveEnTete.libelle }}</h1>
+		    		<p>{{ liveEnTete.label1 }}<span>%</span></p>
+				</div>
+	    	</li>
+		{% elseif liveEnTete.famille == "enTetePression" %}
+            {# Pour les chaudières Vapeur #}
+	    	<li id="{{ liveEnTete.id }}" class="pression">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-pression.svg') }}" alt="Ps"  onerror="imgError(this);" />
+				<div class="txt">
+		    		<h1>{{ liveEnTete.libelle }}</h1>
+		    		<p>{{ liveEnTete.label1 }}<span>bar</span></p>
+				</div>
+	    	</li>
+        {% elseif liveEnTete.famille == "enTeteTemperatureDepart" %}
+            <li id="{{ liveEnTete.id }}" class="temperature">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-t-depart.svg') }}" alt="Tp"  onerror="imgError(this);" />
+                <div class="txt">
+                    <h1>{{ liveEnTete.libelle }}</h1>
+                    <p>{{ liveEnTete.label1 }}<span>°c</span></p>
+                </div>
+            </li>
+        {% elseif liveEnTete.famille == "enTeteTemperatureRetour" %}
+            <li id="{{ liveEnTete.id }}" class="temperature">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-t-retour.svg') }}" alt="Tp"  onerror="imgError(this);" />
+                <div class="txt">
+                    <h1>{{ liveEnTete.libelle }}</h1>
+                    <p>{{ liveEnTete.label1 }}<span>°c</span></p>
+                </div>
+            </li>
+        {% elseif liveEnTete.famille == "enTeteTemperatureBache" %}
+            <li id="{{ liveEnTete.id }}" class="temperature">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-t-depart.svg') }}" alt="Tp"  onerror="imgError(this);" />
+                <div class="txt">
+                    <h1>{{ liveEnTete.libelle }}</h1>
+                    <p>{{ liveEnTete.label1 }}<span>°c</span></p>
+                </div>
+            </li>
+		{% elseif liveEnTete.famille == "enTeteEtat" %}
+	    	<li id="{{ liveEnTete.id }}" class="etat">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-etat.svg') }}" alt="Et" onerror="imgError(this);" />
+				<div class="txt double">
+		    		<h1>{{ liveEnTete.label }}</h1>
+		    		<p>{{ liveEnTete.label1 }}<span>&Eacute;vénement{% if liveEnTete.label1 != 0 %}s{% endif %}</span></p>
+		    		<p>{{ liveEnTete.label2 }}<span>Alarme{% if liveEnTete.label2 != 0 %}s{% endif %}</span></p>
+		    		<p>{{ liveEnTete.label3 }}<span>Défaut{% if liveEnTete.label3 != 0 %}s{% endif %}</span></p>
+				</div>
+	    	</li>
+		{% elseif liveEnTete.famille == "enTeteCombustible" %}
+	    	<li id="{{ liveEnTete.id }}" class="combustible">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-combustible.svg') }}" alt="Cb" onerror="imgError(this);" />
+				<div class="txt double">
+		    		<h1>{{ liveEnTete.label }}</h1>
+		    		<p class="small">{{ liveEnTete.label1 }}</p>
+		    		{% if liveEnTete.label2 is defined %}
+		        		<h1>Combustible 2</h1>
+		        		<p class="small">{{ liveEnTete.label2 }}</p>
+		    		{% endif %}
+				</div>
+	    	</li>
+        {% elseif liveEnTete.famille == "enTeteCombustibleBiFoyer" %}
+            <li id="{{ liveEnTete.id }}" class="combustible">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-combustible.svg') }}" alt="Cb" onerror="imgError(this);" />
+                <div class="txt double">
+                    <h1>{{ liveEnTete.label0 }}</h1>
+                    <p class="small">{{ liveEnTete.label1 }}</p>
+                    <h1>{{ liveEnTete.label }}</h1>
+                    <p class="small">{{ liveEnTete.label2 }}</p>
+                </div>
+            </li>
+		{% elseif liveEnTete.famille == "enTeteConductivite" %}
+	    	<li id="{{ liveEnTete.id }}" class="conductivite">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-conductivite.svg') }}" alt="Cd" onerror="imgError(this);" />
+				<div class="txt">
+		    		<h1>{{ liveEnTete.libelle }}</h1>
+		    		<p>{{ liveEnTete.label1 }}<span>µS</span></p>
+				</div>
+	    	</li>
+		{% elseif liveEnTete.famille == "EnTeteDebit" %}
+	    	<li id="{{ liveEnTete.id }}" class="debitvapeur">
+				<img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-debit-vapeur.svg') }}" alt="Dv " onerror="imgError(this);" />
+				<div class="txt">
+		    		<h1>{{liveEnTete.libelle }}</h1>
+		    		<p>{{ liveEnTete.label1 }}<span>Nm<sup>3</sup>/h</span></p>
+				</div>
+	    	</li>
+    	{% else %}
+            <li id="{{ liveEnTete.id }}">
+                <img class="img svg" type="image/svg+xml" src="{{ asset('bundles/ipcsupervision/svg/ge/generalinfo-debit-vapeur.svg') }}" alt="Dv " onerror="imgError(this);" />
+                <div class="txt">
+                    <h1>{{liveEnTete.libelle }}</h1>
+                    <p>{{ liveEnTete.label1 }}</p>
+                </div>
+            </li>
+		{% endif %} 
+    {% endfor %}
+</ul>

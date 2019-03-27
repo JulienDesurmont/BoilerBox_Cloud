@@ -1,0 +1,23 @@
+# /app/Resources/translations/messages.en.yml
+app:
+ commun:
+  titre:
+  courbe: Graph
+  rapport: Reports
+  listing: Listing
+  courbe: Graph
+  outil: Tools
+  bruleur: Burner
+  configuration: Configuration
+ bouton:
+  attention: Attention
+  modifier: Modify
+  valider: Save
+
+app.commun.info.chargement: Chargement
+app.commun.periode.none: Aucune période définie
+
+# Enregistrer la requête
+bouton_enregistrement_requete: Save the request
+# Supprimer l'enregistrement
+bouton_suppression_requete: Delete the request

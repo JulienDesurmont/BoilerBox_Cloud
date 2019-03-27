@@ -1,0 +1,208 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/configuration_ipc.html.twig #}
+{# Page des Paramètres BoilerBox #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Paramètres{% endblock title %}
+
+
+{% block title_header %}
+    <h1>Paramètres Boilerbox</h1>
+{% endblock title_header %}
+
+
+{% block body %}
+	{{ parent() }}
+
+     <div class='gestion_parametres_ipc'>
+        <table>
+            <tr><th>Paramètre</th>
+                <th>Désignation</th>
+                <th style='text-align:left'>Valeur</th>
+                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
+                <th class='small'>Modif.</th>
+                {#<th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>#}
+            </tr>
+            {% for liste in liste_configurations %}
+                {% if liste.parametreAdmin %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <tr>
+                            <td>{{ liste.parametre }}</td>
+                            <td>{{ liste.designation }}</td>
+                            <td>{{ liste.valeur }}</td>
+                            <td class='small'><input type='checkbox' checked disabled /></td>
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                            {#<td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>#}
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <tr>
+                        <td>{{ liste.parametre }}</td>
+                        <td>{{ liste.designation }}</td>
+                        <td>{{ liste.valeur }}</td>
+                        <td class='small'><input type='checkbox' disabled class='cacher' /></td>
+                        <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                        {#<td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% else %} - {% endif %}</td>#}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+       </table>
+   </div>
+{% endblock body %}
+
+
+{% block footer %}
+	<div class='gestion_parametres_foot'>
+	    <form name='MyForm' action={{ path('ipc_param_ipc') }} method='post'>
+			<input type='hidden' name='valider' id='valider' />
+			<input type='hidden' name='idconf'  id='idconf' />
+			{% if is_granted('ROLE_ADMIN') %}
+				<div id='validationParametre'>
+   	        	    <div class='validationbouton'>
+   	        	        <div class='center'>
+   	        	            {#
+							<a href='#' style="height:30px;" onClick="creationParametre();return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter un paramètre</div></div></a>
+				    		<a href='#' style="height:30px;" onClick="modifValidation('initialisation');validationFormulaire();return false;"><div class='bouton red'><div class='bgbouton'>Paramètres d'origine !</div></div></a>
+				    		<a href='#' style="height:30px;" onClick="modifValidation('reinitialisation');validationFormulaire();return false;"><div class='bouton blue'><div class='bgbouton'>Réinit des paramètres</div></div></a>
+				    		<a href='#' style="height:30px;" onClick="modifValidation('newVersion');validationFormulaire();return false;"><div class='bouton green'><div class='bgbouton'>Paramètres de la version courante</div></div></a>
+							#}
+   	        	        </div>
+   	        	    </div>
+				</div>
+			{% endif %}
+			<div id='ajout' class='cacher'>
+		    	<table class='parametre'>
+					<tr>
+					    <th style="width:20%;">Paramètre</th><th style="width:60%;">Désignation</th><th style="width:20%;">Valeur</th><th>Paramètre administrateur</th></tr>
+					<tr>	
+					    <td><input type='text' id='parametre' class='inputText' name='parametre' /></td>
+					    <td><input type='text' id='designation' class='inputText' name='designation'></td>
+					    <td><input type='text' id='valeur' class='inputText' name='valeur' /></td>
+						<td><input type='checkbox' id='parametreAdmin' name='parametreAdmin' /></td>
+					</tr>
+		    	</table>
+   	            <div class='validationbouton'>
+   	                <div class='center'>
+   	                    <a href='#' style="height:30px;" onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'><div id='titreGestionParam'>Valider</div></div></div></a>
+   	                    <a href='#' style="height:30px;" onClick="annuler();return false;"><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
+   	                </div>
+   	            </div>
+			</div>
+	    </form>
+	</div>
+{% endblock footer %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Configurations').attr('href');
+            window.location.href = url_intervention;
+        }
+
+        $(document).ready(function() {
+            // Fonction executée lors d'un click sur un bouton input de type radio
+            $('input:radio').click(function() {
+				if(! $('#validationParametre').hasClass('cacher')) {
+		    		$('#validationParametre').addClass('cacher');
+				}
+                // Récupération des valeurs de Paramètre, Désignation, Valeur, ParametreAdmin et Id du paramètre à modifier
+                var $parametre = $(this).parent().parent().children('td').eq(0).text();
+                var $designation = $(this).parent().parent().children('td').eq(1).text();
+                var $valeur = $(this).parent().parent().children('td').eq(2).text();
+				var $parametreAdmin	= $(this).parent().parent().children('td').eq(3).children('input').prop('checked');
+                var $idconf	= $(this).attr('value');
+
+                // Inscription des paramètres récupérés dans les champs modifiables
+                document.getElementById('parametre').value = $parametre;
+                document.getElementById('designation').value = $designation;
+                document.getElementById('valeur').value	= $valeur;
+				$('#parametreAdmin').prop('checked', $parametreAdmin);
+                document.getElementById('idconf').value	= $idconf;
+
+                if($(this).attr('name') == 'modif') {
+                    // Modification de l'intitulé du bouton de validation
+		    		$("#valider").attr('value','Modifier');
+		    		$("#titreGestionParam").text('Modifier');
+                    // Décoche des boutons input de type radio supp
+                    $('input[type=radio][name=supp]').val(['0']);
+
+                    // Mise en lecture_écriture des paramètres à modifier
+                    $('#designation').removeAttr('readonly');
+                    $('#valeur').removeAttr('readonly');
+                    // Mise en lecture seul de paramètre à ne pas modifier
+                    $('#parametre').attr('readonly','true');
+                    // Affichage du div de modification d'un paramètre
+                    $("#ajout").removeClass('cacher');
+                }
+                if($(this).attr('name') == 'supp') {
+                    // Modification de l'intitulé du bouton de validation
+		    		$("#valider").attr('value','Supprimer');
+		    		$("#titreGestionParam").text('Supprimer');
+                    // Décoche des boutons input de type radio modif
+                    $('input[type=radio][name=modif]').val(['0']);
+                    // Mise en lecture seul de paramètre à supprimer
+                    $('#parametre').attr('readonly','true');
+                    $('#designation').attr('readonly','true');
+                    $('#valeur').attr('readonly','true');
+					$('#parametreAdmin').attr('readonly','true');
+                    // Affichage du div de modification d'un paramètre
+                    $("#ajout").removeClass('cacher');
+                }
+            });
+        });
+
+
+		function creationParametre() {
+            if(! $('#validationParametre').hasClass('cacher')) {
+                $('#validationParametre').addClass('cacher');
+            }
+
+	    	//      Réinitialisation des champs Paramètre, Désignation et Valeur pour le nouveau paramètre
+            document.getElementById('parametre').value 		= '';
+            document.getElementById('designation').value 	= '';
+            document.getElementById('valeur').value 		= '';
+            //      Mise à 0 du champs caché 'id' du paramètre car un nouveau paramètre n'a pas d'id définit
+            document.getElementById('idconf').value 		= 0;
+
+            //      Modification de l'intitulé du bouton de validation
+	    	$("#valider").attr('value','Ajouter');
+	    	$("#titreGestionParam").text('Ajouter');
+            //      Décoche des boutons input de type radio
+            $('input[type=radio][name=modif]').val(['0']);
+            $('input[type=radio][name=supp]').val(['0']);
+
+            //      Mise en lecture_écriture des paramètres à modifier
+            $('#parametre').removeAttr('readonly');
+            $('#designation').removeAttr('readonly');
+            $('#valeur').removeAttr('readonly');
+
+            //      Affichage du div de modification d'un paramètre
+            $("#ajout").removeClass('cacher');
+		}	
+
+		function annuler() {
+		    //      Décoche des boutons input de type radio
+		    $('input[type=radio][name=modif]').val(['0']);
+		    $('input[type=radio][name=supp]').val(['0']);
+		    $('#ajout').addClass('cacher');
+		    $('#validationParametre').removeClass('cacher');
+		}
+
+		function validationFormulaire() {
+	    	document.forms['MyForm'].submit();
+		}
+
+		function modifValidation(choix) {
+	    	$("#valider").attr('value',choix);
+		}
+        </script>
+{% endblock bodyjavascript %}

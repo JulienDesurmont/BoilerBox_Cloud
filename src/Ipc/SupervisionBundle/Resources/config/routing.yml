@@ -1,0 +1,61 @@
+ipc_supervision_accueil:
+    path: /supervision/accueil
+    defaults: { _controller: IpcSupervisionBundle:Supervision:accueil }
+
+ipc_set_indexAutomate:
+    path: /supervision/config/ajax/indexAutomate
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_setIndexautomate }
+
+ipc_supervision_get_infosModbus:
+    path: /supervision/config/ajax/getInfosModbus
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_getInfosModbus }
+
+ipc_set_liveModules:
+    path: /supervision/config/ajax/newLiveModules
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_setNewLiveSerie }
+
+ipc_ajax_getEvenements:
+    path: /supervision/config/ajax/getEvenements/{nouvelEvenement}
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_getEvenements }
+
+ipc_ajax_getEvenements2:
+    path: /supervision/config/ajax/getEvenements
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_getEvenements }
+
+ipc_supervision_reinit_session:
+    path: /supervision/session_reinitialisation
+    defaults: { _controller: IpcSupervisionBundle:Supervision:reinitialisationVariable }
+    requirements:
+        _method: GET
+
+ipc_supervision_modbus_cloture_ftp:
+    path: /supervision/config/ajax/modbusClotureFtp
+    defaults: { _controller: IpcSupervisionBundle:Supervision:modbusClotureFtp }
+
+ipc_ajax_set_sessionAside:
+    path: /supervision/config/ajax/setSessionAside
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajaxSetSessionAside }
+
+ipc_ajax_set_tabZoom:
+    path: /supervision/ajax/setTabZoom
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajaxSetTabZoom }
+
+ipc_ajax_set_infosBulles:
+    path: /supervision/ajax/setInfosBulles
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajaxSetInfosBulles }
+
+ipc_ajax_set_infosAside:
+    path: /supervision/ajax/setInfosAside
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajaxSetInfosAside }
+
+ipc_ajax_get_lastTimeEvenement:
+    path: /supervision/ajax/getLastTimeEvenement
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajax_getLastTimeEvenement }	
+
+ipc_ajax_test_ping:
+    path: /supervision/ajax/testPing
+    defaults: { _controller: IpcSupervisionBundle:Supervision:ajaxTestPing }
+
+ipc_download_lien_live:
+    path: /supervision/download/lien
+    defaults: { _controller: IpcSupervisionBundle:Supervision:telechargementLienLive }

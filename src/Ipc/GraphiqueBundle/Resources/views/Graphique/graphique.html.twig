@@ -1,0 +1,124 @@
+{# /src/Ipc/GraphiqueBundle/Resources/views/Graphique/graphique.html.twig #}
+
+{% extends 'IpcGraphiqueBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }}Compression{% endblock title %}
+
+{% block body %}
+    <div id="graphiquemessage">
+    	<h1>{{ 'label.titre.courbe'|trans }}</h1>
+    	<div class="info"><div class="icone-info">i</div>{{ 'label.info.points_max'|trans({'%limit%':limit}) }}</div>
+    	{% if tempMax %}
+			<p>{{ 'label.requete_timeout'|trans }}</p>
+   		{% else %}
+			<div id="compression">
+				<form method='post' name='myForm2' action="{{ path('ipc_graphAnalyse') }}">
+					<table>
+    	        	<thead>
+    	                <tr>
+    	                    <th class="localisation">{{ 'label.localisation_reduit'|trans }}</th>
+    	                    <th class="code">{{ 'label.code_message'|trans }}</th>
+    	                    <th class="designation">{{ 'label.designation'|trans }}</th>
+    	                    <th class="compression">{{ 'label.compression'|trans }}</th>
+    	                    <th class="point">{{ 'label.points'|trans }}</th>
+    	                </tr>
+    	            </thead>
+    	            <tbody>
+						{% for requete in liste_req %}
+			    			{% if (typeValidation == 'Analyse') or (requete['NbDonnees'] > limit) %}
+			    				<tr>
+    	            	        	<td class="localisation"><div class="txtlocalisation">{{ requete['Localisation'] }}</div></td>
+    	            	        	<td class="code">{{ requete['code_message'] }}</td>
+    	            	        	<td class="designation"><strong>{{ requete['Texte'] }}</strong><br /><div id="typeRecherche{{ loop.index0 }}">{{ requete['TexteRecherche']|raw }}.</div></td>
+    	            	        	<td class="compression">
+    	            	            	<div class="select-point">{{ 'label.afficher'|trans|capitalize }}
+    	            	                	<select style='width:146px;' id="recherche_{{ loop.index0 }}" name="recherche_{{ loop.index0 }}" onChange="switchSelect({{ loop.index0 }});" >
+						    					<option value="all" {% if requete['choixRecherche'] == 'all' %}selected{% endif %}>{{ 'select.points.tous'|trans }}</option>
+    	            	                    	<option value="average" {% if requete['choixRecherche'] == 'average' %}selected{% endif %}>{{ 'select.points.moyen'|trans }}</option>
+    	            	                    	<option value="high" {% if requete['choixRecherche'] == 'high' %}selected{% endif %}>{{ 'select.points.maximum'|trans }}</option>
+    	            	                    	<option value="low" {% if requete['choixRecherche'] == 'low' %}selected{% endif %}>{{ 'select.points.minimum'|trans }}</option>
+    	            	                	</select>
+    	            	            	</div>
+    	            	            	<div class="select-pas">
+											<div id="select-pas_{{ loop.index0 }}" {% if requete['choixRecherche'] == 'all' %}class="cacher"{% endif %}>{{ 'select.pas.titre'|trans|lower }}
+    	            	                		<select name="pas_{{ loop.index0 }}" id="pas_{{ loop.index0 }}" >
+    	            	                    		<option value="Seconde" {% if requete['precision'] == 'Seconde' %}selected{% endif %}>1 {{ 'select.pas.seconde'|trans|lower }}</option>
+    	            	                    		<option value="Minute" {% if requete['precision'] == 'Minute' %}selected{% endif %}>1 {{ 'select.pas.minute'|trans|lower }}</option>
+    	            	                    		<option value="Heure" {% if requete['precision'] == 'Heure' %}selected{% endif %}>1 {{ 'select.pas.heure'|trans|lower }}</option>
+    	            	                    		<option value="Jour" {% if requete['precision'] == 'Jour' %}selected{% endif %}>1 {{ 'select.pas.jour'|trans|lower }}</option>
+    	            	                    		<option value="Mois" {% if requete['precision'] == 'Mois' %}selected{% endif %}>1 {{ 'select.pas.mois'|trans|lower }}</option>
+    	            	                		</select>
+    	            	                	</div>
+    	            	            	</div>
+    	            	        	</td>
+    	            	        	<td class="point"><div class="invalide">{{ requete['NbDonnees'] }}</div> / {{ requete['MaxDonnees'] }}</td>
+    	            	    	</tr>
+			    			{% endif %}
+						{% endfor %}
+					</tbody>
+    	        	</table>
+		    		<br />
+		    		<input type='hidden' name='choixSubmit' id='choixSubmit' />
+		    		<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req|length }}' >
+				</form>
+    		</div>
+		{% endif %}
+	</div>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id="validation">
+        <a href="#" onClick="document.getElementById('choixSubmit').value='Valider';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton green"><div class="bgbouton">{{ 'bouton.afficher'|trans|upper }}</div></div></a>
+        <a href="#" onClick="document.getElementById('choixSubmit').value='Analyse';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.recalculer'|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+{% block footer %}
+	{{ 'label.titre.legende'|trans }}
+    <br />
+    <div id="legende">
+		{{ 'label.titre.legende'|trans }} :
+        <ul>
+           {% for key,localisation in liste_localisations %}
+                <li>{{ localisation.numero_localisation }} : {{ localisation.designation }}</li>
+           {% endfor %}
+        </ul>
+        <br />
+    </div>
+{% endblock footer %}
+
+{% block progJavascript %}
+{% endblock progJavascript %}
+
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+  	<script type='text/javascript'>
+    	/* Désactivation du bouton de modification de période */
+    	$('#choixSelectionPeriode').hide();
+
+    	$(document).ready(function(){
+        	/* Mise en place d'une marge automatique */
+        	var marginBottom = $('footer').height()+'px';
+        	if (marginBottom != '0px') {
+            	document.getElementById("graphiquemessage").style.marginBottom = marginBottom;
+        	}
+
+			// Suppression de l'événement click de la banière des périodes
+			$('configperiode').off('click');
+    	});
+
+    	// fonction qui affiche ou cache le select de Pas en fonction du choix du select de compression
+    	function switchSelect(numeroReq) {
+        	var checkedCompressValue = $("#recherche_"+numeroReq+" option:selected").val();
+        	if (checkedCompressValue == 'all') {
+            	$('#select-pas_'+numeroReq).addClass('cacher');
+        	} else {
+            	if ($('#select-pas_'+numeroReq).hasClass('cacher')) {
+                	$('#select-pas_'+numeroReq).removeClass('cacher');
+            	}
+        	}
+    	}
+  </script>
+{% endblock bodyjavascript %}

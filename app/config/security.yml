@@ -1,0 +1,63 @@
+security:
+    # Objet qui encode les mots de passe. info : plaintext n'encode rien
+    encoders:
+        Symfony\Component\Security\Core\User\User: sha512
+        Ipc\UserBundle\Entity\User: sha512
+
+    role_hierarchy:
+        ROLE_TECHNICIEN:  ROLE_USER
+        ROLE_SUPERVISEUR: ROLE_TECHNICIEN
+        ROLE_ADMIN:       ROLE_SUPERVISEUR
+        ROLE_ADMINTMP:    ROLE_ADMIN
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    # Fournisseur d'utilisateurs
+    providers:
+        main :
+            # Service utilisé comme fournisseur d'utilisateur
+            id: fos_user.user_provider.username
+            #entity: { class: Ipc\UserBundle\Entity\User, property: username }
+    firewalls:
+        # Pare-feu dev permet de désactiver la sécurité sur certaine url
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        # Pare-feu main-login utilisé uniquement pour le formulaire d'identification car on interdit les connexions anonymes
+        supervision:
+             pattern: /supervision
+             anonymous: true
+        config_anonyme:
+             pattern: /anonym
+             anonymous: true
+        main_login:
+             # Cette expression régulière permet de prendre /login (mais pas /login_check !)
+             pattern: ^/(login|gestion_logout)$
+             anonymous: true
+        main:
+            pattern: ^/
+            anonymous: false
+            provider: main 
+            form_login:
+                login_path: fos_user_security_login    # route du formulaire de connexion
+                check_path: fos_user_security_check    # route de validation du formulaire de connexion
+                always_use_default_target_path: true
+                require_previous_session: false
+            logout:
+                path: fos_user_security_logout         # route à laquelle le visiteur doit etre envoyé pour être déconnecté
+                target: ipc_prog_logout                # URL vers laquelle l'utilisateur déconnecté est redirigé
+                invalidate_session: true
+                delete_cookies:
+                    REMEMBERME: { path: null, domain: null}
+            remember_me:
+                key: %secret%
+                lifetime: 10
+    access_control:
+        # Régle de controle d'accés sur les url débutantes par /admin : Autorisé aux Administrateurs et Super_Administrateurs
+        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/configuration/anonym, role: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+        - { path: ^/admin, role: ROLE_SUPERVISEUR, requires_channel: http }
+        - { path: ^/configuration/admin, role: ROLE_SUPERVISEUR, requires_channel: http }
+        - { path: ^/etat/nouvelEtat, role: ROLE_SUPERVISEUR, requires_channel: http }
+        - { path: ^/etat, role: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }

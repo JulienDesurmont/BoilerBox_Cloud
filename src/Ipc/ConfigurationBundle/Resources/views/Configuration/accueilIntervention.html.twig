@@ -1,0 +1,36 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/acceuilIntervention.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Rapport d'intervention{% endblock title %}
+
+{% block body %}
+	{{ parent() }}
+    <div id='acceuilIntervention'>
+    	<h1>Intervention</h1>
+    	<select name='select_intervention' id='select_intervention'>
+            <option value="{{ path('ipc_new_intervention') }}">Nouvelle intervention</option>
+    	    <option value="{{ path('ipc_view_interventions') }}">Voir les rapports d'interventions</option>
+    	</select>
+    </div>
+    <br /><br />
+    <div class='validationbouton'>
+        <div class='center'><a href='#' style="height:30px;" onClick="redirection();return false;" ><div class='bouton blue'><div class='bgbouton'>Atteindre</div></div></a></div>
+    </div>
+{% endblock body %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+    <script type='text/javascript'>
+        function redirection() {
+            attente();
+            setTimeout(function() {
+                var url_intervention = $('#select_intervention').val();
+                window.location.href = url_intervention;
+            },100);
+        }
+    </script>
+{% endblock bodyjavascript %}
+
+
+

@@ -1,0 +1,28 @@
+{# src/Ipc/AnalyseBundle/Resources/views/secondLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Analyse - {% endblock %}
+
+{% block body %}
+    <span id="pageAnalyse" class="cacher"></span>
+{% endblock body %}
+
+	
+{# Suppression des menus #}
+{% block left_menu %}
+{% endblock left_menu %}
+
+
+
+{% block bodyjavascript %}
+    {# Supprime l'espace alloué au menu de gauche sur les medias de petite largeur #}
+    <script type='text/javascript'>
+        $('page').addClass('noLeftMenus');
+    </script>
+
+    {% javascripts output='js/analysebruleur.js'
+        'bundles/ipcanalyse/js/analysebruleurfunctions.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  bodyjavascript %}

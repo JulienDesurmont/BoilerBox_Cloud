@@ -1,0 +1,20 @@
+{# src/Ipc/EtatBundle/Resources/views/secondLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block bodyjavascript %}
+    <script type='text/javascript'>
+		$('menu_droite').css('background', '#000');
+		$('menu_gauche').css('background', '#000');
+
+        /* Désactivation du bouton de modification de période */
+        $('#choixSelectionPeriode').hide();
+    </script>
+
+    {% javascripts output='js/etats.js' filter='jsqueeze'
+		'bundles/ipcgraphique/js/chargement.js'
+		'bundles/ipcgraphique/js/highstock.js'
+		'bundles/ipcgraphique/js/exporting.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock bodyjavascript %}

@@ -1,0 +1,65 @@
+{# src/Ipc/OutilsBundle/Resources/views/Outils/parametreSystem.html.twig #}
+
+{% extends "IpcOutilsBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Système{% endblock title %}
+
+{% block title_header %}
+    <h1>Paramètres système</h1>
+{% endblock title_header %}
+
+{% block body %}
+	{{ parent() }}
+
+    <section id='menu_general'>
+	    <div id='tab_param_system'>
+	    	<table class='getSystemParam'>
+				<tr><td class='decalageGauche'>Système de fichier</td>		
+					<td>{{ tabParametres.df.systFic }}</td></tr>
+				<tr><td class='decalageGauche'>Espace disque total</td>	
+					<td>{{ tabParametres.df.sizeDisc }}</td></tr>
+                <tr><td class='decalageGauche'>Espace disque libre</td>
+                    <td>{{ tabParametres.df.sizeUnused }}</td></tr>
+            	<tr><td class='decalageGauche'>Espace disque utilisé</td>	
+					<td>{{ tabParametres.df.sizeUsed }}</td></tr>
+            	<tr><td {% if tabParametres.df.percent|number_format > highPercentLimit %}class='red decalageGauche'{% else %}class='decalageGauche'{% endif %}>Pourcentage d'espace disque utilisé</td>
+					<td {% if tabParametres.df.percent|number_format > highPercentLimit %}class='red decalageGauche'{% else %}class='decalageGauche'{% endif %}>{{ tabParametres.df.percent }}</td></tr> 
+            	<tr><td class='decalageGauche'>Espace disque utilisé par BoilerBox</td>
+					<td>{{ tabParametres.boilerbox.size }}</td></tr>
+            	<tr><td class='decalageGauche'>Espace disque utilisé par Mysql</td>
+					<td>{{ tabParametres.mysql.size }}</td></tr>
+	    	</table>
+	    </div>
+		<form name='MyForm' method='post' action="{{ path('ipc_gestionRapport') }}">
+	    	<input type='hidden' name='typeAction' value='rapportSystemPageAffiche' />
+			<input type='hidden' name='dateRapport' value='{{ "now"|date('d/m/Y H:i:s') }}' />
+		</form>
+        <textarea rows="2" cols="150" disabled>{% if texte_logs is defined %}{{ texte_logs }}{% endif %}</textarea>
+    </section>
+{% endblock body %}
+
+{% block choix_validation %}
+    <div id='validation'>
+        <a href='#' id='bouton_soumettre' class='right' onClick="validationFormulaire();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.enregistrer"|trans|upper }}</div></div></a>
+        <a href='#' class='right' onClick="goBack();return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.retour"|trans|upper }}</div></div></a>
+    </div>
+{% endblock choix_validation %}
+
+
+{% block bodyjavascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        function goBack() {
+            var url_intervention = $('#Outils').attr('href');
+            window.location.href = url_intervention;
+        }
+        function validationFormulaire() {
+            attente();
+            setTimeout(function() {
+                document.getElementById('bouton_soumettre').disabled = true;
+                document.forms['MyForm'].submit();
+            },200);
+        }
+    </script>
+{% endblock  bodyjavascript %}

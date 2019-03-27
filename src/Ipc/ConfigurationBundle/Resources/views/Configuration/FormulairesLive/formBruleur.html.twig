@@ -1,0 +1,55 @@
+{# /src/Ipc/ConfigurationBundle/Resources/views/Configuration/formulairesLive/formExploitationGenerateur.html.twig #}
+{% extends "IpcConfigurationBundle::secondLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Live{% endblock title %}
+
+{% block body %}
+
+	{{ parent() }}
+
+	<div id='formulaireEntete'>
+	    <h1>Formulaire : Brûleur</h1>
+	    {{ form_start(form, {'method':'POST', 'action':path('addFormBruleur')}) }}
+			Chaudière Bifoyer <input type='checkbox' name='biFoyer' id='chkBiFoyer' onclick='bifoyer();' />
+			<table>
+				<tr><td>{{ form_label(form.label) }}</td><td>{{ form_widget(form.label,{'attr':{'class':'label inputText'}}) }}</td><td>{{ form_errors(form.label) }}</td></tr>	
+				<tr><td>{{ form_label(form.adPrFlamme1) }}</td><td>{{ form_widget(form.adPrFlamme1,{'attr':{'class':'inputText'}}) }}</td><td>{{ form_errors(form.adPrFlamme1) }}</td></tr>
+				<tr><td>{{ form_label(form.adChBruleur1) }}</td><td>{{ form_widget(form.adChBruleur1,{'attr':{'class':'inputText'}}) }}</td><td>{{ form_errors(form.adChBruleur1) }}</td></tr>
+			</table>
+			<div id='secondFoyer' class='nonVisible'>
+				Deuxième Foyer
+				<table>
+	                <tr><td>{{ form_label(form.label2) }}</td><td>{{ form_widget(form.label2,{'attr':{'class':'label inputText'}}) }}</td><td>{{ form_errors(form.label2) }}</td></tr>
+	                <tr><td>{{ form_label(form.adPrFlamme2) }}</td><td>{{ form_widget(form.adPrFlamme2,{'attr':{'class':'inputText'}}) }}</td><td>{{ form_errors(form.adPrFlamme2) }}</td></tr>
+	                <tr><td>{{ form_label(form.adChBruleur2) }}</td><td>{{ form_widget(form.adChBruleur2,{'attr':{'class':'inputText'}}) }}</td><td>{{ form_errors(form.adChBruleur2) }}</td></tr>
+	        	</table>
+			</div>
+			{{ form_widget(form.idLocalisation) }}
+			{{ form_widget(form.enregistrer,{'attr':{'class':'widgetValidation'}}) }}
+	    {{ form_end(form) }}
+
+	    <div class='validationbouton'>
+	        <div class='center'>
+	            <a href='#' style="height:30px;" onClick='annuler("{{ path('ipc_add_donnee_live') }}");return false;'><div class='bouton blue'><div class='bgbouton'>Retour</div></div></a>
+	        </div>
+	    </div>
+	</form>
+{% endblock body %}
+
+{% block bodyjavascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+    	$('document').ready(function() {
+			$('#chkBiFoyer').prop('checked',false);
+    	});
+
+    	function bifoyer() {
+			$('#secondFoyer').toggleClass('nonVisible');
+    	}
+    	function annuler(url) {
+        	attente();
+        	window.location.href = url;
+    	}
+	</script>
+{% endblock bodyjavascript %}

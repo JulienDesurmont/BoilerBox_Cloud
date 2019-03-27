@@ -1,0 +1,69 @@
+{# EtatBundle/Resources/views/Etat/affichage/accueil.html.twig #}
+
+{% extends 'IpcEtatBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }} {{ service_session.get('pageTitle').title }} - {{ titrePageEtat }} {% endblock title %}
+
+{% block menu_gauche %}
+	<div class='notToBePrinted'>
+		<section id='menug_etat'>
+            <ul class='menu-flex-container'>
+				<li class='menu-flex-item menu-flex-start'></li>
+				{% for etat in tabEtats %}
+					<li class='menu-flex-item menu-flex-center'><a href="{{ path('ipc_etat_affiche',{ 'idEtat': etat.id }) }}">{{ etat.intitule }}</a></li>
+				{% endfor %}
+				<li class='menu-flex-item menu-flex-end'></li>
+			</ul>
+		</section>
+	</div>
+{% endblock menu_gauche %}
+
+
+{% block menu_droite %}
+	{#
+	<div class='notToBePrinted'>
+		{% if is_granted('ROLE_SUPERVISEUR') %}
+			<section id='menud_etat'>
+    			<ul class='menu-flex-container'>
+    			    <li class='menu-flex-item menu-flex-start'></li>
+					{% for calcul in tabCalculs %}
+    			    	<li class='menu-flex-item menu-flex-center'><a href="{{ path('ipc_nouvelEtat', { 'numero':calcul.numeroCalcul }) }}">{{ calcul.description }}</a></li>
+					{% endfor %}
+    			    <li class='menu-flex-item menu-flex-end'></li>
+    			</ul>
+			</section>
+		{% endif %}
+	</div>
+	#}
+{% endblock menu_droite %}
+
+
+
+{% block body %}
+	<div id='etatPage'>
+   	 	{% include fileToInclude %}
+	</div>
+{% endblock body %}
+
+
+
+{% block progJavascript %}
+	{% if jsProd is defined %}
+		{{ parent() }}
+
+		{% javascripts output='js/etatselection.js'
+            'bundles/ipcetat/js/selectionListe.js'
+        %}
+            <script src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+		{#<script type='text/javascript' src="{{ asset('bundles/ipcetat/js/selectionListe.js') }}"></script>#}
+    {% endif %}
+{% endblock progJavascript %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+    {# Javascript spécifique à l'ETAT à afficher #}
+    {% if jsToInclude is defined %}
+        {% include jsToInclude %}
+    {% endif %}
+{% endblock bodyjavascript %}

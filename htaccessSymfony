@@ -1,0 +1,9 @@
+#/srv/www/htdocs/Symfony/
+
+Options +FollowSymlinks
+
+# BEGIN Cache-Control Headers
+<ifModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule  ^bundles/(.*)$ web/bundles/$1
+</ifModule>

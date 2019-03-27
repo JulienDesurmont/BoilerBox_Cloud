@@ -1,0 +1,2 @@
+RedirectMatch ^/Live.*$ http://192.168.0.220/web/app.php/supervision/accueil?id=1a2z3eC649@4q5s6d_7w8x9c
+

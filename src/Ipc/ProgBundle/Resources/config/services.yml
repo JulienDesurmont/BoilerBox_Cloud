@@ -1,0 +1,6 @@
+parameters:
+#    ipc_prog_insertbdd.class: Ipc\ProgBundle\Message
+
+services:
+#    ipc_chargement_bdd:
+#         class: "%ipc_prog_insertbdd.class%"

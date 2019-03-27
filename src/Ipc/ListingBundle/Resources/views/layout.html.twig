@@ -1,0 +1,21 @@
+{# src/Ipc/ListingBundle/Resources/views/layout.html.twig #}
+{% extends "::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Listings {% endblock %}
+
+{% block body %} 
+	<div class='pageIcone'>
+		<img src="{{ asset('images/icones/V3-web-analyse-ttl.png') }}" class="icone" alt="icone_accueil" />
+	</div>
+
+        <div class='pageTitleLarge'><h1 class='title'>{{ service_session.get('pageTitle').title }}</h1></div>
+
+        <div class='messagePeriodeLarge'>
+                <h2>{{ messagePeriode }}</h2>
+        </div>
+
+	<div class="loaderLarge">
+		<span id="loader"><img src="{{ asset('images/icones/loader.gif') }}" alt="loading" /></span>
+	</div>
+	<br />
+{% endblock %}

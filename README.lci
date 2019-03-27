@@ -1,0 +1,14 @@
+BoilerBox pour les Ipc en version 2 
+
+Par défaut les dossiers vides ne sont pas ajouté dans les dépots Git distant : 
+Commande pour ajouter un fichier aux dossiers vides : find * -type d -empty -exec touch {}/.gitignore \;
+
+Pour mettre en place une version suivie par GitHub
+Lancer la commande : git remote add origin https://github.com/JulienDesurmont/BoilerBox_v2.git
+Puis : git pull origin master --allow-unrelated-histories pour fusionner
+
+Les dossiers de logs et d'uploads sont à installer à part si besoin. Cela pour éviter l'écrasement non désiré d'ancien fichiers 
+Logs : 		/web/logs 
+Uploads : 	/web/uploads
+
+

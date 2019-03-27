@@ -1,0 +1,20 @@
+{# src/Ipc/ProgBundle/Resources/views/Prog/mailing.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+{% for contenu in liste_contenus %}
+	{% if loop.index == 1 %}
+        <h3 style='color:#FF0000' align='center'>{{ contenu }}</h3>
+		<ul>
+	{% else %}
+       	<li>{{ contenu|raw }}</li>
+	{% endif %}
+	</ul>
+{% endfor %}
+<img src="{{ image_link }}" alt='IPC' align='left' />
+</body>
+</html>
+

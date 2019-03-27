@@ -1,0 +1,18 @@
+# /app/Resources/views/
+
+# BEGIN Cache-Control Headers
+<IfModule mod_headers.c>
+ <FilesMatch "\\.(js)$">
+	Header set Cache-Control "max-age=0, must-revalidate"
+ </FilesMatch>
+</ifModule>
+# END Cache-Control Headers
+
+# protect the htaccess file
+<files .htaccess>
+order allow,deny
+deny from all
+</files>
+
+# protection de la lecture des répertoires
+Options -Indexes

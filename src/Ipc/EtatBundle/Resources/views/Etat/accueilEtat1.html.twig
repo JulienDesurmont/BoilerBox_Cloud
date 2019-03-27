@@ -1,0 +1,91 @@
+{# EtatBundle/Resources/views/Etat/affichage/accueilEtat1.html.twig #}
+
+{% extends 'IpcEtatBundle::secondLayout.html.twig' %}
+
+{% block title %}{{ parent() }} {{ service_session.get('pageTitle').title }} - {{ titrePageEtat }} {% endblock title %}
+
+{% block menu_gauche %}
+	<div class='notToBePrinted'>
+		<section id='menug_etat'>
+            <ul class='menu-flex-container'>
+				<li class='menu-flex-item menu-flex-start'></li>
+				{% for etat in tabEtats %}
+					<li class='menu-flex-item menu-flex-center'><a href="{{ path('ipc_etat_affiche',{ 'idEtat': etat.id }) }}">{{ etat.intitule }}</a></li>
+				{% endfor %}
+				<li class='menu-flex-item menu-flex-end'></li>
+			</ul>
+		</section>
+	</div>
+{% endblock menu_gauche %}
+
+
+{% block menu_droite %}
+	<div class='notToBePrinted'>
+		{% if is_granted('ROLE_SUPERVISEUR') %}
+			<section id='menud_etat'>
+    			<ul class='menu-flex-container'>
+    			    <li class='menu-flex-item menu-flex-start'></li>
+					{% for calcul in tabCalculs %}
+    			    	<li class='menu-flex-item menu-flex-center'><a href="{{ path('ipc_nouvelEtat', { 'numero':calcul.numeroCalcul }) }}">{{ calcul.description }}</a></li>
+					{% endfor %}
+    			    <li class='menu-flex-item menu-flex-end'></li>
+    			</ul>
+			</section>
+		{% endif %}
+	</div>
+{% endblock menu_droite %}
+
+{% block title_header %}
+	<div class='centrer formatageTitre'>
+		<h1>{{ intitule }}</h1>
+    	{% if typePeriode == 'unique' %}
+    	    {{ form_start(form, {'method':'POST', 'action':path('ipc_etat1_accueil')}) }}
+    	        Nouvelle analyse : du {{ form_widget(form.champsDateDebut) }} au {{ form_widget(form.champsDateFin) }}.
+    	        {{ form_widget(form.id) }}
+    	        <div id='validationMin'><a href='#' class='right' onClick="document.forms['ipcEtatBundle_dateType'].submit();return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.enregistrer"|trans|upper }}</div></div></a></div>
+    	        {{ form_rest(form) }}
+    	    {{ form_end(form) }}
+    	{% endif %}
+		<h2>{{ messagePeriode }}</h2>
+	</div>
+{% endblock title_header %}
+
+{% block body %}
+    <div id='etatPage'>
+    	<div id='accueilEtatPage'>
+    	    <h1>{{ tab_des_dates|length }} rapport{% if tab_des_dates|length > 1 %}s{% endif %} disponible{% if tab_des_dates|length > 1 %}s{% endif %}</h1>
+    	    <div id='listeDesRapports'>
+    	        {% for laDate, leFormat in tab_des_dates %}
+    	           	<a href="{{ path('ipc_etat1_affiche',{'idEtat': idEtat, 'dateEtat': laDate}) }}">{{ leFormat }}</a>
+    	        {% endfor %}
+    	    </div>
+    	</div>
+	</div>
+{% endblock body %}
+
+
+{% block progJavascript %}
+	{% if jsProd is defined %}
+		{{ parent() }}
+
+		{% javascripts output='js/etatselection.js'
+            'bundles/ipcetat/js/selectionListe.js'
+        %}
+            <script src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+    {% endif %}
+{% endblock progJavascript %}
+
+{% block bodyjavascript %}
+    {{ parent() }}
+    {% if jsToInclude is defined %}
+        {% include jsToInclude %}
+    {% endif %}
+
+	<script type='text/javascript'>
+		$( function() {
+			$("#ipcEtatBundle_dateType_champsDateDebut").datepicker({dateFormat: 'dd/mm/yy', firstDay:1});
+			$("#ipcEtatBundle_dateType_champsDateFin").datepicker({dateFormat: 'dd/mm/yy', firstDay:1});
+  		} );
+	</script>
+{% endblock bodyjavascript %}

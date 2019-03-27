@@ -1,0 +1,84 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="500" height="500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>LCI : La Cha...</title>
+
+
+<defs>
+<style type="text/css"><![CDATA[
+@keyframes animer2 { 0%{fill-opacity : 0.2 ;transform : scale(1); } 50%{fill-opacity : 0.5 ; transform : scale(1.5); } 100%{fill-opacity : 1 ; transform : scale(2); } } 
+
+@keyframes animer1 { 0%{fill-opacity : 0.2 ;transform : rotate(360deg); } 17%{fill-opacity : 0.17 ; transform : rotate(300deg); } 34%{fill-opacity : 0.5 ; transform : rotate(240deg); } 50%{fill-opacity : 0.5 ; transform : rotate(180deg); } 68%{fill-opacity : 0.5 ; transform : rotate(120deg); } 85%{fill-opacity : 0.5 ; transform : rotate(60deg); } 100%{fill-opacity : 1 ; transform : rotate(0deg); } }
+
+#ligneMorale {animation : animer1 12s 0s infinite linear ;transform-origin : 50% 50%; }
+]]></style>
+
+<!--
+
+#disque1 {animation : animer2 6s 0s infinite linear alternate ;transform-origin : 50% 50%; }
+#disque2 {animation : animer2 9s 3s infinite linear alternate ;transform-origin : 50% 50%; }
+-->
+  
+
+<linearGradient id="vertbleu" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#26CD22; stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#1F56D2; stop-opacity:1"/>
+</linearGradient>
+
+<radialGradient id="vertrosebleu" r="50%" cx="20%" cy="20%" fy="50%" fx="50%">
+<stop offset="0%" style="stop-color:#26CD22; stop-opacity:1"/>
+<stop offset="50%" style="stop-color:#D80E7C; stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#1F56D2; stop-opacity:1"/>
+</radialGradient>
+</defs>
+
+<image x="30%" y="0" width="200px" height="180px" xlink:href="lundi_vendredi.jpg" />
+<image x="15%" y="130" width="80px" height="60px" xlink:href="lundi_mardi.jpg" />
+<image x="1%"  y="200" width="150px" height="100px" xlink:href="mardi.jpg" />
+<image x="16%"  y="330" width="80px" height="60px" xlink:href="mardi_mercredi.jpg" />
+<image x="35%" y="380" width="150px" height="100px" xlink:href="mercredi.jpg" />
+<image x="70%" y="330" width="80px" height="60px" xlink:href="mercredi_jeudi.jpg" />
+<image x="70%" y="200" width="150px" height="100px" xlink:href="jeudi.jpg" />
+<image x="70%" y="130" width="80px" height="60px" xlink:href="jeudi_vendredi.jpg" />
+
+
+<image x="0%" y="0" width="100px" height="80px" xlink:href="maxime.jpg" />
+<image x="68%"  y="6" width="80px" height="60px" xlink:href="jerome.jpg" />
+<image x="73%"  y="67" width="90px" height="55px" xlink:href="jeremy.jpg" />
+<image x="90%" y="60" width="55px" height="55px" xlink:href="jean_charles.jpg" />
+
+
+<image x="15%"  y="60" width="50px" height="50px" xlink:href="vincent.jpg" />
+<image x="80%"  y="0" width="90px" height="60px" xlink:href="boss.jpg" />
+<image x="0%"  y="440" width="80px" height="60px" xlink:href="julien.jpg" />
+<image x="83%"  y="410" width="80px" height="80px" xlink:href="ludovic.jpg" />
+<image x="74%"  y="450" width="50px" height="50px" xlink:href="martine.jpg" />
+
+
+
+
+<line x1="50%" y1="30" x2="50%" y2="150" style=" stroke:#26CD22;" id='ligneMorale'/>
+	<!-- 
+	<rect   x="20" y="10" width="800" height="300" style=" fill:url(#vertrosebleu); "/>
+    <rect   x="20" y="10" width="200" height="300"
+        style=" fill:#26CD22; stroke:#1F56D2" />
+    <path d="M200,200 l10,10 h10,20 v50,20 z"/>
+    <path d="M200,200 q0,100 0,200"/>
+    <polyline points="50,50 200,100 20,200 200,40 300,50 400,60" />
+    <polygon points="0,0 40,20 20,20 20,40 30,50 40,60" />
+	<polyline points="50,50 200,100 20,200 200,40 300,50 400,60" />
+	<rect x="50" y="200" width="250" height="40" />
+	<circle cx="300" cy="350" r="120" />
+	<ellipse cx="125" cy="130" rx="190" ry="45" />
+	-->
+
+	<circle r ="100" cx ="50%" cy ="50%" style ="fill : red ;" id ="disque1"/> 
+	<circle r ="100" cx ="50%" cy ="50%" style ="fill : yellow ; " id ="disque2"/>
+
+<image x="44%" y="153" width="60px" height="60px" xlink:href="matin.jpg" />
+<image x="38%" y="202" width="120px" height="100px" xlink:href="midi.jpg" />
+<image x="45%" y="288" width="50px" height="50px" xlink:href="soir.jpg" />
+
+</svg>
+
