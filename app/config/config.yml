@@ -104,6 +104,15 @@ doctrine:
                 password: "%database_password%"
                 charset:  UTF8
                 unix_socket: "%socket_unix%"
+            boilerbox_m168:
+                driver:   "%database_driver%"
+                host:     "%database_host%"
+                port:     "%database_port%"
+                dbname:   "boilerbox_c782"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
+                unix_socket: "%socket_unix%"
             boilerbox_c782:
                 driver:   "%database_driver%"
                 host:     "%database_host%"
@@ -146,6 +155,13 @@ doctrine:
                 connection: boilerbox
                 mappings:
                     LciBoilerBoxBundle: ~
+                    FOSUserBundle: ~
+                    IpcProgBundle: ~
+                    IpcUserBundle: ~
+                    IpcConfigurationBundle: ~
+            boilerbox_m168:
+                connection: boilerbox_m168
+                mappings:
                     FOSUserBundle: ~
                     IpcProgBundle: ~
                     IpcUserBundle: ~

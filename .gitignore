@@ -1,2 +1,4 @@
 app/cache/prod/
 app/cache/dev/
+app/logs/*
+web/logs/*
