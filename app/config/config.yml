@@ -108,7 +108,7 @@ doctrine:
                 driver:   "%database_driver%"
                 host:     "%database_host%"
                 port:     "%database_port%"
-                dbname:   "boilerbox_c782"
+                dbname:   "boilerbox_m168"
                 user:     "%database_user%"
                 password: "%database_password%"
                 charset:  UTF8
