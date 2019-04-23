@@ -1,6 +1,0 @@
-# /src/Ipc/ProgBundle/Resources/public/images/
-
-# KILL THEM ETAGS
-Header unset ETag
-Header unset Last-Modified
-#FileETag none
