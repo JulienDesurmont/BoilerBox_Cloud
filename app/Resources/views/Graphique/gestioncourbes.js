@@ -290,6 +290,8 @@ $(function() {
 			marginRight: $chartMarginRight,
 			marginBottom: $chartMarginBottom,
 			marginTop: 10,
+			panning: true,
+        	panKey: 'shift',
 			events:	{
 				load: function (e) {
                     var chart = this,
