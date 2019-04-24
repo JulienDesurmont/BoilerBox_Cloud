@@ -48,7 +48,6 @@ var $objScrollbar;
 
 var chart1;
 
-
 // Objet de l'axe des ordonnés
 function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
     var laxe;
@@ -73,7 +72,8 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
                 style: {
                     color: les_couleurs[$numGraphique]
                 }
-            }
+            },
+			opposite: false
         }
     }
     if ($position == 'right') {
@@ -279,6 +279,9 @@ $(function() {
 		}
 	});
 	chartOptions = {
+        boost: {
+        	useGPUTranslations: false // = Valeur par défaut
+    	},
 		chart: { 
 			renderTo: 'container',
 			alignTicks: false,
@@ -477,6 +480,7 @@ $(function() {
 			formatter: function() {
 				var s = '<b>' + Highcharts.dateFormat('%e %B %Y à %H:%M:%S (%L)', this.x) + '</b><br />';
 				$.each(this.points, function(i, point) {
+					//alert(i + ' - ' + point.y);
 					s = s + recupCourbesPoints(point.x);
 					return false;
 				});
@@ -986,7 +990,7 @@ function refreshInfoTooltip() {
     };
 }
 
-// Fonction qui récupére la liste des points de chaque courbe à une heure donnée
+/* Fonction qui récupére la liste des points de chaque courbe à une heure donnée
 // Utilisée au survol de la courbe par tooltip
 // Pour les courbes compressée par highChart,on n'affiche que la valeur du point lors du survol (car nous n'avons pas la liste des points dans une variable)
 function recupCourbesPointsCompressed(horodatage) {
@@ -1018,6 +1022,7 @@ function recupCourbesPointsCompressed(horodatage) {
     });
 	return(message);
 }
+*/
 
 
 
@@ -1642,63 +1647,40 @@ function formatabHigh(tableau, datemin, datemax) {
 // Fonction qui récupére la liste des points de chaque courbe à une heure donnée
 // Utilisée au survol de la courbe par tooltip
 // Pour les courbes compressée par highChart,on n'affiche que la valeur du point lors du survol (car nous n'avons pas la liste des points dans une variable)
-function recupCourbesPoints(horodatage) {
-    var message = '';
-    var tabSerie = Array();
+// L'objet de cette fonction est d'afficher la valeur des points de toutes les courbes, même si ils ne sont pas sous le curseur de la souris. Pour cela, pour les séries n'ayant pas de points sous le curseur, ...
+// on récupère l'emplacementde la série (axes x) et on affiche les valeur des points précédents
+function recupCourbesPoints(curseur_horodatage) {
+    var $horodatage = curseur_horodatage;
+    var $message = '';
     var $valeurPrecedente = 0;
     var $unite;
     var $color;
     var $name;
 
-    $.each(chart1.series, function(index0) {
-        $unite = unite[this.name];
-        $color = this.color;
-        $name = this.name;
-        if ($.inArray(index0, tabTooltip) != -1) {
-            console.log(index0, ' - ', 'test2 ', this.name, ' - ', this.color, ' - ', unite[this.name]);
-            $.each(this.points, function(index1) {
-                if (this.x > horodatage) {
-                    if (tooltipMax === true) {
-                        message = message + '- ' +  '<span style="color:'  + $color + '">' +  fctRemplaceCaracteres($name, $valeurPrecedente) + ' : ' + $valeurPrecedente + ' ' + $unite + '</span><br />';
+	$.each(chartOptions.series, function(index_serie) {
+		$name = this.name;
+		$unite = unite[$name];
+		$color = this.color;
+		// Si la série parcourue est dans la liste des séries à afficher
+        if ($.inArray(index_serie, tabTooltip) != -1) {
+			// On parcours tous les points de la série
+			$.each(chartOptions.series[index_serie].data, function(index_data, point) {
+				$x = point[0];
+				$y = point[1];
+				if ($x > $horodatage) {
+					if (tooltipMax === true) {
+                        $message = $message + '- ' +  '<span style="color:'  + $color + '">' + fctRemplaceCaracteres($name, $valeurPrecedente) + ' : ' + $valeurPrecedente + ' ' + $unite + '</span><br />';
                     } else {
-                        message = message + '- ' + '<span style="color:' + $color + '">' + $valeurPrecedente + ' ' + $unite + '</span><br />';
+                        $message = $message + '- ' + '<span style="color:' + $color + '">' + $valeurPrecedente + ' ' + $unite + '</span><br />';
                     }
                     return false;
                 }
-                $valeurPrecedente = Highcharts.numberFormat(this.y, nbDecimal, ",", " ");
+                $valeurPrecedente = Highcharts.numberFormat($y, nbDecimal, ",", " ");
             });
-        }
-    });
-    return(message);
-}
-
-/*
-// Fonction qui récupére la liste des points de chaque courbe à une heure donnée
-// Utilisée au survol de la courbe par tooltip
-function recupCourbesPoints(horodatage) {
-	var message = '';
-	var tabSerie = Array();
-	$.each(last_series, function(keySerie, valueSerie) {
-		//	On affiche la série si elle fait partie du tableau des tooltip
-		if ($.inArray(keySerie, tabTooltip) != -1) { 	
-			$.each(valueSerie['data'], function(key, value) {
-				if (value[0] > horodatage) {
-					valeurInf = Highcharts.numberFormat(valueSerie['data'][key - 1][1], nbDecimal, ",", " "); 
-					// Message avec modification des caractères $
-					if (tooltipMax === true) {
-						message = message + '- ' +  '<span style="color:' + last_series[keySerie].color + '">' +  fctRemplaceCaracteres(last_series[keySerie].name,valeurInf) + ' : ' + valeurInf + ' ' + unite[last_series[keySerie].name] + '</span>' + '<br />';
-					} else {
-						message = message + '- ' + '<span style="color:' + last_series[keySerie].color + '">' + valeurInf + ' ' + unite[last_series[keySerie].name] + '</span>' + '<br />';
-					}
-					return false;
-				}
-			});
 		}
 	});
-	return(message);
+    return($message);
 }
-*/
-
 
 
 function unites() {
