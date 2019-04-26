@@ -122,33 +122,34 @@
                     </div>
 					<!--Identification-->
 					<div id='encart_login'>
-					<div id='login'>
-						<div class='user' id='headerUser'>
-							{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-								<span id='userLabel' data-label={{ service_session.get('label') }} >{{ service_session.get('label') }}</span>
-								{% if is_granted('ROLE_ADMIN') %}
-									(Administrateur)
-								{% elseif is_granted('ROLE_SUPERVISEUR') %}
-									(Superviseur)
-								{% elseif is_granted('ROLE_TECHNICIEN') %}
-									(Technicien)
-								{% else %}
-									(Client)
+						<div style='position:absolute;font-size:10px;top:-14px;right:0;'>{% include 'IpcProgBundle:Prog:version_cloud.txt.html' %}</div>
+						<div id='login'>
+							<div class='user' id='headerUser'>
+								{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+									<span id='userLabel' data-label={{ service_session.get('label') }} >{{ service_session.get('label') }}</span>
+									{% if is_granted('ROLE_ADMIN') %}
+										(Administrateur)
+									{% elseif is_granted('ROLE_SUPERVISEUR') %}
+										(Superviseur)
+									{% elseif is_granted('ROLE_TECHNICIEN') %}
+										(Technicien)
+									{% else %}
+										(Client)
+									{% endif %}
 								{% endif %}
-							{% endif %}
-							<div class='heureImpression'>Impression du {{ "now" | date('d/m/Y') }}</div>
-                        </div>
-						<div class='logout notToBePrinted'>
-							{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-								<a id='lienDeconnexion' href="{{ path('fos_user_security_logout') }}" title='Déconnexion' onClick='stopPing();'>{{ 'entete.lien.deconnexion'|trans }}</a>
-							{% else %}
-								<a href="{{ path('fos_user_security_login') }}" title='Connexion'>{{ 'entete.lien.connexion'|trans }}</a>
-							{% endif %}
-							<br /><span style='font-size:12px;'>{% if service_session.get('pageTitle').version is defined %}{{ service_session.get('pageTitle').version }}{% endif %}</span>
-                        </div>
-					</div>
-                    <div class='box grandScreen'>
-                       {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+								<div class='heureImpression'>Impression du {{ "now" | date('d/m/Y') }}</div>
+                        	</div>
+							<div class='logout notToBePrinted'>
+								{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+									<a id='lienDeconnexion' href="{{ path('fos_user_security_logout') }}" title='Déconnexion' onClick='stopPing();'>{{ 'entete.lien.deconnexion'|trans }}</a>
+								{% else %}
+									<a href="{{ path('fos_user_security_login') }}" title='Connexion'>{{ 'entete.lien.connexion'|trans }}</a>
+								{% endif %}
+								<br /><span style='font-size:12px;'>{% if service_session.get('pageTitle').version is defined %}{{ service_session.get('pageTitle').version }}{% endif %}</span>
+                        	</div>
+						</div>
+                    	<div class='box grandScreen'>
+                       		{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                 {% if is_granted('ROLE_SUPERVISEUR') %}
                                     <div class='iconeAdministrateur'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/login_admin.png') }}" alt='administrateur' /></div>
                                 {% elseif is_granted('ROLE_TECHNICIEN') %}
