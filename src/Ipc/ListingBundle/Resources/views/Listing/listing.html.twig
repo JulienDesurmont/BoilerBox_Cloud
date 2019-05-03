@@ -14,7 +14,8 @@
 					<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_listing|length }}' />
 					<ul>
 						{% if activation_modbus == 1 %}
-							<li><a href='#' class='right' onClick="$('#refresh_listing').val('refresh');refresh('myForm');return false;" >
+							<li>{#<a href='#' class='right' onClick="$('#refresh_listing').val('refresh');refresh('myForm');return false;" >#}
+								<a href='#' class='right' onClick="refresh('myForm');return false;" >
 								<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
 								<span>{{ 'label.info.rafraichissement'|trans }}</span></a>
 							</li>

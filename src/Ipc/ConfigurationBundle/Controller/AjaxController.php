@@ -422,5 +422,16 @@ public function traduireAction() {
 }
 
 
+public function modbusGetUrlClotureAction() {
+       	$this->constructeur();
+       	$urlHttpModbus = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('url_http_boilerbox')->getValeur();
+	   	if (substr($urlHttpModbus, -1) != '/') {
+			$urlHttpModbus .= '/';
+		}
+       	$urlHttpModbus .= 'web/app.php/fr/boilerbox/configuration/anonym/modbusClotureCloudFtp';
+       	echo $urlHttpModbus;
+       	return new Response();
+}
+
 
 }

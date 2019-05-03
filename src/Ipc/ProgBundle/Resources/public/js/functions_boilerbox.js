@@ -1580,9 +1580,11 @@ function infoPeriode() {
 	desactivateLinks();
 }
 
+// Fonction spécifique CLOUD 
 // Fonction qui rafraichie les données : Fonction ajax pour cloture des fichiers sur les automates par requête modbus + 
 // téléchargement des fichiers par Ftp +
 // Recherche des données correspondantes aux requêtes utilisateur
+/*VERSION IPC : 
 function refresh(formulaireName) {
 	attente();
 	choixPeriode = 'refresh';
@@ -1597,6 +1599,24 @@ function refresh(formulaireName) {
 		window.location.replace(); 
 	}, 100);
 }
+VERSION CLOUD*/
+function refresh(formulaireName) {
+    attente();
+	$controller_urlClotureModbus = $('#lien_url_ajax').attr('data-urlHttpModbusClotureFtp');
+	$.ajax({
+		url: $controller_urlClotureModbus,
+		method: 'GET'
+	}).done(function($urlClotureModbus){
+		window.open($urlClotureModbus);
+		fin_attente();
+	}).error(function(err) {
+		alert('erreur. Merci de voir le message de la console');
+		fin_attente();
+	});
+	fin_attente();
+}
+
+
 
 // Fonction javascript pour traduire des mots
 function traduire(key) {

@@ -1,0 +1,3 @@
+;var $chargementAside=!0;function Limit(o,s,t,n,w,d,i,e){if(s<800){i.removeClass('fixed');e.height(400)}
+else{if(d>=t){i.addClass('fixed');e.height(o+t-n-w)}
+else{i.removeClass('fixed');e.height(o+d-n-w)}}};$(document).ready(function(){setTimeout(function(){var i=$('aside'),o=$('#alarme'),t=$(window).scrollTop(),n=$(window).height(),e=$(window).width(),w=o.offset().top,d=30,s=i.offset().top-parseFloat(i.css('marginTop').replace(/auto/,0));$(window).trigger('scroll');Limit(n,e,s,w,d,t,i,o);$(window).scroll(function(){e=$(window).width();t=$(window).scrollTop();Limit(n,e,s,w,d,t,i,o)});$(window).resize(function(){e=$(window).width();n=$(window).height();Limit(n,e,s,w,d,t,i,o)})},1000)});

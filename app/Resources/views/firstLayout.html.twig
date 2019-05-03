@@ -61,6 +61,7 @@
             data-urlListing={{ path('ipc_listing') }}
             data-urlGraphiques={{ path('ipc_graphiques') }}
 			data-urlModbusClotureFtp={{ path('ipc_modbus_cloture_ftp') }}
+			data-urlHttpModbusClotureFtp={{ path('ipc_modbus_get_url_cloture') }}
 			data-urlReadModbus={{ path('ipc_read_modbus') }}
 			data-urlSetScript={{ path('ipc_set_script') }}
 			data-urlEtat={{ path('ipc_etat') }}
@@ -417,6 +418,7 @@
     %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
 
 {#
         {% javascripts output='js/main_test.js' filter='jsqueeze'

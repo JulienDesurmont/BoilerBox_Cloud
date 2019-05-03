@@ -11,8 +11,12 @@ ipc_get_infos_periode:
     defaults: { _controller: IpcConfigurationBundle:Configuration:getInfosPeriode }
 
 ipc_modbus_cloture_ftp:
-    path: /modbusClotureFtp
+    path: /anonym/modbusClotureFtp
     defaults: { _controller: IpcConfigurationBundle:Configuration:modbusClotureFtp }
+
+ipc_modbus_get_url_cloture:
+    path: /modbusGetUrlCloture
+    defaults: { _controller: IpcConfigurationBundle:Ajax:modbusGetUrlCloture }
 
 ipc_read_modbus:
     path: /readModbus
