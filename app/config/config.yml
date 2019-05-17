@@ -149,6 +149,16 @@ doctrine:
                 password: "%database_password%"
                 charset:  UTF8
                 unix_socket: "%socket_unix%"
+            boilerbox_c852:
+                driver:   "%database_driver%"
+                host:     "%database_host%"
+                port:     "%database_port%"
+                dbname:   "boilerbox_c852"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
+                unix_socket: "%socket_unix%"
+
     orm:
         default_entity_manager:   default
         entity_managers:
@@ -198,6 +208,13 @@ doctrine:
                     IpcConfigurationBundle: ~
             boilerbox_c856:
                 connection: boilerbox_c856
+                mappings:
+                    FOSUserBundle: ~
+                    IpcProgBundle: ~
+                    IpcUserBundle: ~
+                    IpcConfigurationBundle: ~
+            boilerbox_c852:
+                connection: boilerbox_c852
                 mappings:
                     FOSUserBundle: ~
                     IpcProgBundle: ~
