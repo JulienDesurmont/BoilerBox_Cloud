@@ -64,6 +64,7 @@ public function __construct($srv_connexion, $log, $service_fillNumbers) {
 	$this->service_fillNumbers = $service_fillNumbers;
 	$this->tab_genres = array();
 	$this->fichier = new Fichier();
+	$this->fichier->setDateTraitement(new \Datetime());
 	//! Lors du passage en 2100 à 00h00 : récupèration du centenaire de l'année courante : 21.
 	$this->site	= new Site();
 	// Erreur de Lecture des fichiers de 2099 23h.
