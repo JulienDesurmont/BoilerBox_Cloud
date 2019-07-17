@@ -127,7 +127,7 @@
 			<h2>COMPRESSION</h2>
 	    	<!--<div class="info">--><div class="icone-info">?<help>Pour chaque courbe, il est possible d'effectuer une compression du nombre de points (Minimium, Moyenne ou Maximum), en fonction du pas choisi.</help></div></div><!--
 	    	--><div class="actions"><a href="#"><div class="bouton red" onClick="closePopupCompression();return false;" ><div class="bgbouton"><!--&xvee;-->X</div></div></a></div>
-			<div id="compression" class="mCustomScrollbar" data-mcs-theme="dark">
+			<div id="compression" class="mCustomScrollbar" {#data-mcs-theme="dark"#} style='border:2px solid gray;'>
 	    		<table>
             	<thead>
                     <tr>
@@ -214,6 +214,7 @@
         $('#vueRestreinte').click();
 
         $(document).ready(function() {
+			$('footer').addClass('big');
             /* Récupération de l'heure de la dernière donnée enregistrée en base */
             var $urlGetLastData = $('#datas').attr('data-urlGetLastData');
             $.ajax({
