@@ -33,7 +33,7 @@ private $liste_localisations;
 private $tab_conversion_loc_id;
 private $tab_last_horodatage_loc_id;
 private $tab_conversion_genre_id;
-private $tab_conversion_idmodule_numgenre;
+//private $tab_conversion_idmodule_numgenre;
 private $tab_conversion_message_id;
 private $liste_genres;
 private $liste_modules;
@@ -158,7 +158,7 @@ public function initialisationListes() {
 	$correspondance_message_code = array();
 	$tab_conversion_loc_id = array();
 	$tab_conversion_genre_id = array();
-	$tab_conversion_idmodule_numgenre = array();
+	//$tab_conversion_idmodule_numgenre = array();
 	$tab_conversion_message_id = array();
 
 
@@ -384,7 +384,8 @@ public function indexAction() {
 			foreach ($this->liste_message as $key => $message) {
 				if ($key == $idModules) {
 					$message_idModule = $correspondance_message_code[$idModules].'_'.$message['message'];
-					$numGenre_idModule = $this->tab_conversion_idmodule_numgenre[$this->tabModulesG[$idModules]['genre']];
+					//$numGenre_idModule = $this->tab_conversion_idmodule_numgenre[$this->tabModulesG[$idModules]['genre']];
+					$numGenre_idModule = $this->tab_conversion_genre_num[$this->tabModulesG[$idModules]['genre']];
 				}
 			}
 			// Récupération du numéro de localisation
@@ -689,7 +690,8 @@ public function afficheGraphiqueAction($page) {
 			foreach ($this->liste_message as $key => $message) {
 				if ($key == $idModules) {
 					$message_idModule = $correspondance_message_code[$idModules].'_'.$message['message'];
-					$numGenre_idModule = $this->tab_conversion_idmodule_numgenre[$this->tabModulesG[$idModules]['genre']];
+					//$numGenre_idModule = $this->tab_conversion_idmodule_numgenre[$this->tabModulesG[$idModules]['genre']];
+					$numGenre_idModule = $this->tab_conversion_genre_num[$this->tabModulesG[$idModules]['genre']];
 				}
 			}
 			// Si une localisation est demandée Récupération du numéro de localisation

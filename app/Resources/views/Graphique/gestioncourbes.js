@@ -48,6 +48,13 @@ var $objScrollbar;
 
 var chart1;
 
+function afficheChart(chartOptions) {
+    var saveSerie = chartOptions.series;
+    chart1 = new Highcharts.StockChart(chartOptions);
+    chartOptions.series = saveSerie;
+}
+
+
 // Objet de l'axe des ordonnés
 function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
     var laxe;
@@ -482,7 +489,6 @@ $(function() {
 			formatter: function() {
 				var s = '<b>' + Highcharts.dateFormat('%e %B %Y à %H:%M:%S (%L)', this.x) + '</b><br />';
 				$.each(this.points, function(i, point) {
-					//alert(i + ' - ' + point.y);
 					s = s + recupCourbesPoints(point.x);
 					return false;
 				});
@@ -576,7 +582,8 @@ $(document).ready(function() {
 	//	Affichage du graphique à l'affichage de la page
 	//	Modification du tooltip
 	checkTooltip();
-	chart1 = new Highcharts.StockChart(chartOptions);
+	//chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
 	// Création de la légende
 	$('#legendeGraphique').html($legende);
     //  Pour chaque courbe : Mise en place des nouveaux points affichés pour la courbe
@@ -619,7 +626,8 @@ $(document).ready(function() {
                 chartOptions.series = lesSeries;
 			    // Modification du tooltip
 				checkTooltip();
-                chart1 = new Highcharts.StockChart(chartOptions);
+                //chart1 = new Highcharts.StockChart(chartOptions);
+				afficheChart(chartOptions);
                 // Remise de la recherche d'origine
                 modifTexteRecherche(numeroReq, newTextCourbe, chart1.series[numeroReq].processedXData.length);
 			} else {
@@ -647,7 +655,8 @@ $(document).ready(function() {
         	// Modification du tooltip
 			checkTooltip();
 			// Création du nouveau graphique
-			chart1 = new Highcharts.StockChart(chartOptions);
+			//chart1 = new Highcharts.StockChart(chartOptions);
+			afficheChart(chartOptions);
 			// Modification des messages de la page affichage_graphique.html.twig indiquant la recherche en cours
             modifTexteRecherche(numeroReq,$new_recherche,chart1.series[numeroReq].processedXData.length);
 	        // Mise en place des nouveaux points affichés pour la courbe
@@ -740,7 +749,8 @@ function reinitialiseGraphique() {
     chartOptions.series 	= lesSeries;
     // Modification du tooltip
 	checkTooltip();
-    chart1 = new Highcharts.StockChart(chartOptions);
+    //chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
     //  Pour chaque courbe : Mise en place des nouveaux points affichés pour la courbe
     for (var nomRequete = 0; nomRequete < nb_de_requetes; nomRequete++) {
         newSession(nomRequete,chart1.series[nomRequete].processedXData,chart1.series[nomRequete].processedYData);
@@ -789,7 +799,8 @@ function setOldGraphique(oldSeries, oldGraphique) {
     // Modification du tooltip
 	checkTooltip();
     // On réaffiche le graphique
-    chart1 = new Highcharts.StockChart(chartOptions);
+    //chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
     // Pour chaque courbe : Mise en place des nouveaux points affichés pour la courbe
     for (var nomRequete = 0; nomRequete < nb_de_requetes; nomRequete++) {
         newSession(nomRequete, chart1.series[nomRequete].processedXData, chart1.series[nomRequete].processedYData);
@@ -1040,7 +1051,8 @@ function rechargeGraphique() {
 	});
 	chartOptions.series = last_series;
 
-	chart1 = new Highcharts.StockChart(chartOptions);
+	//chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
 	// Remise de la période demandée avant le clic sur Infos-Bulle
 	// Permet d'afficher la bonne période en cas de zoom géré par highchart (cad zoom sans requête Ajax)
     if (tabZoom[indiceTabZoom]['all'] == true) {
@@ -1158,10 +1170,12 @@ function changeEchelle(type) {
 	// Mise à jour du graphique seulement si la box est cochée
 	if (type == 'maj') {
 	    if ($('#infoEchelle').is(':checked')) {
-			chart1 = new Highcharts.StockChart(chartOptions);
+			//chart1 = new Highcharts.StockChart(chartOptions);
+			afficheChart(chartOptions);
 	    }
 	} else {
-        chart1 = new Highcharts.StockChart(chartOptions);
+        //chart1 = new Highcharts.StockChart(chartOptions);
+		afficheChart(chartOptions);
 	}
 	// Remise de la période demandée avant le clic sur Infos-Bulle
     // Permet d'afficher la bonne période en cas de zoom géré par highchart (cad zoom sans requête Ajax)
@@ -1227,7 +1241,7 @@ function fctSupprimeCaracteres(texte, couleur) {
 	return(newTexte);
 }
 
-function fctRemplaceCaracteres(texte, valeur) {
+function fctRemplaceCaracteres(texte, valeur, valeur2) {
 	var newTexte = texte;
 	// Récupération du numéro du genre du message
 	var result = /^(.+?);/.exec(texte);
@@ -1235,7 +1249,7 @@ function fctRemplaceCaracteres(texte, valeur) {
 	// Extraction de l'information concernant le numéro du genre
 	pattern_genre = /^.+?;/;
 	newTexte = texte.replace(pattern_genre, '');
-	// Si le numéro du genre est 1, 2 ou compris entre 110 et 119 ou compris entre 130 et 139 le caractère $ est à remplacer par Activation / Désactivation sinon par la valeur
+	// Si le numéro du genre est 1, 2 ou compris entre 110 et 139 le caractère $ est à remplacer par Activation / Désactivation sinon par la valeur
 	if (numGenre == 1 || numGenre == 2 || (numGenre >= 110 && numGenre <= 139)) {
 		// Modification du caractère $ par Activation ou désactivation
 		pattern = /\$/;
@@ -1248,13 +1262,25 @@ function fctRemplaceCaracteres(texte, valeur) {
 			break;
 		}
 	} else {
-		// Modification du caractère $ par la valeur 1 
+		// Modification du caractère $ par la valeur 1 - Si la valeur ne contient pas de decimal on affiche que la partie entière
 		pattern = /\$/;
-		newTexte = newTexte.replace(pattern, valeur); 
+		var entier = parseInt(valeur);
+		var result = parseFloat(valeur) - entier;
+		if (result == 0) {
+			newTexte = newTexte.replace(pattern, entier);
+		} else {
+			newTexte = newTexte.replace(pattern, valeur);
+		}
 	}
-	// Dans tous les cas le caractère £ est à supprimer
+	// Dans tous les cas le caractère £ est à remplacer par la valeur 2
 	patternLivre = /£/;
-	newTexte = newTexte.replace(patternLivre, '');
+	var entier2 = parseInt(valeur2);
+	var result2 = parseFloat(valeur2) - entier2;
+	if (result2 == 0) {
+        newTexte = newTexte.replace(patternLivre, entier2);
+	} else {
+		newTexte = newTexte.replace(patternLivre, valeur2);
+	}
 	return(newTexte);
 }
 
@@ -1535,7 +1561,8 @@ function newGraphs(datemin, datemax, choix) {
             // Modification du tooltip
 			checkTooltip();
             // Création du nouveau graphique
-            chart1 = new Highcharts.StockChart(chartOptions);
+            //chart1 = new Highcharts.StockChart(chartOptions);
+			afficheChart(chartOptions);
             // Pour chaque courbe : Mise en place des nouveaux points affichés pour la courbe
             for (var nomRequete = 0; nomRequete < nb_de_requetes; nomRequete++) {
                 newSession(nomRequete, chart1.series[nomRequete].processedXData, chart1.series[nomRequete].processedYData);
@@ -1567,6 +1594,7 @@ function formatabHigh(tableau, datemin, datemax) {
 	var graphDataTmp = [];
 	for (var key = 0; key < tableau['Donnees'].length; key++) {
 		var valeur1 = parseFloat(tableau['Donnees'][key]['valeur1']);
+		var valeur2 = parseFloat(tableau['Donnees'][key]['valeur2']);
 		var sizeDecimal = parseInt(valeur1).toString().length;
 		if (sizeDecimal > unitt['y']) {
 			unitt['y'] = sizeDecimal;
@@ -1584,13 +1612,13 @@ function formatabHigh(tableau, datemin, datemax) {
 		if (tableau['Donnees'].length == 1) {
 			// Si l'horaire du point est > date min on ajoute un point en date min
 			if (horaire > datemin) {
-				graphDataTmp.push([datemin, valeur1]);
+				graphDataTmp.push({'x':datemin, 'y':valeur1, 'z':valeur2});
 			}
 			// Ajout du point du graph
-			graphDataTmp.push([horaire, valeur1]);
+			graphDataTmp.push({'x':horaire, 'y':valeur1, 'z':valeur2});
 			// Si l'horaire du point est < date max on ajoute un point en date max : SSS la datemax est inférieur ou égale à la derniere date de récupération des données de la localisation
 			if (horaire < datemax) {
-				graphDataTmp.push([datemax, valeur1]);
+				graphDataTmp.push({'x':datemax, 'y':valeur1, 'z':valeur2});
 			}
 		} else {
 			// Premiere et Dernière date identique pour tous
@@ -1598,18 +1626,18 @@ function formatabHigh(tableau, datemin, datemax) {
 			// Si la première données à un horaire < à l'horaires minimum du graphique i
 			if ((key ==0 ) && (horaire > datemin)) {
 				// Enregistrement de la datemin comme date minimale et de la valeur en cours d'analyse comme valeur à la date min
-				graphDataTmp.push([datemin, valeur1]);
+				graphDataTmp.push({'x':datemin, 'y':valeur1, 'z':valeur2});
 				// Enregistrement de l'horaire en cours d'analyse
-				graphDataTmp.push([horaire, valeur1]);
+				graphDataTmp.push({'x':horaire, 'y':valeur1, 'z':valeur2});
 			} else if ((key == (tableau['Donnees'].length - 1)) && (datemax > horaire)) {
 				// Enregistrement de l'horaire en cours d'analyse
-				graphDataTmp.push([horaire, valeur1]);
+				graphDataTmp.push({'x':horaire, 'y':valeur1, 'z':valeur2});
 				// Enregistrement de la datemax comme date maximale  et de la valeur en cours d'analyse comme valeur à la date max
 				if (ajoutMaxDate(datemax, tableau['idLocalisation']) == true) {
-					graphDataTmp.push([datemax, valeur1]);
+					graphDataTmp.push({'x':datemax, 'y':valeur1, 'z':valeur2});
 				}
 			} else {
-				graphDataTmp.push([horaire, valeur1]);
+				graphDataTmp.push({'x':horaire, 'y':valeur1, 'z':valeur2});
 			}
 		}
 		// Création du titre : Message du Module - unite - (type de recherce)
@@ -1655,6 +1683,7 @@ function recupCourbesPoints(curseur_horodatage) {
     var $horodatage = curseur_horodatage;
     var $message = '';
     var $valeurPrecedente = 0;
+	var $valeur2Precedente = 0;
     var $unite;
     var $color;
     var $name;
@@ -1667,17 +1696,19 @@ function recupCourbesPoints(curseur_horodatage) {
         if ($.inArray(index_serie, tabTooltip) != -1) {
 			// On parcours tous les points de la série
 			$.each(chartOptions.series[index_serie].data, function(index_data, point) {
-				$x = point[0];
-				$y = point[1];
+				$x = point['x'];
+				$y = point['y'];
+				$z = point['z'];
 				if ($x > $horodatage) {
 					if (tooltipMax === true) {
-                        $message = $message + '- ' +  '<span style="color:'  + $color + '">' + fctRemplaceCaracteres($name, $valeurPrecedente) + ' : ' + $valeurPrecedente + ' ' + $unite + '</span><br />';
+                        $message = $message + '- ' +  '<span style="color:'  + $color + '">' + fctRemplaceCaracteres($name, $valeurPrecedente, $valeur2Precedente) + ' : ' + $valeurPrecedente + ' ' + $unite + '</span><br />';
                     } else {
                         $message = $message + '- ' + '<span style="color:' + $color + '">' + $valeurPrecedente + ' ' + $unite + '</span><br />';
                     }
                     return false;
                 }
                 $valeurPrecedente = Highcharts.numberFormat($y, nbDecimal, ",", " ");
+				$valeur2Precedente = Highcharts.numberFormat($z, nbDecimal, ",", " ");
             });
 		}
 	});
@@ -1795,7 +1826,8 @@ function preimpression() {
 	chartOptions.legend = {
 		enabled: false
 	};
-	chart1 = new Highcharts.StockChart(chartOptions);
+	//chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
 
 	// Création de la légende html qui ne comporte que les courbes affichées
 	var $tabLegendeHtml = [$tabLegende[0]];
@@ -1828,7 +1860,8 @@ function finimpression() {
 	chartOptions.scrollbar = $objScrollbar;
 	chartOptions.chart.marginBottom = $chartMarginBottom;
     chartOptions.legend = $objLegend;
-	chart1 = new Highcharts.StockChart(chartOptions);
+	//chart1 = new Highcharts.StockChart(chartOptions);
+	afficheChart(chartOptions);
 	var chartExtrem = $('#container').highcharts();
     var xExt = chartExtrem.xAxis[0].setExtremes(minData, maxData);
     return 0;
