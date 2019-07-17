@@ -1264,6 +1264,8 @@ function fctRemplaceCaracteres(texte, valeur, valeur2) {
 	} else {
 		// Modification du caractère $ par la valeur 1 - Si la valeur ne contient pas de decimal on affiche que la partie entière
 		pattern = /\$/;
+		newTexte = newTexte.replace(pattern, isEntier(valeur));	
+/*
 		var entier = parseInt(valeur);
 		var result = parseFloat(valeur) - entier;
 		if (result == 0) {
@@ -1271,9 +1273,13 @@ function fctRemplaceCaracteres(texte, valeur, valeur2) {
 		} else {
 			newTexte = newTexte.replace(pattern, valeur);
 		}
+*/
 	}
 	// Dans tous les cas le caractère £ est à remplacer par la valeur 2
 	patternLivre = /£/;
+	newTexte = newTexte.replace(patternLivre, isEntier(valeur2));
+
+/*
 	var entier2 = parseInt(valeur2);
 	var result2 = parseFloat(valeur2) - entier2;
 	if (result2 == 0) {
@@ -1281,6 +1287,7 @@ function fctRemplaceCaracteres(texte, valeur, valeur2) {
 	} else {
 		newTexte = newTexte.replace(patternLivre, valeur2);
 	}
+*/
 	return(newTexte);
 }
 
@@ -1701,9 +1708,9 @@ function recupCourbesPoints(curseur_horodatage) {
 				$z = point['z'];
 				if ($x > $horodatage) {
 					if (tooltipMax === true) {
-                        $message = $message + '- ' +  '<span style="color:'  + $color + '">' + fctRemplaceCaracteres($name, $valeurPrecedente, $valeur2Precedente) + ' : ' + $valeurPrecedente + ' ' + $unite + '</span><br />';
+                        $message = $message + '- ' +  '<span style="color:'  + $color + '">' + fctRemplaceCaracteres($name, $valeurPrecedente, $valeur2Precedente) + ' : ' + isEntier($valeurPrecedente) + ' ' + $unite + '</span><br />';
                     } else {
-                        $message = $message + '- ' + '<span style="color:' + $color + '">' + $valeurPrecedente + ' ' + $unite + '</span><br />';
+                        $message = $message + '- ' + '<span style="color:' + $color + '">' + isEntier($valeurPrecedente) + ' ' + $unite + '</span><br />';
                     }
                     return false;
                 }
@@ -1884,6 +1891,17 @@ function traduireMessage($message) {
         }
     });
 	return $messageTraduit;
+}
+
+
+function isEntier(nombre) {
+        var entier = parseInt(nombre);
+        var result = parseFloat(nombre) - entier;
+        if (result == 0) {
+			return entier;
+        } else {
+			return nombre;
+        }
 }
 
 </script>
