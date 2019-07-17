@@ -785,7 +785,7 @@ public function configurationAuto($type) {
 	}
 	// Variable de la nouvelle version
 	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
-	$liste_conf['numero_version']['value'] = "2.4.0";
+	$liste_conf['numero_version']['value'] = "2.6.2";
 	$liste_conf['numero_version']['parametreAdmin'] = true;
 
     $liste_conf['rapport_pourcentage_messages_max']['description'] = "Pourcentage maximum avant déclanchement d'une erreur dans le rapport journalier";
