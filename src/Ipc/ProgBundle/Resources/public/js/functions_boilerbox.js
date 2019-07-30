@@ -1600,13 +1600,14 @@ function refresh(formulaireName) {
 	}, 100);
 }
 VERSION CLOUD*/
-function refresh(formulaireName) {
+function refresh(formulaireName, pageAccueil) {
     attente();
 	$controller_urlClotureModbus = $('#lien_url_ajax').attr('data-urlHttpModbusClotureFtp');
 	$.ajax({
 		url: $controller_urlClotureModbus,
 		method: 'GET'
 	}).done(function($urlClotureModbus){
+        document.location.href = pageAccueil;
 		window.open($urlClotureModbus);
 		fin_attente();
 	}).error(function(err) {

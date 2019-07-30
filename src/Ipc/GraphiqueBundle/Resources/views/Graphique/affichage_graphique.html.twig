@@ -14,7 +14,7 @@
         <p>{{ 'label.requete_timeout'|trans }}</p>
     {% else %}
         <h1>{{ 'label.titre.courbe'|trans }}
-            <div id="boutontitre" class='notToBePrinted'>
+            <div id="boutontitre" data-urlAccueilGraphique={{ path('ipc_accueilGraphique') }} class='notToBePrinted'>
                 <form name='myForm2' method='post' action="{{ path('ipc_graphAnalyse') }}">
                     <input type='hidden' name="choixSubmit" id="choixSubmit" />
                     <input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_graphique|length }}' >
@@ -22,7 +22,7 @@
                     <ul>
                         {% if activation_modbus == 1 %}
 							<li>
-								<a href='#' class='right' onClick="$('#choixSubmit').val('Recherche'); $('#refresh_graphique').val('refresh'); refresh('myForm2'); return false;" >
+								<a href='#' class='right' onClick="$('#choixSubmit').val('Recherche'); $('#refresh_graphique').val('refresh'); goToAccueilGraphique(); return false;" >
 									<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
 									<span>{{ 'label.info.rafraichissement'|trans }}</span>
 								</a>
@@ -229,6 +229,12 @@
             });
             /**********************************/
         });
+
+        function goToAccueilGraphique() {
+            var $location = $('#boutontitre').attr('data-urlAccueilGraphique');
+            refresh('myForm2', $location);
+        }
+
     </script>
 {% endblock bodyjavascript %}
 

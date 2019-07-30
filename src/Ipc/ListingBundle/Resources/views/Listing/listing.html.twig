@@ -9,13 +9,13 @@
 	<h1>{{ 'label.titre.listing'|trans }}
 		{# Affichage du bouton d'impression si l'autorisation est accordée #}
 		{% if impression_listing == 1 %}
-			<div id="boutontitre" class='notToBePrinted'>
+			<div id="boutontitre"  data-urlAccueilListing={{ path('ipc_accueilListing') }} class='notToBePrinted'>
 				<form name='myForm2' method='get' action="{{ path('ipc_listing') }}">
 					<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_listing|length }}' />
 					<ul>
 						{% if activation_modbus == 1 %}
-							<li>{#<a href='#' class='right' onClick="$('#refresh_listing').val('refresh');refresh('myForm');return false;" >#}
-								<a href='#' class='right' onClick="refresh('myForm');return false;" >
+							<li>
+								<a href='#' class='right' onClick="goToAccueilListing();return false;" >
 								<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
 								<span>{{ 'label.info.rafraichissement'|trans }}</span></a>
 							</li>
@@ -317,5 +317,10 @@
             });
             /**********************************/
         });
+
+		function goToAccueilListing() {
+		    var $location = $('#boutontitre').attr('data-urlAccueilListing');
+			refresh('myForm', $location);
+		}
     </script>
 {% endblock bodyjavascript %}
