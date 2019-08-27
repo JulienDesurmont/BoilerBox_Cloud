@@ -174,8 +174,8 @@ label:
     info:
         points_max: Pour afficher le graphique, le nombre de points par courbe est limité à %limit%. Au delà, il est nécessaire de compresser la courbe pour réduire le nombre de points.
         modification:
-            listing: Modifier la recherche
-            courbe: Modifier la recherche
+            listing: Modifier
+            courbe: Modifier
         rafraichissement: Rafraichissement
         impression: Impression
         compression: Compression
