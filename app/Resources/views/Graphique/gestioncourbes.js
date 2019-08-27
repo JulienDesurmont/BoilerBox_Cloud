@@ -91,7 +91,7 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
             gridLineWidth: 0,
             offset: 30,
             labels: {
-                x: 20 * ($numAxe - 2),
+                x: 25 * ($numAxe - 2),
                 style:{
                     color: les_couleurs[$numGraphique]
                 }
@@ -101,7 +101,7 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
                 margin: -5,
                 rotation: 270,
                 text: graphData[$numGraphique]['unite'],
-                x: 20 * ($numAxe - 2),
+                x: 25 * ($numAxe - 2),
                 style: {
                     color: les_couleurs[$numGraphique]
                 }
