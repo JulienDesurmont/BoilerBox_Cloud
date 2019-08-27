@@ -405,14 +405,20 @@ public function moveDoublons(){
 
 // Fonction qui récupère la date de la dernière donnée importée en base
 public function getLastDataTime() {
-	$ent_donnee = $this->em->getRepository('IpcProgBundle:Donnee')->findLastData();
-	$heure_recup = date('d/m/Y à H:i:s');
-
-	if ($ent_donnee !== null) {
-		$last_data = $ent_donnee->getHorodatage()->format('d/m/Y à H:i:s');
-		$message_retour = "($heure_recup)<br />\nHeure de la donnée la plus récente : Le $last_data";
-	} else {
-		$message_retour = "($heure_recup)<br />\nAucune donnée en base";
+	$message_retour = '';
+    $tmp_site = new Site();
+    $site_id = $tmp_site->SqlGetIdCourant($this->dbh);
+    $entitySite = $this->em->getRepository('IpcProgBundle:Site')->find($site_id);
+    $entitiesLocalisation = $entitySite->getLocalisations();
+    foreach($entitiesLocalisation as $entityLocalisation) {
+    	$ent_donnee = $this->em->getRepository('IpcProgBundle:Donnee')->findLastDataForLoc($entityLocalisation->getId());
+        $heure_recup = date('d/m/Y à H:i:s');
+        if ($ent_donnee !== null) {
+        	$last_data = $ent_donnee->getHorodatage()->format('d/m/Y à H:i:s');
+            $message_retour .= "\nAnalyse Localisation ".$entityLocalisation->getNumeroLocalisation()." du $heure_recup<br />\nDernière donnée insérée : Le $last_data<br />";
+        } else {
+            $message_retour .= "\nAnalyse Localisation ".$entityLocalisation->getNumeroLocalisation()." du $heure_recup<br />\nAucune donnée en base<br />";
+        }
 	}
 	return($message_retour);
 }

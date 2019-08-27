@@ -4648,6 +4648,11 @@ p.live_back_gray {
   display: none;
 }
 #message_last_data {
+  border: 2px solid gray;
+  width: 350px;
+  max-height: 40px;
+  overflow: auto;
+  line-height: 17px;
   font-size: 12px;
   padding-left: 5px;
   position: fixed;
