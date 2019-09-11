@@ -1895,13 +1895,16 @@ function traduireMessage($message) {
 
 
 function isEntier(nombre) {
-        var entier = parseInt(nombre);
-        var result = parseFloat(nombre) - entier;
-        if (result == 0) {
-			return entier;
-        } else {
-			return nombre;
-        }
+    // Transformation de la virgule en point
+    pattern_virgule = /,/;
+    nombre = nombre.replace(pattern_virgule, '\.');
+    var entier = parseInt(nombre);
+    var result = parseFloat(nombre) - entier;
+    if (result == 0) {
+       return entier;
+   } else {
+       return nombre;
+   }
 }
 
 </script>
