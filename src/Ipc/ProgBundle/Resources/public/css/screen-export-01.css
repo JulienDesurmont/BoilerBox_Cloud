@@ -3175,6 +3175,12 @@ table.getSystemParam td {
 #blockPiedDePage.vueRestreinte {
   display: none;
 }
+#boutonTitreCompress.vueRestreinte {
+  display: none;
+}
+#boutonTitreCompress{
+    display:block;
+}
 #vueRestreinte:hover {
   color: red;
   cursor: pointer;

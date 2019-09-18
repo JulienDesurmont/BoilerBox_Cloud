@@ -25,7 +25,7 @@
     	            </thead>
     	            <tbody>
 						{% for requete in liste_req %}
-			    			{% if (typeValidation == 'Analyse') or (requete['NbDonnees'] > limit) %}
+			    			{# {% if (typeValidation == 'Analyse') or (requete['NbDonnees'] > limit) or (typeValidation == 'Calculer') %} #}
 			    				<tr>
     	            	        	<td class="localisation"><div class="txtlocalisation">{{ requete['Localisation'] }}</div></td>
     	            	        	<td class="code">{{ requete['code_message'] }}</td>
@@ -53,7 +53,7 @@
     	            	        	</td>
     	            	        	<td class="point"><div class="invalide">{{ requete['NbDonnees'] }}</div> / {{ requete['MaxDonnees'] }}</td>
     	            	    	</tr>
-			    			{% endif %}
+			    			{# {% endif %} #}
 						{% endfor %}
 					</tbody>
     	        	</table>
@@ -69,7 +69,9 @@
 {% block choix_validation %}
     <div id="validation">
         <a href="#" onClick="document.getElementById('choixSubmit').value='Valider';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton green"><div class="bgbouton">{{ 'bouton.afficher'|trans|upper }}</div></div></a>
-        <a href="#" onClick="document.getElementById('choixSubmit').value='Analyse';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.recalculer'|trans|upper }}</div></div></a>
+		<a href="#" onClick="document.getElementById('choixSubmit').value='Analyse';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.verifier'|trans|upper }}</div></div></a>
+		<a href="#" onClick="document.getElementById('choixSubmit').value='AnalyseComplete';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.calcul_nb_points'|trans|upper }}</div></div></a>
+		<a href="#" onClick="document.getElementById('choixSubmit').value='Calculer';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.calculer'|trans|upper }}</div></div></a>
     </div>
 {% endblock choix_validation %}
 

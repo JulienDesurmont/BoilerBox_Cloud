@@ -44,6 +44,7 @@
     <div id="js-vars" data-vars="{{ service_js_traductions.variables | json_encode | e('html_attr') }}" data-translations="{{ service_js_traductions.translations | json_encode | e('html_attr') }}" />
 	<div id='siteIpc'>
        	<input type='hidden' id='lien_url_ajax' 
+			data-urlSetNewSessionVars={{ path('ipc_setNewSessionVars') }}
 			data-urlAccueil={{ path('ipc_prog_homepage') }}
 			data-urlTrieDonnees={{ path('ipc_trie_donnees') }} 
 			data-urlGetMessages={{ path('ipc_get_messages') }} 
@@ -381,7 +382,12 @@
 						{% endfor %}
 					</div>
 				</div>
-				<div class='right'><a href='#' style="height:30px;" id='lienMessageBox' onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>ok</div></div></a></div>
+				<div id='prechargement' style='display:none; position:fixed; width:100%; height:100%; background-color:black; z-index:1000; text-align:center; font-size:40px; color:white; padding-top:400px; font-family:"Calibri Light","Arial Unicode MS","Times New Roman",serif'></div>
+				<br />
+				<div class='right'>
+					<a href='#' style="height:30px;" id='lienContinuMessageBox' onClick="continuation_messagebox();return false;" ><div class='bouton red'><div class='bgbouton'>Lancer la recherche</div></div></a>
+					<a href='#' style="height:30px;" id='lienMessageBox' onClick="annulation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>Annuler</div></div></a>
+				</div>
 			</div>
 			<!-- /Messages - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --->
 			<span id='verificationLoad' class='cacher'></span>
@@ -666,6 +672,7 @@
 			$('#pagePrincipaleBody').toggleClass("vueRestreinte");
 			$('#blockPiedDePage').toggleClass("vueRestreinte");
 			$('#vueRestreinte').toggleClass("vueRestreinte");
+			$('#boutonTitreCompress').toggleClass("vueRestreinte");
 
 
 			$('.pageDefaut').toggleClass("vueRestreinte");

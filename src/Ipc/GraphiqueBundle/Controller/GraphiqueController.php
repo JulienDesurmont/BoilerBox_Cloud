@@ -50,6 +50,7 @@ private $activation_modbus;
 private $compteRequetePerso;
 private $translator;
 private $s_transforme_texte;
+private $s_compression_graphique;
 
 
 public function constructeur(){
@@ -84,6 +85,9 @@ public function initialisation() {
 	$this->activation_modbus = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('activation_modbus')->getValeur();
     // Récupération de la liste des requêtes personnelles
     $this->tabRequetesPerso = $this->getRequetesPerso();
+	// Récupération de l'indication de recherche de tous les points ou de compression
+	$this->s_compression_graphique = $this->container->get('ipc_prog.session.boilerbox')->get('compression_graphique', array());
+
 }
 
 private function getRequetesPerso() {
@@ -760,7 +764,6 @@ public function afficheGraphiqueAction($page) {
 						$liste_req[$tmpNumeroDeRequete]['val2min'] = $val2min;
 						$liste_req[$tmpNumeroDeRequete]['val2max'] = $val2max;
 						// Message de la requête
-						echo $messageTemporaire;
 						$liste_req[$tmpNumeroDeRequete]['Texte'] = $messageTemporaire;
 						$liste_req[$tmpNumeroDeRequete]['Localisation'] = null;
 						// Nombre Maximum de pages que la requête retourne
@@ -1059,16 +1062,32 @@ public function analyseAction() {
 		// Pour chaque courbe, analyse des choix de compression demandés
 		foreach ($liste_req as $key => $requete) {
 			// Si la demande concerne le recalcul des données : On réinitialise la variable à false pour toute les requêtes afin de pouvoir recalculer le nombre de données en fonction de la compression indiquée
-			if ($typeValidation == 'Analyse') {
+			if (($typeValidation == 'AnalyseComplete') || ($typeValidation == 'Analyse') || ($typeValidation == 'Calculer') || ($typeValidation == 'Valider')) {
 				$liste_req[$key]['validation'] = false;
+				$requete['validation']  = false;
 			}
+            // Lors de la demande d'un calcul du nombre de point, on ne défini plus de limite à la recherche
+            if (($typeValidation == 'Calculer') || ($typeValidation == 'Valider') || ($typeValidation == 'AnalyseComplete')) {
+                $limite_requete = -1;
+            } else {
+                $limite_requete = $this->limit;
+            }
+
 			if ($requete['validation'] == false) {
+				$nombre_de_donnees = 0;
 				// Par défaut (lors de la 1ere recherche ) la recherche porte sur tous les points de la période : $choixRecherche = 'all' && $precision = 'none'
 				// Ensuite la recherche est faite en fonction des choix de l'utilisateur
 				isset($_POST["recherche_$key"]) ? $choixRecherche = $_POST["recherche_$key"] 	: $choixRecherche = 'all';
 				isset($_POST["pas_$key"]) 	? $precision = $_POST["pas_$key"] 		: $precision = 'none';
+
 				// Pour les requêtes provenant de graphique.html  : Si de nouveaux choix de compression ont été fait par l'utilisateur, une recherche des données est effectuée
-				if ($liste_req[$key]['TexteRecherche'] != $this->afficheTexteRecherche($precision, $choixRecherche)) {
+				if (($liste_req[$key]['TexteRecherche'] != $this->afficheTexteRecherche($precision, $choixRecherche)) || ($typeValidation == 'Calculer') || ($typeValidation == 'Valider') || ($typeValidation == 'AnalyseComplete')) {
+					if ($typeValidation == 'Calculer') {
+                        $choixCompression = 'all';
+                    } else {
+                        $choixCompression = $choixRecherche;
+                    }
+
 					$tmp_donnee = new Donnee();
 					// Mise au format d'une liste de valeurs les valeurs comprises dans le tableau des localisations de la requête
 					$id_localisation = "'".$requete['id_localisations']."'";
@@ -1080,7 +1099,7 @@ public function analyseAction() {
 					// cas 2 : datedeb>datemax || datefin>datemax => Valeurs retournées (datedeb & datemax) avec datedeb>datemax
 					$checkDate = $this->checkDeDate($tmp_date_deb, $tmp_date_fin);
 					if ($checkDate == true) {
-						$liste_req[$key]['NbDonnees'] = $tmp_donnee->SqlGetCountForGraphiqueWP(
+						$nombre_de_donnees = $tmp_donnee->SqlGetCountForGraphiqueWP(
 						$dbh,
 						$tmp_date_deb,
 						$tmp_date_fin,
@@ -1093,14 +1112,28 @@ public function analyseAction() {
 						$requete['val2min'],
 						$requete['val2max'],
 						$choixRecherche,
-						$precision);
+						$precision,
+						$choixCompression,
+                        $precision,
+                        $limite_requete);
+						if ($typeValidation == 'Calculer') {
+                            if ($liste_req[$key]['TexteRecherche'] != $this->afficheTexteRecherche($precision, $choixRecherche)) {
+                                $liste_req[$key]['NbDonnees'] = $nombre_de_donnees;
+                            }
+                        } else {
+                            if (($limite_requete == -1) || ($nombre_de_donnees < $this->limit)) {
+                                $liste_req[$key]['NbDonnees'] = $nombre_de_donnees;
+                            } else {
+                                $liste_req[$key]['NbDonnees'] = 'NA';
+                            }
+                        }
 					} else {
 						$liste_req[$key]['NbDonnees'] = 0;
 					}
 					// Si la requête ne retourne rien, c'est qu'elle a peut-etre était killée car ayant un temps d'execution trop long
 					// Dans ce cas on n'enregistre pas les valeurs 
 					// Si le nombre de données est <> null on ajoute 2 aux données retournées : Corresponds a la date de début et la date de fin qui seront calculés pour l'affichage des courbes
-					if ($liste_req[$key]['NbDonnees'] !=  null) {
+					if (($liste_req[$key]['NbDonnees'] != 'NA') && ($liste_req[$key]['NbDonnees'] != 0) && ($liste_req[$key]['NbDonnees'] == $nombre_de_donnees)) {
 						if ($liste_req[$key]['NbDonnees'] != 0) {
 							$liste_req[$key]['NbDonnees'] += 2;
 						}
@@ -1109,9 +1142,27 @@ public function analyseAction() {
 						$liste_req[$key]['choixRecherche'] = $choixRecherche;
 						$liste_req[$key]['choixRechercheInit'] = $choixRecherche;
 						$liste_req[$key]['TexteRecherche'] = $this->afficheTexteRecherche($precision, $choixRecherche);
+
 						// Lors de la première recherche la valeur de MaxDonnees est null : Initialisation de la variable avec le nombre de données de la recherche ( portant sur tous les points de la période)
+						// La variable est correcte seulement si sa valeur est < à $this->limit ou si Un calcul du nombre de points a été demandé
 						if (! $liste_req[$key]['MaxDonnees']) {
-							$liste_req[$key]['MaxDonnees'] = $liste_req[$key]['NbDonnees'];
+							if ($typeValidation == 'Valider') {
+                                $liste_req[$key]['MaxDonnees'] = $tmp_donnee->SqlGetCountForGraphiqueWP(
+                                $dbh,
+                                $tmp_date_deb,
+                                $tmp_date_fin,
+                                $id_localisation,
+                                $requete['idModule'],
+                                $requete['codeVal1'],
+                                $requete['val1min'],
+                                $requete['val1max'],
+                                $requete['codeVal2'],
+                                $requete['val2min'],
+                                $requete['val2max'],
+                                'all',
+                                null,
+                                -1);
+                            }
 						}
 					}
 				}	
@@ -1131,7 +1182,8 @@ public function analyseAction() {
 			$error_tmp = false;
 			$limit = $this->limit;
 			foreach ($liste_req as $key => $requete) {
-				if ($liste_req[$key]['NbDonnees'] > $limit) {
+				// Si une demande d'affichage est demandée malgré le nombre de point trop important, on affiche tout de même les courbes.
+				if (($typeValidation != 'Valider') && ($liste_req[$key]['NbDonnees'] > $limit)) {
 					$tempMax = 0;
 					$error_tmp = true;
 				} else {
@@ -1139,7 +1191,7 @@ public function analyseAction() {
 				}
 			}
 			$this->session->set('liste_req_pour_graphique', $liste_req);
-			if (($error_tmp == true) || ($typeValidation == 'Analyse')) {
+			if (($error_tmp == true) || ($typeValidation == 'Analyse') || ($typeValidation == 'AnalyseComplete') || ($typeValidation == 'Calculer')) {
 				// - - - -- - - - - - - - - - -- - - - - --    PARTIE REMPLACEMENT du numéro de localisation par l'intitulé de la localisation pour l'affichage
 				// Pour chaque courbe, si une Localisation est définie, remplacement du numéro par l'intitulé
 				// Récupération de la liste des localisations du site courant
@@ -1746,13 +1798,14 @@ public function getListReqAction() {
 					$requete['val1max'],
 					$requete['codeVal2'],
 					$requete['val2min'],
-					$requete['val2max']
+					$requete['val2max'],
+					$this->limit
 				);
 			} else {
 				$nb_de_donnees = 0;
 			}
 			// Si le nombre de points récupéré est < à la limit, la recherche retourne tous les points de la requête : $choixRecherche = all
-			if ($nb_de_donnees <= $limit) {
+			if ($nb_de_donnees < $this->limit) {
 				// Retourne tous les points de la requête
 				$choixRecherche = 'all';
 				// Texte indiquant que la recherche retourne tous les points
@@ -2241,7 +2294,6 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
 
 	foreach($OthersValues as $ligneDuTableau) {
 		$dateDeLaDonnee = new \DateTime($ligneDuTableau['horodatage']);
-		//echo "Date : ".$ligneDuTableau['horodatage']."<br />";
 		if (isset($dateDeLaDonneePrecedente)) {
 			// Si ce n'est pas la première donnée du tableau et si la date analysée est différente de la date précédente : On passe dans une nouvelle tranche - 
 			//	On enregistre alors les valeurs du tableau pondérée de la tranche terminée + On débute la nouvelle tranche
@@ -2274,7 +2326,6 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
                         $dateDeFinDePeriode = new \Datetime($tabPondere[$indexTabPondere]['horodatage']);
                         $dateDeFinDePeriode->add(new \DateInterval('P1M'));
     			}
-				//echo "Delta : ".date('Y-m-d H:i:s', $dateDeFinDePeriode->getTimestamp()).' - '.date('Y-m-d H:i:s',$dateDeLaDonneePrecedente->getTimestamp())."<br />";
             	$deltaT = $dateDeFinDePeriode->getTimestamp() - ($dateDeLaDonneePrecedente->getTimestamp() + ($cycleDeLaDonneePrecedente / 100));
             	$sommeProd += ($valeur1Precedente * $deltaT);
             	$sommeProd2 += ($valeur2Precedente * $deltaT);
@@ -2282,8 +2333,6 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
 				$tabPondere[$indexTabPondere]['cycle'] = 0;
 				$tabPondere[$indexTabPondere]['valeur1'] = $sommeProd / $sommeDiv; 	// moyenne pondérée 1
 				$tabPondere[$indexTabPondere]['valeur2'] = $sommeProd2 / $sommeDiv; // moyenne pondérée 2
-				//echo "Insertion en tableau pondere : ";
-				//echo $tabPondere[$indexTabPondere]['horodatage']." - ".$tabPondere[$indexTabPondere]['cycle']." - ".$tabPondere[$indexTabPondere]['valeur1']."<br />";
 				$indexTabPondere ++;
 
 				// Calcul des valeurs de la nouvelle tranche. 
@@ -2312,10 +2361,7 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
                 $sommeProd += ($valeur1Precedente * $deltaT);
                 $sommeProd2 += ($valeur2Precedente * $deltaT);
                 $sommeDiv += $deltaT;
-                //echo "<br /><br />NEW : SommeProd : $sommeProd = $valeur1Precedente * $deltaT<br />";
-                //echo "SommeDiv : $sommeDiv = $deltaT<br /><br />";
 			} else {
-				//echo "Delta : ".date('Y-m-d H:i:s', $dateDeLaDonnee->getTimestamp()).' - '.date('Y-m-d H:i:s',$dateDeLaDonneePrecedente->getTimestamp())."<br />";
             	$deltaT = ($dateDeLaDonnee->getTimestamp() + ($ligneDuTableau['cycle'] / 100)) - ($dateDeLaDonneePrecedente->getTimestamp() + ($cycleDeLaDonneePrecedente / 100));
             	// Ce cas ne doit pas arriver car on enregistre au minimum une donnée par cycle !
             	if ($deltaT == 0) {
@@ -2328,8 +2374,6 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
             	$sommeProd += ($valeur1Precedente * $deltaT);
             	$sommeProd2 += ($valeur2Precedente * $deltaT);
             	$sommeDiv += $deltaT;
-				//echo "SommeProd : $sommeProd += ($valeur1Precedente * $deltaT)<br />";
-				//echo "SommeDiv : $sommeDiv += $deltaT<br /><br />";
 			}
 		} else { 
             switch (strtolower($precision)){
@@ -2350,20 +2394,17 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
 					$dateDeDebutDePeriode = new \Datetime($dateDeLaDonnee->format($formatage).'01 00:00:00');
 					break;
             }
-			//echo "Delta : ".date('Y-m-d H:i:s', $dateDeLaDonnee->getTimestamp()).' - '.date('Y-m-d H:i:s',$dateDeDebutDePeriode->getTimestamp())."<br />";
 			$deltaT = $dateDeLaDonnee->getTimestamp() - $dateDeDebutDePeriode->getTimestamp();
-			if (isset($firstValue)) {
+			if (isset($firstValue) && !empty($firstValue)) {
 				$sommeProd = ($firstValue[0]['valeur1'] * $deltaT);
 				$sommeProd2 = ($firstValue[0]['valeur2'] * $deltaT);
 				$sommeDiv = $deltaT;
-				//echo "SommeDiv : $sommeDiv = $deltaT<br /><br />";
 			}
 		}
 		$valeur1Precedente = $ligneDuTableau['valeur1'];
 		$valeur2Precedente = $ligneDuTableau['valeur2'];
 		$dateDeLaDonneePrecedente = $dateDeLaDonnee;
 		$cycleDeLaDonneePrecedente = $ligneDuTableau['cycle'];
-		//echo "Val1 : ".$ligneDuTableau['valeur1']." - Date : ".$dateDeLaDonnee->format('Y-m-d H:i:s')."<br /><br /><br />";
 	}
 
 	//Si le dernier horodatage est identique à l'avant dernier horodatage, il nous faut enregistrer la derniere valeur du tableau pondéré

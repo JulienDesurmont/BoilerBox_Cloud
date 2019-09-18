@@ -46,6 +46,20 @@ private $compteRequetePerso;
 private $limit_excel;
 private $limit_export_sql;
 
+
+#constructeur()             Initialisation de la variable de session
+#initialisation()           Initialisation de certaines variables
+#getRequetesPerso()         Récupère la liste des requêtes personnelles pour les afficher dans le bouton SELECT
+#initialisationListes()     Initisalisation des Listes des modules, des messages, des genres etc. à afficher dans la POPUP
+#getLogDir()                Récupèration du répertoire de log
+#setLog()                   Inscription d'une ligne dans le fichier de log
+#reverseDate()              Inverse la date passée en paramètre : (entrée) 2014-05-10 12:23:34 -> (sortie) 10-05-2014 12:23:34
+#indexAction()              Affiche la page d'accueil LISTING et traite les demandes de SUPPRESSION et d'AJOUT des requêtes
+#afficheListingAction()     Lance les requêtes demandées et affiche le résultat
+#ajaxTrieDonneesAction      Appelée en AJAX : Retourne les données triées selon la colonne selectionnée par l'utilisateur
+
+
+
 public function constructeur(){
     if (empty($this->session)) {
         $service_session = $this->container->get('ipc_prog.session');
@@ -78,6 +92,19 @@ public function initialisation() {
 	$this->tabRequetesPerso = $this->getRequetesPerso();
 	$this->limit_excel = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_excel_listing')->getValeur();
 	$this->limit_export_sql = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_export_sql_listing')->getValeur();
+    // Si une demande de nouvelle page est demandée on ne cherche pas à savoir si le nombre de données dépasse la limite
+    //      Sinon Si il ya validation de la message box qui demande d'effectuer la recherche, la limite n'est pas restrictive
+    //          Sinon la limite est définie par le paramètre [limitation_export_sql_listing]
+    if (isset($_GET["listing"])) {
+        $this->limit_export_sql = -1;
+    } else {
+        if ($this->session->get('validation_message_box', array())) {
+            $this->limit_export_sql = -1;
+            $this->session->remove('validation_message_box');
+        } else {
+            $this->limit_export_sql = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_export_sql_listing')->getValeur();
+        }
+    }
 }
 
 
@@ -900,15 +927,21 @@ public function afficheListingAction($page) {
 				}
 				$tmp_date_deb = $this->getDatePeriode($session_date['datedebut'], $tabDesRequetes[$key]['id_localisation'], 'debut');
 				$tmp_date_fin = $this->getDatePeriode($session_date['datefin'], $tabDesRequetes[$key]['id_localisation'], 'fin');
-				// Requete sql
-				$nb_de_donnees = $tmp_donnee->sqlCountListing($dbh, $this->reverseDate($tmp_date_deb), $this->reverseDate($tmp_date_fin), 'count', $requeteTotale);
-				// Définition de la variable de session indiquant le nombre de pages toutes requêtes confondues
-				$session_page['nbDonneesTotal'] = $nb_de_donnees;
-				$session_page['maxPage'] = ceil($nb_de_donnees/$limit);
+
+				// Requete sql COUNT : Si le COUNT dépasse la limite la valeur retournée = limite + 1
+				$nb_de_donnees = $tmp_donnee->sqlCountListing($dbh, $this->reverseDate($tmp_date_deb), $this->reverseDate($tmp_date_fin), 'count', $requeteTotale, $this->limit_export_sql);
+				if (($this->limit_export_sql == -1) || ($nb_de_donnees <  $this->limit_export_sql))
+				{
+					// Définition de la variable de session indiquant le nombre de pages toutes requêtes confondues
+					$session_page['nbDonneesTotal'] = $nb_de_donnees;
+					$session_page['maxPage'] = ceil($nb_de_donnees/$limit);
+				} else {
+					$session_page['nbDonneesTotal'] = $nb_de_donnees;
+				}
 			}
 			// Si des données sont trouvées
 			if ($session_page['nbDonneesTotal'] != 0) {
-				if ($session_page['nbDonneesTotal'] < $this->limit_export_sql) {
+				if (($this->limit_export_sql == -1) || ($session_page['nbDonneesTotal'] < $this->limit_export_sql)) {
 					// Réinitilisation du tableau contenant les différentes requêtes à mettre en Union
 					$tabUnionRequete = array();
 					foreach ($liste_req_pour_listing as $key => $requete) {
@@ -1006,8 +1039,11 @@ public function afficheListingAction($page) {
 						$this->session->set('tabDesDonnees', $tabDesDonnees);
 					}
 				} else {
-					$this->get('session')->getFlashBag()->set('info','Nombre de données trop élevé ('.$session_page['nbDonneesTotal'].") Veuillez spécifier une autre période svp");
+					$message_tmp = 'Le nombre de données touvées est trop élevé : > à '.$this->limit_export_sql." [limitation_export_sql_listing]<br /><br /> Veuillez spécifier une autre période svp";
+					$message_tmp .= "<br /><br />La recherche peut tout de même être lancée mais le temps d'attente peut être long et la requête ne pas aboutir<br /><br />";
+					$this->get('session')->getFlashBag()->set('info',$message_tmp);
 					$message_erreur = 'Nombre de données trop élevé ('.$session_page['nbDonneesTotal'].')';
+					return $this->indexAction();
 				}
 			}
 		} else {

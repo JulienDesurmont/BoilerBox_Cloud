@@ -782,12 +782,6 @@ public function configurationAuto($type) {
     	$liste_conf['autorisation_mails']['description'] = "Autorisation de l'envoi des mails";
     	$liste_conf['autorisation_mails']['value'] = true;
     	$liste_conf['autorisation_mails']['parametreAdmin'] = true;
-	}
-	// Variable de la nouvelle version
-	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
-	$liste_conf['numero_version']['value'] = "2.6.5";
-	$liste_conf['numero_version']['parametreAdmin'] = true;
-
     $liste_conf['rapport_pourcentage_messages_max']['description'] = "Pourcentage maximum avant déclanchement d'une erreur dans le rapport journalier";
     $liste_conf['rapport_pourcentage_messages_max']['value'] = 90;
     $liste_conf['rapport_pourcentage_messages_max']['parametreAdmin'] = true;
@@ -800,18 +794,15 @@ public function configurationAuto($type) {
     $liste_conf['rapport_nombre_max_messages']['value'] = 80000;
     $liste_conf['rapport_nombre_max_messages']['parametreAdmin'] = true;
 
-
     // Variable de la nouvelle version
     $liste_conf['etat_amc_codes_syst_stat_io_avert']['description'] = "Listes des modules de type Syst. Stat. Io Avert.";
     $liste_conf['etat_amc_codes_syst_stat_io_avert']['value'] = "GE2094;GE2095;GE2096;GE2097;GE2098;GE2099";
     $liste_conf['etat_amc_codes_syst_stat_io_avert']['parametreAdmin'] = true;
 
 
-	$liste_conf['popup_simplifiee']['description'] = "Indique si la popup ne doit afficher que les messages enregistrés en base  (0:'Non' 1:'Oui')";
-	$liste_conf['popup_simplifiee']['value'] = 1;
-	$liste_conf['popup_simplifiee']['parametreAdmin'] = false;
-
-
+    $liste_conf['popup_simplifiee']['description'] = "Indique si la popup ne doit afficher que les messages enregistrés en base  (0:'Non' 1:'Oui')";
+    $liste_conf['popup_simplifiee']['value'] = 1;
+    $liste_conf['popup_simplifiee']['parametreAdmin'] = false;
 
     // Paramètres rapports : Remplace l'ancien paramètre 'rapports_erreur' -----------------------------------------
     $liste_conf['autorisation_rapports_erreur']['description'] = "Autorisation d'envoi des rapports d'erreurs (0:Non  1:Oui)";
@@ -843,7 +834,11 @@ public function configurationAuto($type) {
     $liste_conf['limitation_export_sql_listing']['parametreAdmin'] = false;
 
 
-
+	}
+	// Variable de la nouvelle version
+	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
+	$liste_conf['numero_version']['value'] = "2.7.0";
+	$liste_conf['numero_version']['parametreAdmin'] = true;
 
 
 		

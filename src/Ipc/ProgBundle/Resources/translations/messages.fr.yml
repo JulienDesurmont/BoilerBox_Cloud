@@ -113,9 +113,12 @@ bouton:
     rechercher: Rechercher
     raz: Raz
     retour: Retour
-    afficher: Afficher
+    afficher: Afficher les courbes
     modifier: Modifier
     recalculer: Recalculer
+    verifier: Vérification rapide
+    calcul_nb_points: Calculer le nombre de points
+    calculer: Calculer le nombre de points max
     enregistrer: Enregistrer
     nouveau: Nouveau
     export: Exporter
@@ -172,10 +175,10 @@ label:
     ajout_rapport: "Ajout d'un rapport"
     visualisation_rapport: "Visualisation d'un rapport"
     info:
-        points_max: Pour afficher le graphique, le nombre de points par courbe est limité à %limit%. Au delà, il est nécessaire de compresser la courbe pour réduire le nombre de points.
+        points_max: Le nombre de points par courbe est limité à %limit%. Au delà, les courbes peuvent être longues à afficher et l'affichage peut aboutir à un échec.
         modification:
-            listing: Modifier
-            courbe: Modifier
+            listing: Modifier la recherche
+            courbe: Modifier la recherche
         rafraichissement: Rafraichissement
         impression: Impression
         compression: Compression

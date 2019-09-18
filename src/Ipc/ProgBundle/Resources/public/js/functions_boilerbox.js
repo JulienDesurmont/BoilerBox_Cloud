@@ -1163,6 +1163,31 @@ function validation_messagebox() {
 	activateLinks();
 }
 
+function annulation_messagebox() {
+    validation_messagebox();
+}
+
+//  Fonction executée après la validation d'un popup messagebox
+function continuation_messagebox() {
+    // modifie la valeur de la variable de SESSION
+    setValidationMessageBox('continue');
+    // retire la popup messageBox
+    validation_messagebox();
+    // simule le clic sur Rechercher
+    $('#continue_action').click();
+}
+
+// Fonction qui modifie le paramètre validationMessageBox par appel ajax
+function setValidationMessageBox($valeur) {
+    xhr = getXHR();
+    callPathAjax(xhr, 'ipc_set_new_session_vars', null, false);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var datas = "variable=validation_message_box&valeur=" + $valeur;
+    xhr.send(datas);
+}
+
+
+
 function closeMessageBox() {
 	if ($('#messagebox').hasClass('cacher') == false) {
 		$('#messageboxTexte').text('');
@@ -1306,6 +1331,9 @@ function callPathAjax(xhr, fonction, args, asynchrone) {
 		version = 'HTTP';
 	}
 	switch (fonction) {
+    case 'ipc_set_new_session_vars':
+        xhr.open("POST", deb_url + $('#lien_url_ajax').attr('data-urlSetNewSessionVars'), false);
+        break;
 	case 'ipc_trie_donnees':
 		xhr.open("POST", deb_url + $('#lien_url_ajax').attr('data-urlTrieDonnees'), false);
 		break;
