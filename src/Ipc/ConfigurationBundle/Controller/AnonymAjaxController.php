@@ -59,6 +59,18 @@ private function deconnexionDbh() {
 	$this->dbh = $this->connexion->disconnect();
 }
 
+//Enregistre une nouvelle variable de session
+public function setNewSessionVarsAction() {
+    $variable = $_POST['variable'];
+    $valeur = $_POST['valeur'];
+    $this->constructeur();
+    $this->initialisationListe();
+    $dbh = $this->dbh;
+    $em = $this->em;
+    $this->session->set($variable, $valeur);
+    return new Response();
+}
+         
 
 public function setSessionVarsAction() {
 	$this->constructeur();

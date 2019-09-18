@@ -233,3 +233,8 @@ ipc_traduire:
     path: /ajax/traduire
     defaults: { _controller: IpcConfigurationBundle:Ajax:traduire }
 
+ipc_setNewSessionVars:
+    path: /anonym/configuration/ajax/setNewSessionVars
+    defaults: { _controller: IpcConfigurationBundle:AnonymAjax:setNewSessionVars }
+
+

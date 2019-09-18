@@ -86,7 +86,7 @@ public function initialisation() {
     // Récupération de la liste des requêtes personnelles
     $this->tabRequetesPerso = $this->getRequetesPerso();
 	// Récupération de l'indication de recherche de tous les points ou de compression
-	$this->s_compression_graphique = $this->container->get('ipc_prog.session.boilerbox')->get('compression_graphique', array());
+	$this->s_compression_graphique = $this->session->get('compression_graphique', array());
 
 }
 
@@ -1111,8 +1111,6 @@ public function analyseAction() {
 						$requete['codeVal2'],
 						$requete['val2min'],
 						$requete['val2max'],
-						$choixRecherche,
-						$precision,
 						$choixCompression,
                         $precision,
                         $limite_requete);
@@ -1146,7 +1144,7 @@ public function analyseAction() {
 						// Lors de la première recherche la valeur de MaxDonnees est null : Initialisation de la variable avec le nombre de données de la recherche ( portant sur tous les points de la période)
 						// La variable est correcte seulement si sa valeur est < à $this->limit ou si Un calcul du nombre de points a été demandé
 						if (! $liste_req[$key]['MaxDonnees']) {
-							if ($typeValidation == 'Valider') {
+							if (($typeValidation == 'Recherche') || ($typeValidation == 'Valider')) {
                                 $liste_req[$key]['MaxDonnees'] = $tmp_donnee->SqlGetCountForGraphiqueWP(
                                 $dbh,
                                 $tmp_date_deb,
@@ -1272,7 +1270,6 @@ public function analyseAction() {
 				$requete['val2min'],
 				$requete['val2max']
 			);
-
 			// Si au moins un point est trouvé : 
 			$OthersValues   = array();
 			if ($requete['MaxDonnees'] != 0) {

@@ -84,7 +84,7 @@
     <form name='myForm2' method='get' action="{{ path('ipc_listing') }}">
         <input type="hidden" name="choixSubmit" id="choixSubmit" />
         <div id='validation'>
-            <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Recherche';validationPopup('myForm2');return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div></a>
+            <a href='#' id='continue_action' class='right' onClick="document.getElementById('choixSubmit').value='Recherche';validationPopup('myForm2');return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div></a>
             {% if is_granted('ROLE_TECHNICIEN') %}
                 <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='RAZ';resetAjaxForm('listing');return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.raz"|trans|upper }}</div></div></a>
             {% endif %}
