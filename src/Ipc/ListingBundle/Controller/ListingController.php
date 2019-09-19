@@ -1041,7 +1041,7 @@ public function afficheListingAction($page) {
 				} else {
 					$message_tmp = 'Le nombre de données touvées est trop élevé : > à '.$this->limit_export_sql." [limitation_export_sql_listing]<br /><br /> Veuillez spécifier une autre période svp";
 					$message_tmp .= "<br /><br />La recherche peut tout de même être lancée mais le temps d'attente peut être long et la requête ne pas aboutir<br /><br />";
-					$this->get('session')->getFlashBag()->set('info',$message_tmp);
+					$this->get('session')->getFlashBag()->set('info_a_valider',$message_tmp);
 					$message_erreur = 'Nombre de données trop élevé ('.$session_page['nbDonneesTotal'].')';
 					return $this->indexAction();
 				}
