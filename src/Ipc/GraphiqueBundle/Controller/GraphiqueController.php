@@ -1144,7 +1144,7 @@ public function analyseAction() {
 						// Lors de la première recherche la valeur de MaxDonnees est null : Initialisation de la variable avec le nombre de données de la recherche ( portant sur tous les points de la période)
 						// La variable est correcte seulement si sa valeur est < à $this->limit ou si Un calcul du nombre de points a été demandé
 						if (! $liste_req[$key]['MaxDonnees']) {
-							if (($typeValidation == 'Recherche') || ($typeValidation == 'Valider')) {
+							if ((($typeValidation == 'Recherche') && ($liste_req[$key]['NbDonnees'] != 'NA') && ($liste_req[$key]['NbDonnees'] < $this->limit)) || ($typeValidation == 'Valider')) {
                                 $liste_req[$key]['MaxDonnees'] = $tmp_donnee->SqlGetCountForGraphiqueWP(
                                 $dbh,
                                 $tmp_date_deb,
