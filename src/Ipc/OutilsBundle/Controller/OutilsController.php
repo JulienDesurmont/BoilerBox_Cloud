@@ -633,7 +633,7 @@ public function moveDoublons(){
 	return new Response();
 }
 
-// Calcul le nombre de données sur les X dernier jours (dans la table t_donnee)
+// Calcul le nombre de données sur les X derniers jours (dans la table t_donnee)
 public function calculNbDBDonneesAction(Request $request) {
        $srv_getNbDBDonnees = $this->container->get('ipc_outil.getNbDBDonnees');
 

@@ -27,15 +27,8 @@ private $database_name;
     // retourne l'entité du paramètre nombre de jours pour la recherche du nombre de données en DB
     // Créée l'entité si elle n'existe pas avec comme valeur par défaut : 3
     public function getEntityParamNbJours() {
+		$ent_configuration = null;
         $ent_configuration = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('nb_jours_nb_db_donnees');
-        if (! $ent_configuration) {
-            $ent_configuration = new configuration();
-            $ent_configuration->setParametre('nb_jours_nb_db_donnees');
-            $ent_configuration->setDesignation('Nombre de jours pour la recherche du nombre de données dans la table t_donnee');
-            $ent_configuration->setValeur('3');
-            $ent_configuration->setParametreAdmin(true);
-            $ent_configuration->SqlInsert($this->dbh);
-        }
         return($ent_configuration);
     }
 
