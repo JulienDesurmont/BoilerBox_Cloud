@@ -15,11 +15,10 @@ private $em;
 private $database_name;
 
 
-    public function __construct($doctrine, $connexion, $database_name) {
-        $this->doctrine = $doctrine;
-        $this->em       = $doctrine->getManager();
+    public function __construct($connexion, $srv_connexion) {
+        $this->em       = $srv_connexion->getManager();
         $this->dbh      = $connexion->getDbh();
-        $this->database_name = $database_name;
+        $this->database_name = $srv_connexion->getBase();
     }
 
 
