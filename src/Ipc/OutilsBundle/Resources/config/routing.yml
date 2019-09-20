@@ -33,3 +33,7 @@ ipc_gestionScripts:
 ipc_moveDoublons:
     path: /moveDoublons
     defaults: { _controller: IpcOutilsBundle:Outils:moveDoublons }
+
+ipc_calculNbDBDonnees:
+    path: /calculNbDBDonnees
+    defaults: { _controller: IpcOutilsBundle:Outils:calculNbDBDonnees }

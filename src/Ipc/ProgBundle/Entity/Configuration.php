@@ -177,7 +177,6 @@ class Configuration
     // *********************************************************************************************************************************************************************************************************************
     //                                                                  F o n c t i o n s    U t i l i s é e s    par le module       [ C O N F I G U R A T I O N ]
     // *********************************************************************************************************************************************************************************************************************
-    // Insertion du nouveau site
     public function SqlInsert($dbh) {
         $donnees = '("'.$this->parametre.'","'.$this->designation.'","'.$this->valeur.'","'.$this->parametreAdmin.'")';
         $requete = "INSERT INTO t_configuration (parametre, designation, valeur, parametre_admin ) VALUES $donnees;";

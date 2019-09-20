@@ -35,6 +35,7 @@ parameters:
     password.class: Ipc\ProgBundle\Services\Password\ServicePassword
     rapports.class: Ipc\ProgBundle\Services\Rapports\ServiceRapports
     rattrapimportbin.class: Ipc\ProgBundle\Services\RattrapImportBin\ServiceRattrapImportBin
+    getNbDBDonnees.class: Ipc\OutilsBundle\Services\ServiceVerificationDB
     registration.class: Ipc\UserBundle\Form\Type\RegistrationType
     requeteType.class: Ipc\ProgBundle\Services\RequeteType\ServiceRequeteType
     security.authentication.listener.form.class: Ipc\ProgBundle\Listener\Security\UsernamePasswordFormAuthenticationListener
@@ -44,3 +45,4 @@ parameters:
     traduction.class: Ipc\ProgBundle\Services\Traduction\ServiceTraduction
     transformeTexte.class: Ipc\ProgBundle\Services\TransformeTexte\ServiceTransformeTexte
     transfertftp.class: Ipc\ProgBundle\Services\TransfertFtp\ServiceTransfertFtp
+

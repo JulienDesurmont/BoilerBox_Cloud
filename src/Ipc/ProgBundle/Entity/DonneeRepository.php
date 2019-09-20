@@ -55,4 +55,22 @@ class DonneeRepository extends EntityRepository
 	}
 */
 
+    public function myCountDonneesFromDB($dbh, $base, $interval_de_jours) {
+           $retour_nb_donnees = null;
+
+           $date_debut_de_recherche = date("Y-m-d 00:00:00", strtotime('- '.$interval_de_jours.' days'));
+           $date_fin_de_recherche = date("Y-m-d 00:00:00");
+
+           $requete = "SELECT COUNT(*) FROM ";
+           $requete .= $base.".t_donnee ";
+           $requete .= "WHERE horodatage BETWEEN '$date_debut_de_recherche' AND '$date_fin_de_recherche';";
+
+           if (($response = $dbh->query($requete)) != false) {
+               $retour_nb_donnees = $response->fetchColumn();
+               $response->closeCursor();
+           }
+           return($retour_nb_donnees);
+       }
+
+
 }
