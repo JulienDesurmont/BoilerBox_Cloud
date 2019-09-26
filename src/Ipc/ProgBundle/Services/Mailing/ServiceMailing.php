@@ -13,8 +13,9 @@ protected $log;
 protected $fichier_log;
 protected $dbh;
 protected $document_root;
+protected $email_assistance;
 
-public function __construct(\Swift_Mailer $mailer, $templating, $log, $connexion) {
+public function __construct(\Swift_Mailer $mailer, $templating, $log, $connexion, $email_assistance) {
 	$this->log = $log;
 	$this->fichier_log = 'mailing.log';
 	$this->mailer = $mailer;
@@ -22,6 +23,33 @@ public function __construct(\Swift_Mailer $mailer, $templating, $log, $connexion
 	$this->dbh = $connexion->getDbh();
 	//$this->document_root = getenv("DOCUMENT_ROOT");
 	$this->document_root = __DIR__.'/../../../../..';
+	$this->email_assistance = $email_assistance;
+}
+
+
+public function sendAssistance($sujet, $contenu_titre, $liste_contenus) {
+    // Récupération de l'affaire du site courant
+    $message = \Swift_Message::newInstance()
+        ->setSubject($sujet)
+        ->setFrom($this->email_assistance)
+        ->setTo($this->email_assistance);
+    $image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/web/images/icones/logo_lci.jpg'));
+	$liste_contenus= [];
+    $message ->setBody($this->templating->render('IpcProgBundle:Mail:email.html.twig', array(
+                                                                                        'liste_contenus' => $liste_contenus,
+                                                                                        'image_link' => $image_link))
+    );
+    $message ->setContentType('text/html');
+    // Send the message.
+    $nb_delivery = $this->mailer->send($message);
+    if ($nb_delivery == 0) {
+        $this->log->setLog("[ERROR] [MAIL];Echec de l'envoi de l'email : $sujet à $this->email_assistance", $this->fichier_log);
+        return(1);
+    } else {
+        $this->log->setLog("[INFO] [MAIL];Email envoyé à $this->email_assistance : $sujet", $this->fichier_log);
+        $this->sendAllMails();
+        return(0);
+    }
 }
 
 
@@ -151,7 +179,9 @@ public function sendTableEchange($destinataire, $sujet, $cheminFichier, $liste_c
 public function sendAllMails() {
 	$cheminConsole = $this->document_root.'/app/console';
 	$commande = "php $cheminConsole swiftmailer:spool:send --env=prod";
+	//$commande = "php $cheminConsole swiftmailer:spool:send";
 	$retour = shell_exec($commande);
+	//echo  $retour;
 	return(0);
 }
 

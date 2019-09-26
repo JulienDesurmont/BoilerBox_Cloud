@@ -37,3 +37,11 @@ ipc_moveDoublons:
 ipc_calculNbDBDonnees:
     path: /calculNbDBDonnees
     defaults: { _controller: IpcOutilsBundle:Outils:calculNbDBDonnees }
+
+ipc_compareNbDBDonnees:
+    path: /compareNbDBDonnees
+    defaults: { _controller: IpcOutilsBundle:Outils:compareNbDBDonnees }
+
+ipc_compareAllDBDonnees:
+    path: /compareAllDBDonnees
+    defaults: { _controller: IpcOutilsBundle:Outils:compareAllDBDonnees }

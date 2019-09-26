@@ -49,4 +49,14 @@ class ConfigurationRepository extends EntityRepository
 		->setParameter('parametre', $parametre);
 		return $qb->getQuery()->getSingleScalarResult();
 	}
+
+	public function myGetSqlValueOf($dbh, $database, $parametre) {
+		$retour_valeur_nb_jours = -1;
+		$requete = "SELECT valeur FROM $database.t_configuration WHERE parametre = '$parametre'";
+        if (($response = $dbh->query($requete)) != false) {
+        	$retour_valeur_nb_jours = $response->fetchColumn();
+           	$response->closeCursor();
+        }
+        return($retour_valeur_nb_jours);
+	}
 }

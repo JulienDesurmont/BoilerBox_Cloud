@@ -45,4 +45,4 @@ parameters:
     traduction.class: Ipc\ProgBundle\Services\Traduction\ServiceTraduction
     transformeTexte.class: Ipc\ProgBundle\Services\TransformeTexte\ServiceTransformeTexte
     transfertftp.class: Ipc\ProgBundle\Services\TransfertFtp\ServiceTransfertFtp
-
+    configuration_cloud.class: Ipc\ConfigurationBundle\Services\ServiceConfigurationCloud

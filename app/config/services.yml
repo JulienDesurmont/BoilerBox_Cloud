@@ -36,7 +36,7 @@ services:
             - { name: form.type, alias: ipc_user_registration }
     ipc_prog.mailing:
         class: "%mailing.class%"
-        arguments: ["@mailer", "@templating", "@ipc_prog.log", "@ipc_prog.connectbd"]
+        arguments: ["@mailer", "@templating", "@ipc_prog.log", "@ipc_prog.connectbd", "%mailer_delivery%"]
     ipc_prog.password:
         class: "%password.class%"
     ipc_prog.transfertFtp:
@@ -58,7 +58,10 @@ services:
         class: "Ipc\UserBundle\Services\detectLogin"
     ipc_outil.getNbDBDonnees:
         class: "%getNbDBDonnees.class%"
-        arguments: ["@ipc_prog.connectbd", "@ipc_prog.connectbd"]
+        arguments: ["@ipc_prog.connectbd", "@ipc_configuration.configurationCloud", "@ipc_prog.log", "@ipc_prog.mailing"]
+    ipc_configuration.configurationCloud:
+        class: "%configuration_cloud.class%"
+        arguments: ["%kernel.root_dir%"]
     ipc_user.detect.login.listener:
         class: "Ipc\UserBundle\Services\detectLoginListener"
         arguments: ["@ipc_user.detect.login"]

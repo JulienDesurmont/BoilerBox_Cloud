@@ -635,27 +635,35 @@ public function moveDoublons(){
 
 // Calcul le nombre de données sur les X derniers jours (dans la table t_donnee)
 public function calculNbDBDonneesAction(Request $request) {
-       $srv_getNbDBDonnees = $this->container->get('ipc_outil.getNbDBDonnees');
-
-       // Récupération du nombre de données
-       $nb_donnees = $srv_getNbDBDonnees->getNbDBDonnees();
-       $s = '';
-       if ($nb_donnees > 1) {
-               $s = 's';
-       }
-
-       // Récupération de la valeur X (nombre de jours de recherche)
-       $nb_jours = $srv_getNbDBDonnees->getEntityParamNbJours()->getValeur();
-       $s2 = '';
-       if ($nb_jours > 1) {
-               $s2 = 's';
-       }
-
-       $ret_message = "$nb_donnees donnée$s trouvée$s dans la table [ t_donnee ] sur les ";
-       $ret_message .= "$nb_jours dernier$s2 jour$s2";
-       $this->get('session')->getFlashBag()->add('info', $ret_message);
-       return($this->indexAction($request));
+	$this->constructeur();
+   	$srv_getNbDBDonnees = $this->container->get('ipc_outil.getNbDBDonnees');
+	$ret_message = $srv_getNbDBDonnees->calculNbDBDonnees();
+    $this->get('session')->getFlashBag()->add('info', $ret_message);
+    return($this->indexAction($request));
 }
+
+
+// Analyse tous les sites sur le cloud (définis dans le fichier de configuration cloud)
+public function compareAllDBDonneesAction(Request $request) {
+	$connexion = $this->get('ipc_prog.connectbd');
+    $dbh = $connexion->getDbh();
+	$srv_getNbDBDonnees = $this->container->get('ipc_outil.getNbDBDonnees');	
+	$ret_message = $srv_getNbDBDonnees->compareAllDBDonnees($dbh);
+    $this->get('session')->getFlashBag()->add('info', $ret_message);
+	return($this->indexAction($request));
+}
+
+//Compare le nombre de données sur les X derniers jours entre le cloud et le site distant.
+// Le site distant doit être en version 2.8.0 min pour pouvoir lancer la fonction
+public function compareNbDBDonneesAction(Request $request) {
+	$this->constructeur();
+    $srv_getNbDBDonnees = $this->container->get('ipc_outil.getNbDBDonnees');
+	$ret_message = $srv_getNbDBDonnees->compareNbDBDonnees();
+    $this->get('session')->getFlashBag()->add('info', $ret_message);
+    return($this->indexAction($request));
+}
+
+
 
 
 }
