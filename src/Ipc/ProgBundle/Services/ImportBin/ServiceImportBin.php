@@ -611,6 +611,24 @@ public function verifContenu($contenu_du_fichier, $verifdoublon) {
 		$this->dbh->commit();
 		//	Enregistrement des nouvelles valeurs des champs 'hasDonnees' des modules
 		$this->em->flush();
+
+        // Récupération de l'id de la derniere valeur insérée en base.
+        $donnee = new Donnee();
+        $max_insert_id = $donnee->getMaxId($this->dbh);
+        $parametre_last_insert_id = 'localisation_'.$this->localisation->getId()."_last_id";
+        $entity_config_last_id = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($parametre_last_insert_id);
+        if (! $entity_config_last_id){
+            $entity_configuration = new Configuration();
+            $entity_configuration->setParametre($parametre_last_insert_id);
+            $entity_configuration->setDesignation('Identifiant de la dernières donnée insérée pour la localisation '.$this->localisation->getNumeroLocalisation());
+            $entity_configuration->setValeur($max_insert_id);
+            $entity_configuration->setParametreAdmin(true);
+            $this->em->persist($entity_configuration);
+        } else {
+            $entity_config_last_id->setValeur($max_insert_id);
+        }
+        //  Enregistrement de la nouvelle valeur du parametre last_insert_id de la localisation
+        $this->em->flush();
 	} else {
 		$this->dbh->rollback();	
 	}

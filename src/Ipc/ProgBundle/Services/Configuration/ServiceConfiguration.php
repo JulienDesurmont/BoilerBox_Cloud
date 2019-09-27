@@ -403,6 +403,7 @@ public function moveDoublons(){
 
 
 
+/*
 // Fonction qui récupère la date de la dernière donnée importée en base
 public function getLastDataTime() {
 	$message_retour = '';
@@ -422,5 +423,27 @@ public function getLastDataTime() {
 	}
 	return($message_retour);
 }
+*/
+
+// Fonction qui récupère la date de la dernière donnée importée en base
+public function getLastDataTime() {
+    $message_retour = '';
+    $tmp_site = new Site();
+    $site_id = $tmp_site->SqlGetIdCourant($this->dbh);
+    $entitySite = $this->em->getRepository('IpcProgBundle:Site')->find($site_id);
+    $entitiesLocalisation = $entitySite->getLocalisations();
+    foreach($entitiesLocalisation as $entityLocalisation) {
+        $heure_analyse = date('d/m/Y à H:i:s');
+        $nom_du_parametre = 'localisation_'.$entityLocalisation->getId().'_last_id';
+        $entity_param_last_id = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($nom_du_parametre);
+        if ($entity_param_last_id){
+            $entity_donnee = $this->em->getRepository('IpcProgBundle:Donnee')->find($entity_param_last_id->getValeur());
+            $heure_derniere_donnee = $entity_donnee->getHorodatage()->format('d/m/Y à H:i:s');
+            $message_retour .= "\nAnalyse Localisation ".$entityLocalisation->getNumeroLocalisation()." faite le $heure_analyse<br />\nHorodatage de la dernière donnée : $heure_derniere_donnee<br />";
+        }
+    }
+    return($message_retour);
+}
+
 
 }

@@ -1262,4 +1262,14 @@ class Donnee
         return($donnees);
 	}
 
+    public function getMaxId($dbh) {
+        $max_id = -1;
+        $requete = "SELECT MAX(id) FROM t_donnee";
+        if (($reponse = $dbh->query($requete)) != false) {
+            $max_id = $reponse->fetchColumn();
+            $reponse->closeCursor();
+        }
+        return($max_id);
+    }
+
 }
