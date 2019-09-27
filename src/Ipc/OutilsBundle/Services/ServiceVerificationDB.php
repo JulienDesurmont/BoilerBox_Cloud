@@ -117,11 +117,14 @@ private $srv_mailing;
         		if ($date_du_jour != $tab_nb_db_donnees_distant[1]) {
         		    $ret_message .= "La date de récupération du comptage sur le site distant ($tab_nb_db_donnees_distant[1]) n'est pas la date du jour.<br /><br />";
         		    $ret_message .= "Veuillez vérifier que la sychronisation n'est pas stoppée";
-					$liste_contenus =
+					$liste_contenus[] = "La date de récupération du comptage sur le site distant ($tab_nb_db_donnees_distant[1]) n'est pas la date du jour.<br /><br />";
+					$liste_contenus[] = "Veuillez vérifier que la sychronisation n'est pas stoppée";
 					$error = true;
         		} else if ($nb_donnees_cloud != $tab_nb_db_donnees_distant[2]) {
         		    $ret_message .= "Le nombre de données n'est pas égale entre le cloud et le site distant (Cloud : $nb_donnees_cloud - Distant : $tab_nb_db_donnees_distant[2])<br /><br />";
         		    $ret_message .= "Veuillez vérifier que la sychronisation n'est pas stoppée";
+					$liste_contenus[] = "Le nombre de données n'est pas égale entre le cloud et le site distant (Cloud : $nb_donnees_cloud - Distant : $tab_nb_db_donnees_distant[2])<br /><br />";
+					$liste_contenus[] = "Veuillez vérifier que la sychronisation n'est pas stoppée";
 					$error = true;
         		} else {
 					$ret_message .= "Le nombre de message sur les $nb_jours_de_recherche derniers jours est identique : $nb_donnees_cloud";
@@ -129,7 +132,7 @@ private $srv_mailing;
     		}
 
 			if ($error == true) {
-				$this->srv_mailing->sendAssistance('Désynchronisation du Cloud', 'Désynchronisation du Cloud', $reite_courant-_message);
+				$this->srv_mailing->sendAssistance('Désynchronisation du Cloud', 'Désynchronisation du Cloud', $liste_contenus);
 				// Envoie d'un mail a Assistance
 			}	
 			$message_retour .= $ret_message."<br />*****<br />";
