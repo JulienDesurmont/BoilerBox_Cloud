@@ -440,6 +440,8 @@ public function getLastDataTime() {
             $entity_donnee = $this->em->getRepository('IpcProgBundle:Donnee')->find($entity_param_last_id->getValeur());
             $heure_derniere_donnee = $entity_donnee->getHorodatage()->format('d/m/Y à H:i:s');
             $message_retour .= "\nAnalyse Localisation ".$entityLocalisation->getNumeroLocalisation()." faite le $heure_analyse<br />\nHorodatage de la dernière donnée : $heure_derniere_donnee<br />";
+        } else {
+            $message_retour .= "\nAnalyse Localisation ".$entityLocalisation->getNumeroLocalisation()." faite le $heure_analyse<br />\nAucune donnée récupérée<br />";
         }
     }
     return($message_retour);
