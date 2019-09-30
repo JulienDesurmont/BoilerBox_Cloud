@@ -887,7 +887,9 @@ public function afficheListingAction($page) {
 				// Récupération de la liste des identifiants de module à rechercher
 				$tabDesRequetes[$key]['liste_id_modules'] = '';
 				foreach ($requete['tab_id_modules'] as $tmp_idmodule) {
-					$tabDesRequetes[$key]['liste_id_modules'] .= "'".$tmp_idmodule."',";
+					if (in_array($requete['id_localisation'], $this->tabModulesL[$tmp_idmodule]['localisation'])) {
+						$tabDesRequetes[$key]['liste_id_modules'] .= "'".$tmp_idmodule."',";
+					}
 				}
 				$tabDesRequetes[$key]['liste_id_modules'] = substr($tabDesRequetes[$key]['liste_id_modules'], 0, -1);
 				// Récupération de l'identifiant de la localisation 
