@@ -1002,7 +1002,6 @@ function refreshInfoTooltip() {
         }
     };
 }
-
 /* Fonction qui récupére la liste des points de chaque courbe à une heure donnée
 // Utilisée au survol de la courbe par tooltip
 // Pour les courbes compressée par highChart,on n'affiche que la valeur du point lors du survol (car nous n'avons pas la liste des points dans une variable)
@@ -1265,29 +1264,10 @@ function fctRemplaceCaracteres(texte, valeur, valeur2) {
 		// Modification du caractère $ par la valeur 1 - Si la valeur ne contient pas de decimal on affiche que la partie entière
 		pattern = /\$/;
 		newTexte = newTexte.replace(pattern, isEntier(valeur));	
-/*
-		var entier = parseInt(valeur);
-		var result = parseFloat(valeur) - entier;
-		if (result == 0) {
-			newTexte = newTexte.replace(pattern, entier);
-		} else {
-			newTexte = newTexte.replace(pattern, valeur);
-		}
-*/
 	}
 	// Dans tous les cas le caractère £ est à remplacer par la valeur 2
 	patternLivre = /£/;
 	newTexte = newTexte.replace(patternLivre, isEntier(valeur2));
-
-/*
-	var entier2 = parseInt(valeur2);
-	var result2 = parseFloat(valeur2) - entier2;
-	if (result2 == 0) {
-        newTexte = newTexte.replace(patternLivre, entier2);
-	} else {
-		newTexte = newTexte.replace(patternLivre, valeur2);
-	}
-*/
 	return(newTexte);
 }
 
@@ -1898,6 +1878,9 @@ function isEntier(nombre) {
     // Transformation de la virgule en point
     pattern_virgule = /,/;
     nombre = nombre.replace(pattern_virgule, '\.');
+	// Suppression des espaces
+	pattern_espace = /\s/;
+	nombre = nombre.replace(pattern_espace, '');
     var entier = parseInt(nombre);
     var result = parseFloat(nombre) - entier;
     if (result == 0) {
