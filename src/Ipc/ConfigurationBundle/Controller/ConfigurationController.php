@@ -839,7 +839,7 @@ public function configurationAuto($type) {
 	}
 	// Variable de la nouvelle version
 	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
-	$liste_conf['numero_version']['value'] = "2.8.2";
+	$liste_conf['numero_version']['value'] = "2.9.0";
 	$liste_conf['numero_version']['parametreAdmin'] = true;
 
 	$liste_conf['nb_jours_nb_db_donnees']['description'] = "Nombre de jours pour la recherche du nombre de données dans la table t_donnee";
