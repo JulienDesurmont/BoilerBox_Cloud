@@ -31,7 +31,7 @@ class FichierRapport
      protected $nom;
 
      /**
-      * @Assert\File(maxSize="20M",uploadErrorMessage="Impossible d'importer le fichier",maxSizeMessage="Taille maximum du fichier autorisé:20Mo")
+      * @Assert\File(maxSize="20000000",uploadErrorMessage="Impossible d'importer le fichier",maxSizeMessage="Taille maximum du fichier autorisé:20Mo")
      */
      protected $file;
 
