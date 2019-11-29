@@ -417,7 +417,12 @@ $(function() {
 						// Modification du tableau des courbes à afficher dans le tooltip
 						fillTabTooltip(this.index, this.visible);	
 					}
-				}
+				},
+                states: {
+                    inactive: {
+                        opacity: 1
+                    }
+                }
 			}
 		},
 		legend: {
