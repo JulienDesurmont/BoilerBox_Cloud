@@ -16,28 +16,13 @@
 
 
 {% block bodyjavascript %}
-	<script src="https://code.highcharts.com/stock/highstock.js"></script>
-	<script src="https://code.highcharts.com/modules/boost.js"></script>
-	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-
-    {% javascripts output='js/graphique_boiler.js' filter='jsqueeze'
-        'bundles/ipcgraphique/js/chargement.js'
-        'bundles/ipcgraphique/js/graphique.js'
-    %}
-        <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-
-
-
-{#
     {% javascripts output='js/graphique.js' filter='jsqueeze'
         'bundles/ipcgraphique/js/chargement.js'
 		'bundles/ipcgraphique/js/highstock.js'
+        'bundles/ipcgraphique/js/boost.js'
 		'bundles/ipcgraphique/js/exporting.js'
         'bundles/ipcgraphique/js/graphique.js'
     %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
-#}
-
 {% endblock bodyjavascript %}

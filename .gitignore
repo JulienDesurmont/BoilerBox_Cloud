@@ -3,3 +3,4 @@ app/cache/dev/
 app/logs/*
 web/logs/*
 web/bundles/*
+web/js/
