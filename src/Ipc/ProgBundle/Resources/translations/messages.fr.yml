@@ -96,7 +96,8 @@ checkbox:
     afficher: Afficher
     minimiser: Minimiser
     uniformiser: Uniformiser toutes les échelles
-    legende: Toutes / Aucune
+    legende: Afficher Toutes / Aucune
+    opacite: Opacité
 
 textbox:
     bas: Bas
@@ -134,7 +135,7 @@ label:
     sur: sur 
     chargement: Chargement ...
     legende:
-        checkbox: Courbes affichées
+        checkbox_courbes: Courbes 
         requetes: Requêtes
         localisations: Localisations
         genres: Genres

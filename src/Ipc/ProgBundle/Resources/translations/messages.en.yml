@@ -99,6 +99,7 @@ checkbox:
     minimiser: Reduce
     uniformiser: Harmonize the scale
     legende: Fill / Clear
+    opacite: Opacity
 
 textbox:
     bas: Bottom
@@ -130,7 +131,7 @@ label:
     sur: on 
     chargement: Loading ...
     legende:
-        checkbox: Legend
+        checkbox_courbes: Graph
         requetes: Queries
         localisations: Locations
         genres: Genres

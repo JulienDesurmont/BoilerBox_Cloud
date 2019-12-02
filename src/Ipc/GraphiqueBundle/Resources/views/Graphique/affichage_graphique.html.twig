@@ -81,10 +81,12 @@
 					</span>
                 </div>
                 <div class='milieuLigne'>
-                    {{ 'label.legende.checkbox'|trans }} :
+                    {{ 'label.legende.checkbox_courbes'|trans }} :
                     <span>
 						<input type='checkbox' name='infoLegende' id='infoLegende' onClick="changeLegende()"; checked>
 						{{ 'checkbox.legende'|trans|lower }}
+						<input type='checkbox' name='infoOpacite' id='infoOpacite' onClick="changeOpacite()";>
+						{{ 'checkbox.opacite'|trans|lower }}
 					</span>
                     {{ 'label.infos_bulles'|trans }} :
                     <span>

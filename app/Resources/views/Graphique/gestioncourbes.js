@@ -46,6 +46,13 @@ var $tabLegende = [$titreLegende];
 var $objLegend;
 var $objScrollbar;
 
+var $opacity;
+if ($('#infoOpacite').is(':checked')) {
+	$opacity = 0.3;
+} else {
+	$opacity = 1;
+}
+
 var chart1;
 
 function afficheChart(chartOptions) {
@@ -420,7 +427,7 @@ $(function() {
 				},
                 states: {
                     inactive: {
-                        opacity: 1
+                        opacity: $opacity
                     }
                 }
 			}
@@ -971,6 +978,16 @@ function changeLegende() {
 	}
 	rechargeGraphique();
 }
+
+function changeOpacite() {
+    if ($('#infoOpacite').is(':checked')) {
+        resetOpacite('opaque');
+    } else {
+        resetOpacite('none');
+    }
+    rechargeGraphique();
+}
+
 
 function minimiseInfoTooltip() {
 	if ($('#infoTooltip').is(':checked')) {
@@ -1778,6 +1795,16 @@ function resetLegende($type) {
             fillTabTooltip(i, false)
         }
 	}
+}
+
+// Met ou enleve l'opacité sur les courbe lors du survol par la sourie
+function resetOpacite($type) {
+    if ($type == 'opaque') {
+		chartOptions.plotOptions.series.states.inactive.opacity = 0.3;
+    }
+    if ($type == 'none') {
+		chartOptions.plotOptions.series.states.inactive.opacity = 1;
+    }
 }
 
 // Fonction qui supprime l'information tooltip si la checkbox n'est pas cochée.
