@@ -23,11 +23,19 @@ class User extends BaseUser
     */
     protected $id;
 
+    /**
+	 * Un utilisateur pour enregistrer plusieurs requêtes personnelles
+	 *
+	 * @ORM\OneToMany(targetEntity="Ipc\ConfigurationBundle\Entity\Requete", mappedBy="utilisateur", cascade={"persist", "remove"})
+	 */
+	protected $requetes;
+
 
 
     public function __construct()
     {
         parent::__construct();
+		$this->requetes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -54,5 +62,37 @@ class User extends BaseUser
 		}
 		return $this;
     }
-    
+
+	/**
+	 * Add requetes
+	 *
+	 * @param \Ipc\ConfigurationBundle\Entity\Requete $requetes
+	 * @return Utilisateur
+	 */
+	public function addRequete(\Ipc\ConfigurationBundle\Entity\Requete $requetes)
+	{
+		$this->requetes[] = $requetes;
+		return $this;
+	}
+
+	/**
+	 * Remove requetes
+	 *
+	 * @param \Ipc\ConfigurationBundle\Entity\Requete $requetes
+	 */
+	public function removeRequete(\Ipc\ConfigurationBundle\Entity\Requete $requetes)
+	{
+		$this->requetes->removeElement($requetes);
+	}
+
+	
+	/**
+	 * Get requetes
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getRequetes()
+	{
+		return $this->requetes;
+ 	}
 }

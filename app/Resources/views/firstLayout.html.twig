@@ -67,10 +67,6 @@
 			data-urlReadModbus={{ path('ipc_read_modbus') }}
 			data-urlSetScript={{ path('ipc_set_script') }}
 			data-urlEtat={{ path('ipc_etat') }}
-			data-urlSaveListingPersoRequest={{ path('ipc_saveRequest', {'page':'listing'}) }}
-			data-urlSaveGraphiquePersoRequest={{ path('ipc_saveRequest', {'page':'graphique'}) }}
-			data-urlDeleteListingPersoRequest={{ path('ipc_deleteRequest', {'page':'listing'}) }}
-			data-urlDeleteGraphiquePersoRequest={{ path('ipc_deleteRequest', {'page':'graphique'}) }}
  			data-urlGetRequetesPerso={{ path('ipc_getRequetePerso') }}
 			data-urlRegister={{ path('fos_user_registration_register') }}
 			data-urlCreationUtilisateur={{ path('ipc_createUser') }}
@@ -419,6 +415,7 @@
 		</div>
 		<!-- /Footer -->
 	</div>
+	<!-- pagePrincipaleHeader -->
 
     <div id='lightboxSmall' class='cacher'>
         {% block popup_small %}

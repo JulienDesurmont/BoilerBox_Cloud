@@ -7,11 +7,13 @@ ipc_graphListReqSelect:
 ipc_accueilGraphique:
     path: /index
     defaults: { _controller: IpcGraphiqueBundle:Graphique:index}
-    requirements:
-        _method: GET
 ipc_graphiques:
     path: /affiche/{page}
     defaults: { _controller: IpcGraphiqueBundle:Graphique:afficheGraphique, page:'0' }
     requirements:
         page: \d+
         _method: GET
+ipc_changeListeReqGraphique:
+    path: /changeListeReqGraphique
+    defaults: { _controller: IpcGraphiqueBundle:Graphique:changeListeReqGraphique }
+

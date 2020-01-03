@@ -170,7 +170,7 @@ private function deconnexionDbh() {
 	$this->dbh = $this->connexion->disconnect();
 }
 
-//	Définie la varaible de session indiquant la localisation choisi pour l'ajout de nouvelles requête 
+//	Définie la variable de session indiquant la localisation choisi pour l'ajout de nouvelles requête 
 //	Utilisée par les pages Listing et Graphique
 //	Modification de la variable de session choixLocalisationPopup avec l'identifiant de la localisation choisie dans les popups
 public function setAndGetChoixLocalisationAction() {
@@ -185,80 +185,10 @@ public function setAndGetChoixLocalisationAction() {
 	return new Response();
 }
 
-//	Permet d'enregistrer les requêtes des utilisateurs dans des fichiers textes pour ne pas avoir besoin de les rechercher ultérieurement
-public function saveRequestAction($page) {
-    $this->constructeur();
-	// On récupère le nom donné aux requêtes et on crée un fichier pour l'utilisateur courant : De la forme dateNom.json
-    $nomUtilisateur = '';
-    if (! $this->get('security.context')->isGranted('ROLE_TECHNICIEN')){
-        $nomUtilisateur = 'Client';
-    } else {
-        if ($this->session->get('label') == null) {
-            $nomUtilisateurt = str_replace(' ', '_nbsp_', $this->get('security.context')->getToken()->getUser());
-        } else {
-            $nomUtilisateur = str_replace(' ', '_nbsp_', $this->session->get('label'));
-        }
-    }
-	$nomRequetes = str_replace(' ', '_nbsp_', strtolower($_GET['nom']));
-	// Les clients n'ont pas les droits de création des fichiers :
-	// Si le paramètre $requeteClient = "true", le fichier est enregistré sous le compte client
-	$requeteClient = $_GET['requeteClient'];
-	if ($requeteClient == 'true') {
-		$nomUtilisateur = 'Client';
-	}
-	// Si le dossier de l'utilisateur n'existe pas : Création de celui-ci
-	$chemin_dossier_utilisateur =  __DIR__.'/../../../../web/uploads/requetes/'.$page.'/'.$nomUtilisateur;
-	if (! is_dir($chemin_dossier_utilisateur)) {
-		mkdir($chemin_dossier_utilisateur);		
-	}
-	$nomFichier = $chemin_dossier_utilisateur.'/'.$nomRequetes;
-	if ($page == 'listing') {
-		$liste_req = $this->session->get('liste_req');
-	} else {
-		$liste_req = $this->session->get('liste_req_pour_graphique');
-	}
-	if (! empty($liste_req)) {
-		$fichierHandle = fopen($nomFichier, 'w');
-		fputs($fichierHandle, json_encode($liste_req));
-		fclose($fichierHandle);
-	}
-	return new Response();
-}
 
 public function selectRequestAction($page) {
-    $this->constructeur();
-    $nomUtilisateur = "";
-    if (isset($_GET['compte'])) {
-        $nomUtilisateur = $_GET['compte'];
-    }
-	if (empty($nomUtilisateur)) {
-    	if (! $this->get('security.context')->isGranted('ROLE_TECHNICIEN')){
-    	    $nomUtilisateur = 'Client';
-    	} else {
-            if ($this->session->get('label') == null) {
-                $nomUtilisateur = str_replace(' ', '_nbsp_', $this->get('security.context')->getToken()->getUser());
-            } else {
-                $nomUtilisateur = str_replace(' ', '_nbsp_', $this->session->get('label'));
-            }
-    	}
-	}
-    $nomRequetes = str_replace(' ', '_nbsp_', $_GET['nom']);
-    $nomFichier =  __DIR__.'/../../../../web/uploads/requetes/'.$page.'/'.$nomUtilisateur.'/'.$nomRequetes;
-	if (! is_file($nomFichier)) {
-		$erreur = $this->get('translator')->trans('info.erreur.titre');
-		$message_erreur = $this->get('translator')->trans('info.erreur.recherche_fichier');
-		echo $erreur.' : '.$message_erreur;
-		return new Response();
-	}
-	$fichierHandle = fopen($nomFichier, 'r');
-	$contenuFichier = fgets($fichierHandle);
-	fclose($fichierHandle);
-	$liste_req = json_decode($contenuFichier, true);
-	if ($page == 'listing') {
-		$this->session->set('liste_req', $liste_req);
-	} else {
-		$this->session->set('liste_req_pour_graphique', $liste_req);
-	}
+	$this->constructeur();
+	$this->session->set($page.'_requete_selected', $_GET['id_requete']);
 	return new Response();
 }
 
@@ -329,40 +259,17 @@ public function traductionAction(){
 // Sauvegarde des type de requêtes affichées pour les réafficher par défaut lors des prochains retour sur les pages
 public function getRequetesPersoAction() {
     $this->constructeur();
-	if ($_GET['nomUtilisateur'] != '') {
-		$nomUtilisateur = $_GET['nomUtilisateur'];
-	}else{
-    	if (! $this->get('security.context')->isGranted('ROLE_TECHNICIEN')){
-    	    $nomUtilisateur = 'Client';
-    	} else {
-            if ($this->session->get('label') == null) {
-                $nomUtilisateur = str_replace(' ', '_nbsp_', $this->get('security.context')->getToken()->getUser());
-            } else {
-                $nomUtilisateur = str_replace(' ', '_nbsp_', $this->session->get('label'));
-            }
-    	}
-	} 
-	$this->session->set('compte_requete_perso', $nomUtilisateur);
-    $tabListeFichiers = false;
-	// Type des courbes à afficher
+	$nomUtilisateur = $_GET['nomUtilisateur'];
 	$page = $_GET['page'];
-    $chemin_dossier_utilisateur =  __DIR__.'/../../../../web/uploads/requetes/'.$page.'/'.$nomUtilisateur;
-    // Si le dossier de l'utilisateur n'existe pas : Pas de requêtes perso
-    if (is_dir($chemin_dossier_utilisateur)) {
-        $tabListeFichiers = array_slice(scandir($chemin_dossier_utilisateur), 2);
-        //  Remplacement des caractères espaces
-        if ($tabListeFichiers === false) {
-            $tabListeFichiers = array();
-        } else {
-            foreach ($tabListeFichiers as $fichier) {
-                $newTab[] = str_replace('_','',preg_replace('_nbsp_',' ',$fichier));
-            }
-            if (! empty($newTab)) {
-                $tabListeFichiers = $newTab;
-            }
-        }
-    }
-	echo json_encode($tabListeFichiers);
+	$this->session->set('compte_requete_perso', $nomUtilisateur);
+	if ($page == 'listing')
+	{
+		$this->session->remove('listing_requete_selected');
+		$this->session->remove('liste_req');
+	} else {
+		$this->session->remove('graphique_requete_selected');
+		$this->session->remove('liste_req_pour_graphique');
+	}
     return new Response();
 }
 

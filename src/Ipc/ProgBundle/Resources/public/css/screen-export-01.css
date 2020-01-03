@@ -346,7 +346,7 @@ menus {
   z-index: 85;
   position: absolute;
   right: 0px;
-  bottom: 27%;
+  bottom: 50%;
   left: 100px;
   text-align: center;
   background: #000000;
@@ -412,8 +412,6 @@ configperiode.vueRestreinte {
 configperiode.vueRestreinte .date {
   text-align: center;
 }
-configperiode.vueRestreinte .date
-
 menu_gauche {
   z-index: 80;
   position: absolute;
@@ -1304,9 +1302,32 @@ table.getSystemParam td {
 .validationPopupRequete {
   margin-top: 15px;
   display: block;
-  background: #EE921A;
-  cursor: pointer;
+  text-align: right;
+  height: 50px;
 }
+
+.validationPopupRequete button {
+  border-radius: 40px;
+  cursor: pointer;
+  height: 35px;
+  width: 150px;
+  background: white;
+  font-weight: bold;
+}
+
+.validationPopupRequete button:hover {
+  font-size: 1.1em;
+  height: 39px;
+}
+
+.validationPopupRequete button[type='submit'] {
+  color: blue;
+}
+.validationPopupRequete button[type='reset'] {
+  color: red;
+}
+
+
 .validationPopupRequete .bouton {
   width: auto;
   float: right;
@@ -1326,6 +1347,24 @@ table.getSystemParam td {
   font-weight: bold;
   text-transform: uppercase;
 }
+div.zonedetexte label {
+   display: block;
+   text-align: left;
+}
+div.listederoulante {
+   margin-top: 15px;
+   text-align: left;
+}
+div.listederoulante label {
+   padding-right: 10px;
+}
+div.listederoulante select {
+   border-radius: 10px;
+   width: 250px;
+   border: 1px solid gray;
+}
+
+
 .btn-disable {
   pointer-events: none;
 }
@@ -2461,7 +2500,6 @@ table.getSystemParam td {
   display: block;
 }
 #validation .bouton {
-  width: auto;
   float: right;
   font-size: 16px;
   text-align: center;
@@ -3156,14 +3194,14 @@ table.getSystemParam td {
 }
 #title_header {
   position: absolute;
-  top: 0px;
+  top: 10px;
   right: 0px;
   left: 0px;
-  height: 100px;
+  height: 150px;
 }
 #pagePrincipaleBody {
   position: absolute;
-  top: 100px;
+  top: 180px;
   left: 0px;
   right: 0px;
   bottom: 120px;
@@ -4408,9 +4446,6 @@ p.live_back_gray {
   border: 1px solid #000000;
   text-align: center;
 }
-#compteRequetePerso {
-  text-align: right;
-}
 #ajout_requete_perso {
   text-align: center;
 }
@@ -4625,8 +4660,8 @@ p.live_back_gray {
   background: #000000;
 }
 #headprint.vueRestreinte {
-  height: 120px;
-  min-height: 120px;
+  height: 140px;
+  min-height: 140px;
 }
 #etat1Affichage {
   display: table;
@@ -4662,6 +4697,24 @@ p.live_back_gray {
   font-size: 12px;
   padding-left: 5px;
   position: fixed;
-  top: 85px;
+  top: 120px;
   z-index: 99;
 }
+#ajoutRequete {
+   padding-left: 20px;
+}
+#ajout_requete_perso h1 {
+   margin-top: 10px;
+   margin-bottom: 20px;
+}
+#ajoutRequete label {
+   padding-left: 10px;
+}
+input.inputText {
+   border-radius: 40px;
+   width: 90%;
+   text-align: center;
+   margin-bottom: 30px;
+   border-color: gray;
+}
+

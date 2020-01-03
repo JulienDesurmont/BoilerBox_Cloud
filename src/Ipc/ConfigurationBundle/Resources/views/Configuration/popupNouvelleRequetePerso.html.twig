@@ -1,22 +1,31 @@
 {% block popup %}
-	<div id='messageValidation' class='cacher'>
-	</div>
-	<div id='ajout_requete_perso'>
-		<h1>{{ 'label.popup.titre.ajout_requete_personnelle'|trans|upper }}</h1>
-
-		<input type="hidden" name="choixPage_requetePerso" id="choixPage_requetePerso" />
-
-    	<div id='compteRequetePerso'>
-    	    {{ 'checkbox.requetes_client'|trans() }} <input type='checkbox' name='chkRequeteClient' id='chkRequeteClient' />
-    	</div>
-
-    	<div id='ajoutRequete'>
-			<input type='text' class='inputText' name='intituleRequetePerso' id='intituleRequetePerso' placeholder="{{ 'label.popup.textbox.intitule_requete'|trans }}" />
-    	</div>
-
-		<div class='validationPopupRequete'>
-			<div class='bouton blue'><div class='bgbouton' onClick="saveRequest();">{{ 'bouton.popup.valider'|trans|upper }}</div></div>
-			<div class='bouton red'><div class='bgbouton' onClick="closeRequest();">{{ 'bouton.popup.fermer'|trans|upper }}</div></div>
+	{{ form_start(form_requete, { 'attr': {'class': 'col-lg-12'} }) }}
+		<div id='messageValidation' class='cacher'>
 		</div>
-	</div>
+		<div id='ajout_requete_perso'>
+			<h1>{{ 'label.popup.titre.ajout_requete_personnelle'|trans|upper }}</h1>
+			<div id='ajoutRequete'>
+				<div>
+					{{ form_errors(form_requete.appellation) }}
+					{{ form_widget(form_requete.appellation) }}
+				</div>
+				<div class='zonedetexte'>
+					{{ form_errors(form_requete.description) }}
+					{{ form_label(form_requete.description) }}
+					{{ form_widget(form_requete.description) }}
+				</div>
+				<div class='listederoulante'>
+					{{ form_label(form_requete.compte) }}
+					{{ form_widget(form_requete.compte) }}
+				</div>
+			</div>
+
+			<div class='validationPopupRequete'>
+				{{ form_widget(form_requete.Enregistrer) }}  {{ form_widget(form_requete.Annuler) }}
+			</div>
+
+			{{ form_widget(form_requete.type) }}
+			{{ form_rest(form_requete) }}
+		</div>
+	{{ form_end(form_requete) }}
 {% endblock popup %}

@@ -17,6 +17,10 @@ use Ipc\ProgBundle\Entity\Site;
 use Symfony\Component\HttpFoundation\Request;
 use \PDO;
 use \PDOException;
+use Ipc\ConfigurationBundle\Entity\Requete;
+use Ipc\ConfigurationBundle\Form\Type\RequeteType;
+use Ipc\ConfigurationBundle\Form\Handler\RequeteHandler;
+
 
 
 
@@ -51,6 +55,8 @@ private $compteRequetePerso;
 private $translator;
 private $s_transforme_texte;
 private $s_compression_graphique;
+private $entities_requetes_perso;
+
 
 
 public function constructeur(){
@@ -83,8 +89,6 @@ public function initialisation() {
     $this->translator = $this->get('translator');
     $this->messagePeriode = $this->translator->trans('periode.info.none');
 	$this->activation_modbus = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('activation_modbus')->getValeur();
-    // Récupération de la liste des requêtes personnelles
-    $this->tabRequetesPerso = $this->getRequetesPerso();
 	// Récupération de l'indication de recherche de tous les points ou de compression
 	$this->s_compression_graphique = $this->session->get('compression_graphique', array());
 
@@ -92,36 +96,22 @@ public function initialisation() {
 
 private function getRequetesPerso() {
 	$this->constructeur();
-    $this->compteRequetePerso = $this->session->get('compte_requete_perso');
-    if (empty($this->compteRequetePerso)) {
-        if (! $this->get('security.context')->isGranted('ROLE_TECHNICIEN')){
-            $this->compteRequetePerso = 'Client';
+	// Variable qui indique si les recherches concernent le compte client ou le compte utilisateur courant
+	$this->compteRequetePerso = $this->session->get('compte_requete_perso','');
+    if ($this->compteRequetePerso) {
+      	if ($this->compteRequetePerso != 'Personnel') {
+            $entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'graphique');
         } else {
-			if ($this->session->get('label') == null) {
-				$this->compteRequetePerso = str_replace(' ', '_nbsp_', $this->get('security.context')->getToken()->getUser());
-			} else {
-            	$this->compteRequetePerso = str_replace(' ', '_nbsp_', $this->session->get('label'));
-			}
-        }
+            $this->compteRequetePerso = 'Personnel';
+            // Recherche de l'appelation des requêtes de l'utilisateur
+         	$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'graphique');
+		}
+    } else {
+        $this->compteRequetePerso = 'Personnel';
+        // Recherche de l'appelation des requêtes de l'utilisateur
+        $entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'graphique');
     }
-    $tabListeFichiers = false;
-    $chemin_dossier_utilisateur =  __DIR__.'/../../../../web/uploads/requetes/graphique/'.$this->compteRequetePerso;
-    // Si le dossier de l'utilisateur n'existe pas : Pas de requêtes perso
-    if (is_dir($chemin_dossier_utilisateur)) {
-        $tabListeFichiers = array_slice(scandir($chemin_dossier_utilisateur), 2);
-        //  Remplacement des caractères espaces
-        if ($tabListeFichiers === false) {
-            $tabListeFichiers = array();
-        } else {
-            foreach ($tabListeFichiers as $fichier) {
-                $newTab[] = str_replace('_', '', preg_replace('_nbsp_', ' ', $fichier));
-            }
-            if (! empty($newTab)) {
-                $tabListeFichiers = $newTab;
-            }
-        }
-    }
-    return($tabListeFichiers);
+    return ($entities_requetes_perso);
 }
 
 
@@ -565,22 +555,43 @@ public function indexAction() {
 		echo json_encode($tab_requetes);
 		return new Response();
 	} else {
+		$ent_requete = new Requete();
+		$ent_requete->setCreateur($this->session->get('label'));
+		$ent_requete->setType('graphique');
+		$form_requete = $this->createForm(new RequeteType(), $ent_requete, [
+			'action' => $this->generateUrl('ipc_accueilGraphique'),
+			'method' => 'POST'
+			]
+		);
+		// Récupération de la requête
+		$request = $this->get('request');
+		// Récupération du handler de formulaire
+  		$form_handler = new RequeteHandler($form_requete, $request);
+       	// Execution de la méthode d'execution du handler : Retourne True si les données du formulaire sont validées
+        $process = $form_handler->process($this->em, 'graphique', $this->container->get('security.context')->getToken()->getUser(), $this->session);
+		// Récupération de l'id de la requête personnelle
+		$id_requete_perso = $this->session->get('graphique_requete_selected', null);
+		$this->entities_requetes_perso = $this->getRequetesPerso();
+
 
 		return $this->render('IpcGraphiqueBundle:Graphique:index.html.twig', array(
-			'messagePeriode' => $messagePeriode,
-			'liste_req'	=> $liste_req,
-			'tab_requetes' => $tab_requetes,
-			'strTab_requetes' => json_encode($tab_requetes),
-			'liste_localisations' => $this->liste_localisations,
-			'liste_genres' => $this->liste_genres,
-			'liste_nomsModules' => $this->liste_noms_modules,
+			'messagePeriode' 		=> $messagePeriode,
+			'liste_req'				=> $liste_req,
+			'tab_requetes' 			=> $tab_requetes,
+			'strTab_requetes' 		=> json_encode($tab_requetes),
+			'liste_localisations' 	=> $this->liste_localisations,
+			'liste_genres' 			=> $this->liste_genres,
+			'liste_nomsModules' 	=> $this->liste_noms_modules,
 			'liste_messagesModules' => $this->liste_messages_modules,
-			'maximum_execution_time' => $maximum_execution_time,
-			'tempMax' => $tempMax,
-            'tab_requetes_perso' => $this->tabRequetesPerso,
+			'maximum_execution_time'=> $maximum_execution_time,
+			'tempMax' 				=> $tempMax,
+            //'tab_requetes_perso' => $this->tabRequetesPerso,
+			'entities_requetes_perso' => $this->entities_requetes_perso,
+			'id_requete_perso'      => $id_requete_perso,
 			'compte_requete_perso' => $this->compteRequetePerso,
 		    'sessionCourante' => $this->session->getSessionName(),
-            'tabSessions' => $this->session->getTabSessions()
+            'tabSessions' => $this->session->getTabSessions(),
+			'form_requete'          => $form_requete->createView()
 		));
 	}
 }
@@ -2445,5 +2456,18 @@ private function calculMoyennePonderee($OthersValues, $firstValue, $precision) {
 	}	
 	return $tabPondere;
 }
+
+// Fonction qui change la liste des requêtes après selection d'une requête enregistrée
+public function changeListeReqGraphiqueAction() {
+	$this->constructeur();
+    // On recherche la requête perso à afficher
+    $id_requete = $this->session->get('graphique_requete_selected');
+    $ent_requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
+    // On modifie la variable de session avec la liste des requêtes de la requête perso
+    $this->session->set('liste_req_pour_graphique', json_decode($ent_requete->getRequete(), true));
+    // On renvoi la page d'accueil de Listing
+    return $this->redirect($this->generateUrl('ipc_accueilGraphique'));
+}
+
 
 }

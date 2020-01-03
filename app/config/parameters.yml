@@ -1,7 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
     database_driver: pdo_mysql
-#    database_host: 127.0.0.1
     database_host: localhost
     database_port: null
     database_name: boilerbox_c782
@@ -18,7 +17,7 @@ parameters:
     mailer_port: 2525
     locale: fr
     secret: ThisTokenIsNotSoSecretChangeIt
-    socket_unix: '/var/run/mysqld/mysqld.sock'
+    socket_unix: /var/run/mysqld/mysqld.sock
 
     change_db.class: Ipc\ProgBundle\Services\ChangeDB\ServiceChangeDB
     configuration.class: Ipc\ProgBundle\Services\Configuration\ServiceConfiguration

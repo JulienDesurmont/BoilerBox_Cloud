@@ -1,8 +1,6 @@
 ipc_accueilListing:
     path: /index
     defaults: { _controller: IpcListingBundle:Listing:index}
-    requirements:
-        _method: GET
 
 ipc_listing:
     path: /affiche/{page}
@@ -18,3 +16,8 @@ ipc_modifieListing:
 ipc_trie_donnees:
     path: /ajaxTrieDonnees
     defaults: { _controller: IpcListingBundle:Listing:ajaxTrieDonnees }
+
+ipc_change_liste_req:
+    path: /changeListeReq
+    defaults: { _controller: IpcListingBundle:Listing:changeListeReq }
+

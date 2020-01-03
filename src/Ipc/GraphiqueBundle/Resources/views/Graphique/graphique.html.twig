@@ -67,11 +67,32 @@
 {% endblock body %}
 
 {% block choix_validation %}
-    <div id="validation">
-        <a href="#" onClick="document.getElementById('choixSubmit').value='Valider';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton green"><div class="bgbouton">{{ 'bouton.afficher'|trans|upper }}</div></div></a>
-		<a href="#" onClick="document.getElementById('choixSubmit').value='Analyse';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.verifier'|trans|upper }}</div></div></a>
-		<a href="#" onClick="document.getElementById('choixSubmit').value='AnalyseComplete';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.calcul_nb_points'|trans|upper }}</div></div></a>
-		<a href="#" onClick="document.getElementById('choixSubmit').value='Calculer';attente();stopPing();submitForm('myForm2');return false;" ><div class="bouton blue"><div class="bgbouton">{{ 'bouton.calculer'|trans|upper }}</div></div></a>
+	<div id="validation" class='validationbouton'>
+		<div>
+			<a href="#" onClick="document.getElementById('choixSubmit').value='Valider';attente();stopPing();submitForm('myForm2');return false;" >
+				<div class="bouton green"><div class="bgbouton">{{ 'bouton.afficher'|trans|upper }}</div></div>
+			</a>
+		</div>
+		<div>
+			<a href="#" onClick="document.getElementById('choixSubmit').value='Analyse';attente();stopPing();submitForm('myForm2');return false;" >
+				<div class="bouton blue"><div class="bgbouton">{{ 'bouton.verifier'|trans|upper }}</div></div>
+			</a>
+		</div>
+		<div>
+			<a href="#" onClick="document.getElementById('choixSubmit').value='AnalyseComplete';attente();stopPing();submitForm('myForm2');return false;" >
+				<div class="bouton blue"><div class="bgbouton">{{ 'bouton.calcul_nb_points'|trans|upper }}</div></div>
+			</a>
+		</div>
+		<div>
+			<a href="#" onClick="document.getElementById('choixSubmit').value='Calculer';attente();stopPing();submitForm('myForm2');return false;" >
+				<div class="bouton blue"><div class="bgbouton">{{ 'bouton.calculer'|trans|upper }}</div></div>
+			</a>
+		</div>
+		<div>
+			<a href="#" onClick="location.href='{{ path('ipc_accueilGraphique') }}'"; >
+				<div class="bouton red"><div class="bgbouton">Retour</div></div>
+			</a>
+		</div>
     </div>
 {% endblock choix_validation %}
 

@@ -9,111 +9,23 @@
     // Lorsque l'on coche la case, va rechercher la liste des requêtes clientes si la variable '$selectClient' est vide.
     // Lorsque l'on décoche la case, va rechercher la liste des requêtes du compte courante si la variable '$selectCourant' est vide.
     // Les variables $selectClient et $selectCourant sont réinitialisées lors de l'enregistrement d'une nouvelle requête ou la suppression d'une ancienne requête.
-    function addCompteRequest($page) {
+	function addCompteRequest($page, $compte) {
         attente();
         var $url = $('#lien_url_ajax').attr('data-urlGetRequetesPerso');
-        var $chkBoxIsChecked = $('#requeteClient').is(':checked');
-        if ($chkBoxIsChecked == true) {
-            // Enregistrement des requêtes du compte courant si la variable est vide
-            if ($selectCourant == null) {
-                $selectCourant = $('#selectRegPerso').html();
-            }
-            // Recherche et affichage des requêtes du compte client
-            if ($selectClient == null) {
-                $.ajax({
-                    url: $url,
-                    method: 'get',
-                    data: 'nomUtilisateur=Client&page=' + $page,
-                    timeout: 10000
-                })
-                .done(function($message, $status) {
-                    var $tabOptions = JSON.parse($message);
-                    $selectClient = "<option value='noselected' disabled selected style='color:blue'>" + traduire('select.requetes_client.titre.' + $page) + "</option>";
-                    $.each($tabOptions, function(key, value) {
-                        $selectClient = $selectClient + "<option value='" + value + "'>" + value + "</option>";
-                    });
-                    $('#selectRegPerso').html($selectClient);
-                    fin_attente();
-                })
-                .fail(function($xhr, $status, $error) {
-                    alert('Erreur ' + $error);
-                    fin_attente();
-                });
-            // Si les requêtes du compte client sont déjà en mémoire, réaffichage de celles-ci
-            } else {
-                $('#selectRegPerso').html($selectClient);
-                fin_attente();
-            }
-        // Recherche et affichage du compte courant
-        } else {
-            // Enregistrement des requêtes du compte client si la variable est vide
-            if ($selectClient == null) {
-                $selectClient = $('#selectRegPerso').html();
-            }
-            if ($selectCourant == null) {
-				var $nomUtilisateur = "";
-                $.ajax({
-                    url: $url,
-                    method: 'get',
-					data: 'nomUtilisateur=' + $nomUtilisateur + '&page=' + $page,
-                    timeout: 10000
-                })
-                .done(function($message, $status) {
-                    var $tabOptions = JSON.parse($message);
-                    $selectCourant = "<option value='noselected' disabled selected style='color:blue'>" + traduire('select.requetes_perso.titre.' + $page) + "</option>";
-                    $.each($tabOptions, function(key, value) {
-                        $selectCourant = $selectCourant + "<option value='" + value + "'>" + value + "</option>";
-                    });
-                    $('#selectRegPerso').html($selectCourant);
-                    fin_attente();
-                })
-                .fail(function($xhr, $status, $error) {
-                    alert('Erreur ' + $error);
-                    fin_attente();
-                });
-            } else {
-                $('#selectRegPerso').html($selectCourant);
-                fin_attente();
-            }
-        }
-    }
-
-
-	// Fonctions utilisées pour la sauvegarde, la suppression et l'affichage des requêtes personnelles : 
-	//	Elles nécessitent l'inclusion du template IpcConfigurationBundle:Configuration:popupNouvelleRequetePerso.html.twig
-    function saveRequest() {
-        var $url = '';
-        var $page = $('#choixPage_requetePerso').val();
-        if($page == 'listing') {
-             $url = $('#lien_url_ajax').attr('data-urlSaveListingPersoRequest');
-        }else if($page == 'graphique') {
-            $url = $('#lien_url_ajax').attr('data-urlSaveGraphiquePersoRequest');
-        }
-        var $requeteClient = $('#chkRequeteClient').prop('checked');
-        $nameRequest = $('#intituleRequetePerso').val();
-        if (checkValue($nameRequest)) {
-            attente();
-            // Fonction ajax faisant l'enregistrement des requêtes
-            $.ajax({
-                url: $url,
-                method: 'GET',
-                data: { nom: $nameRequest, requeteClient: $requeteClient},
-                timeout: 10000
-            })
-            .done(function($message, $status) {
-                $('#ajout_requete_perso').addClass('cacher');
-                $('#messageValidation').html('Requête enregistrée');
-                $('#messageValidation').removeClass('cacher');
-                setTimeout(function(){
-                    location.reload();
-                }, 500);
-            })
-            .fail(function($xhr, $status, $error) {
-                alert('Erreur ' + $error);
-                fin_attente();
-            });
-        }
-        return 0;
+		$.ajax({
+			url: $url,
+			method: 'get',
+			data: 'nomUtilisateur=' + $compte + '&page=' + $page,
+			timeout: 10000
+		})
+		.done(function($message, $status) {
+			// Raffraichissement de la page
+			window.location.href = window.location.href;
+		})
+		.fail(function($xhr, $status, $error) {
+			alert('Erreur ' + $error);
+			fin_attente();
+		});
     }
 
 
@@ -121,7 +33,6 @@
 		removeShadow('popup');
 		activateLinks();
         $('#lightboxSmall').addClass('cacher');
-        $('#choixPage_requetePerso').val('');
 		$('#intituleRequetePerso').val('');
 		return;
 	}
@@ -140,89 +51,33 @@
         }
     }
 
+	// Fonction qui supprime une requête personnelle.
     function supprimeRequetePerso($page) {
-        attente();
-        addShadow('popup');
-        desactivateLinks();
-		var $compte = '';
-        var $chkBoxIsChecked = $('#requeteClient').is(':checked');
-        // Si la checkbox 'Compte client' est cochée : Recherche d'une requête du compte client
-        // Sinon recherche d'une requête en fonction du compte utilisateur
-        if ($chkBoxIsChecked == true) {
-            $compte = 'Client';
-        }
-        if($page == 'listing') {
-             $url = $('#lien_url_ajax').attr('data-urlDeleteListingPersoRequest');
-        }else if($page == 'graphique') {
-            $url = $('#lien_url_ajax').attr('data-urlDeleteGraphiquePersoRequest');
-        }
-        var $nameRequest = $("#selectRegPerso option:selected").val();
-        if (($nameRequest != 'noselected') && ($("#selectRegPerso option:selected").index() != 0)) {
-            $.ajax({
-                url: $url,
-                method: 'get',
-                data: 'nom=' + $nameRequest + '&compte=' + $compte,
-                timeout: 10000
-            })
-            .done(function($message, $status) {
-                $('#ajout_requete_perso').addClass('cacher');
-                $('#messageValidation').html('Requête supprimée');
-                $('#messageValidation').removeClass('cacher');
-                $('#lightboxSmall').removeClass('cacher');
-                setTimeout(function(){
-                    location.reload();
-                }, 500);
-            })
-            .fail(function($xhr, $status, $error) {
-                alert('Erreur ' + $error);
-				activateLinks();
-				removeShadow('popup');
-                fin_attente();
-            });
-        } else {
-			activateLinks();
-			removeShadow('popup');
-            fin_attente();
-        }
+		// Récupération de l'id de la requête à supprimer
+		var $id_requete_selected = $("#selectRegPerso option:selected" ).val();
+		// Appel ajax de la fonction de suppression de requête personnelle
+		var $url_suppression_requete_personnelle = $('#selectRegPerso').attr('data-suppressionRequetePersonnelle') + '?id_requete=' + $id_requete_selected + '&page=' + $page;
+		window.location.href = $url_suppression_requete_personnelle;
 	}
 
 
-	// Affiche les requêtes enregistrées lors de la sélection du titre de la requête
-    function selectRequest() {
-        attente();
-       	var $chkBoxIsChecked = $('#requeteClient').is(':checked');
-		var $compte = '';
-		// Si la checkbox 'Compte client' est cochée : Recherche d'une requête du compte client
-		// Sinon recherche d'une requête en fonction du compte utilisateur
-        if ($chkBoxIsChecked == true) {
-			$compte = 'Client';
-		}
-        var $url = $('#selectRegPerso').attr('data-url');
-        var $nameRequest = $("#selectRegPerso option:selected" ).val();
-		if ($("#selectRegPerso option:selected").index() != 0) {
-        	$.ajax({
-        	    url: $url,
-        	    method: 'get',
-        	    data: 'nom=' + $nameRequest + '&compte=' + $compte,
-        	    timeout: 10000
-        	})
-        	.done(function($message, $status) {
-				// Si le message commence par Erreur c'est que la fonction ne s'est pas executée correctement
-				var $messageErreur = $message.match(/^Erreur(.+?)$/);
-				if ($messageErreur != null) {
-					alert('message ' + $messageErreur);
-					fin_attente();
-				} else {
-        	    	location.reload();
-				}
-        	})
-        	.fail(function($xhr, $status, $error) {
-        	    alert('Erreur ' + $error);
-        	    fin_attente();
-        	});
-		} else {
-			fin_attente();
-		}
+	// Affiche les requêtes enregistrées lors de la selection du titre de la requête
+	function selectRequestPerso() {
+		// Récupération de l'id de la requête
+		var $id_requete_selected = $("#selectRegPerso option:selected" ).val();
+		// Appel ajax pour modification de l'id de la requête
+		var $url_modification_id_requete_selected = $('#selectRegPerso').attr('data-url');
+		$.ajax({
+			url: $url_modification_id_requete_selected,
+			method: 'get',
+			data: 'id_requete=' + $id_requete_selected,
+			timeout: 10000
+		})
+		.done(function() {
+			// Si la modification de l'id de la requête à afficher s'est bien effectuée, on appelle le controller qui va modifier le contenu de la variable liste_req et afficher la page index avec la requête
+			var $url_change_liste_req = $('#selectRegPerso').attr('data-changeListeReq');
+			window.location.href = $url_change_liste_req;
+		});
     }
 
 
@@ -231,7 +86,6 @@
         desactivateLinks();
         setTimeout(function(){
             $('#lightboxSmall').removeClass('cacher');
-            $('#choixPage_requetePerso').val($pageRequete);
         }, 100);
     }
 

@@ -237,4 +237,11 @@ ipc_setNewSessionVars:
     path: /anonym/configuration/ajax/setNewSessionVars
     defaults: { _controller: IpcConfigurationBundle:AnonymAjax:setNewSessionVars }
 
+ipc_gestionRequete:
+    path: /gestionRequete
+    defaults: { _controller: IpcConfigurationBundle:Configuration:gestionRequetesPersonnelles }
+
+ipc_deleteRequestPerso:
+    path: /ajax/deleteRequestPerso
+    defaults: { _controller: IpcConfigurationBundle:Configuration:deleteRequestPerso }
 

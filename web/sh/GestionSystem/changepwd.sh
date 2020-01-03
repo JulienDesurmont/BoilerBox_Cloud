@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Changer un mot de passe                       php app/console fos:user:change-password nomUtilisateur nouveauMotDePasse
 # Changement du mot de passe toutes les heures

@@ -1,7 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
     database_driver: pdo_mysql
-#    database_host: 127.0.0.1
     database_host: localhost
     database_port: null
     database_name: boilerbox_c782
@@ -18,7 +17,7 @@ parameters:
     mailer_port: 2525
     locale: fr
     secret: ThisTokenIsNotSoSecretChangeIt
-    socket_unix: '/var/run/mysqld/mysqld.sock'
+    socket_unix: /var/run/mysqld/mysqld.sock
 
     change_db.class: Ipc\ProgBundle\Services\ChangeDB\ServiceChangeDB
     configuration.class: Ipc\ProgBundle\Services\Configuration\ServiceConfiguration
@@ -35,6 +34,7 @@ parameters:
     password.class: Ipc\ProgBundle\Services\Password\ServicePassword
     rapports.class: Ipc\ProgBundle\Services\Rapports\ServiceRapports
     rattrapimportbin.class: Ipc\ProgBundle\Services\RattrapImportBin\ServiceRattrapImportBin
+    getNbDBDonnees.class: Ipc\OutilsBundle\Services\ServiceVerificationDB
     registration.class: Ipc\UserBundle\Form\Type\RegistrationType
     requeteType.class: Ipc\ProgBundle\Services\RequeteType\ServiceRequeteType
     security.authentication.listener.form.class: Ipc\ProgBundle\Listener\Security\UsernamePasswordFormAuthenticationListener
@@ -44,3 +44,4 @@ parameters:
     traduction.class: Ipc\ProgBundle\Services\Traduction\ServiceTraduction
     transformeTexte.class: Ipc\ProgBundle\Services\TransformeTexte\ServiceTransformeTexte
     transfertftp.class: Ipc\ProgBundle\Services\TransfertFtp\ServiceTransfertFtp
+    configuration_cloud.class: Ipc\ConfigurationBundle\Services\ServiceConfigurationCloud
