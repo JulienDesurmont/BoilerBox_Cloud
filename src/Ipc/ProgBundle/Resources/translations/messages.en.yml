@@ -99,7 +99,6 @@ checkbox:
     minimiser: Reduce
     uniformiser: Harmonize the scale
     legende: Fill / Clear
-    opacite: Opacity
 
 textbox:
     bas: Bottom
@@ -144,7 +143,7 @@ label:
         nouveau_rapport: New intervention report
         vue_rapport: Intervention report list
         pas_de_donnee: No data found
-        page_inexistante: Page %page% not found
+        page_inexistante: Page %page% : No data
         compression: COMPRESSING DATA
     export_rapport: Report export
     site: Site

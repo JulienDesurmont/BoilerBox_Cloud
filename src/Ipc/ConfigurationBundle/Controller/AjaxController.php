@@ -340,5 +340,14 @@ public function modbusGetUrlClotureAction() {
        	return new Response();
 }
 
+// Fonction appelée en ajax : Qui retourne la date de la dernière donnée enregistrée en base dans un format texte
+public function ajaxGetLastDataAction() {
+    $service_config = $this->container->get('ipc_prog.configuration');
+    $message_last_data = $service_config->getLastDataTime();
+    echo $message_last_data;
+    return new Response();
+}
+
+
 
 }

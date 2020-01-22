@@ -126,7 +126,7 @@ for (j = 0; j < nombreCourbes; j++) {
 		var i = {{ i-1 }};
 		if (i == j) {
 			var nb_donnees  = {{ liste_req_pour_graphique[i-1]['MaxDonnees'] }};
-			if (nb_donnees != 0) {
+			if (nb_donnees > 1) {
 				nb_de_requetes++;
 			}
 		}
@@ -941,15 +941,15 @@ function cacheCompression() {
 }
 
 function affichePopupCompression() {
-	$('#blockPiedDePage').removeClass('cacher');
+	$('#blockPiedDePage').removeClass('vueRestreinte');
+	$('#blockPiedDePage').addClass('big');
     $('#lightboxFooter').removeClass('cacher');
-	$('#pagePrincipaleBody').css('bottom', '120px');
 }
 
 function closePopupCompression() {
-	$('#blockPiedDePage').addClass('cacher');
+	$('#blockPiedDePage').removeClass('big');
+	$('#blockPiedDePage').addClass('vueRestreinte');
     $('#lightboxFooter').addClass('cacher');
-	$('#pagePrincipaleBody').css('bottom', '0px');
 }
 
 function switchPopupCompression() {

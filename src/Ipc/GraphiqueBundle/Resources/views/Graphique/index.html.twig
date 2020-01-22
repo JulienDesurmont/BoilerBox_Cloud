@@ -8,44 +8,55 @@
     <h1 class='grandScreen'>{{ 'label.titre.courbe' | trans }}</h1>
     {# Permet d'indiquer que la page est chargée : permet de vérifier le chargement js spécifique à cette page #}
     <span id="pageGraphiqueIndex" class="cacher"></span>
+
     <div id="regRequest">
 		<div style='margin-bottom:5px'>
-			<input type='radio' name='requeteClient' value='Personnel'     {% if compte_requete_perso|lower == 'personnel' %}      checked {% endif %} onClick="addCompteRequest('graphique','Personnel');">Requêtes personnelle
-			{% if is_granted('ROLE_ADMIN') %}
-				<input type='radio' name='requeteClient' value='Admin'     {% if compte_requete_perso|lower == 'admin' %}          checked {% endif %} onClick="addCompteRequest('graphique','Admin');">Requêtes Admin
-			{% endif %}
-			{% if is_granted('ROLE_TECHNICIEN') %}
-				<input type='radio' name='requeteClient' value='Technicien' {% if compte_requete_perso|lower == 'technicien' %} checked {% endif %} onClick="addCompteRequest('graphique','Technicien');">Requêtes Techniciens
-			{% endif %}
-			<input type='radio' name='requeteClient' value='Client'        {% if compte_requete_perso|lower == 'client' %}         checked {% endif %} onClick="addCompteRequest('graphique','Client');">Requêtes Clients
-		</div>
-		<select id='selectRegPerso'
-			name='selectRegPerso'
-			data-changeListeReq="{{ path('ipc_changeListeReqGraphique') }}"
-			data-url="{{ path('ipc_selectRequest', {'page':'graphique'}) }}"
-			data-suppressionRequetePersonnelle="{{ path('ipc_deleteRequestPerso') }}"
-			onChange="selectRequestPerso();"
-		>
-			<option value='0' disabled selected style='color:blue'>
-				{% if compte_requete_perso|lower == 'client' %}
-					{{ 'select.requetes_client'|trans }}
-				{% elseif compte_requete_perso|lower == 'technicien' %}
-					{{ 'select.requetes_technicien'|trans }}
-				{% elseif compte_requete_perso|lower == 'admin' %}
-					{{ 'select.requetes_admin'|trans }}
-				{% else %}
-					{{ 'select.requetes_personnelles'|trans }}
-				{% endif %}
-			</option>
-			{% for ent_requete in entities_requetes_perso %}
-				<option value="{{ ent_requete.id }}" {% if ent_requete.id == id_requete_perso %}selected {% endif %}>{{ ent_requete.appellation }}</option>
-			{% endfor %}
-        </select>
+        	<input type='radio' name='requeteClient' value='Personnel'     {% if compte_requete_perso|lower == 'personnel' %}      checked {% endif %} onClick="addCompteRequest('graphique','Personnel');">Requêtes personnelles
+           	{% if is_granted('ROLE_ADMIN') %}
+            	<input type='radio' name='requeteClient' value='Admin'     {% if compte_requete_perso|lower == 'admin' %}          checked {% endif %} onClick="addCompteRequest('graphique','Admin');">Requêtes Admin
+            {% endif %}
+            {% if is_granted('ROLE_TECHNICIEN') %}
+               <input type='radio' name='requeteClient' value='Technicien' {% if compte_requete_perso|lower == 'technicien' %} checked {% endif %} onClick="addCompteRequest('graphique','Technicien');">Requêtes Techniciens
+            {% endif %}
+        	<input type='radio' name='requeteClient' value='Client'        {% if compte_requete_perso|lower == 'client' %}         checked {% endif %} onClick="addCompteRequest('graphique','Client');">Requêtes Clients
+        </div>
 
-        {% if is_granted('ROLE_TECHNICIEN') %}
-            <input type='button' id='checkSaveRequest' name='enregistrementRequete' value="{{ 'bouton.requetes_client.enregistrement'|trans }}" onClick="creerRequetePerso('graphique');" />
-            <input type='button' id='deleteSaveRequest' name='suppressionRequete' data-url="{{ path('ipc_deleteRequest', {'page':'graphique'}) }}" value="{{ 'bouton.requetes_client.suppression'|trans }}" onClick="supprimeRequetePerso('graphique');" />
-        {% endif %}
+		<div>
+        	<select id='selectRegPerso' 
+				name='selectRegPerso' 
+				data-changeListeReq="{{ path('ipc_changeListeReqGraphique') }}"
+				data-url="{{ path('ipc_selectRequest', {'page':'graphique'}) }}" 
+				data-suppressionRequetePersonnelle="{{ path('ipc_deleteRequestPerso') }}"
+				onChange="selectRequestPerso();" 
+			>
+            	<option value='0' disabled selected style='color:blue'>
+					{% if compte_requete_perso|lower == 'client' %}
+						{{ 'select.requetes_client'|trans }} 
+					{% elseif compte_requete_perso|lower == 'technicien' %}
+						{{ 'select.requetes_technicien'|trans }}
+					{% elseif compte_requete_perso|lower == 'admin' %}
+						{{ 'select.requetes_admin'|trans }}
+					{% else %}
+						{{ 'select.requetes_personnelles'|trans }}
+					{% endif %}
+				</option>
+				{% for ent_requete in entities_requetes_perso %}
+					<option value="{{ ent_requete.id }}" {% if ent_requete.id == id_requete_perso %}selected {% endif %}>{{ ent_requete.appellation }}</option>
+				{% endfor %}
+			
+				{#
+            	{% for key,requeteValue in tab_requetes_perso %}
+            	    <option value="{{ requeteValue }}">{{ requeteValue }}</option>
+            	{% endfor %}
+				#}
+        	</select>
+		</div>
+		<div>
+        	{% if is_granted('ROLE_TECHNICIEN') %}
+        	    <input type='button' id='checkSaveRequest' name='enregistrementRequete' value="{{ 'bouton.requetes_client.enregistrement'|trans }}" onClick="creerRequetePerso('graphique');" />
+        	    <input type='button' id='deleteSaveRequest' name='suppressionRequete' data-url="{{ path('ipc_deleteRequest', {'page':'graphique'}) }}" value="{{ 'bouton.requetes_client.suppression'|trans }}" onClick="supprimeRequetePerso('graphique');" />
+        	{% endif %}
+		</div>
     </div>
 {% endblock title_header %}
 
@@ -85,17 +96,6 @@
                 			{% endfor %}
                     	{% endif %}
                 	{% endif %}
-					{% if is_granted('ROLE_TECHNICIEN') %}
-                		<tr>
-                    		<td colspan="3" class="texte">{{ "label.ajout_courbe"|trans }}</td>
-                    		<td class="actions">
-                    		   	<a class='bouton' href="{{ path('ipc_graphiques') }}" target='_blank' onClick="appelPopup('ipc_graphiques','Sélection des requêtes graphiques'); return false;">
-                    		   	   <div class="bouton ajouter"></div>
-                    		   	   <div class="boutonname">{{ "bouton.ajouter_requete"|trans|upper }}</div>
-                    		   	</a>
-                    		</td>
-                		</tr>
-					{% endif %}
                 	<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ tab_requetes|length }}' >
             	</tbody>
         	</table>
@@ -104,18 +104,42 @@
     <input type="hidden" name="tabloRequete" id="tabloRequete" value="{{ strTab_requetes }}" />
 {% endblock body %}
 
-{% block choix_validation %}
-    <form name='myForm2' method='post' action="{{ path('ipc_graphAnalyse') }}">
-        <input type="hidden" name="choixSubmit" id="choixSubmit" />
+{% block page_footer %}
+	{% if is_granted('ROLE_TECHNICIEN') %}
+		<table>
+            <thead>
+            </thead>
+            <tbody>
+				<tr>
+					<td colspan="3" class="texte">{{ "label.ajout_courbe"|trans }}</td>
+					<td class="actions">
+						<a class='bouton' href="{{ path('ipc_graphiques') }}" target='_blank' onClick="appelPopup('ipc_graphiques','Sélection des requêtes graphiques'); return false;">
+							<div class="bouton ajouter"></div>
+							<div class="boutonname">{{ "bouton.ajouter_requete"|trans|upper }}</div>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+        </table>
+	{% endif %}
+{% endblock page_footer %}
 
-        <div id='validation'>
-            <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Recherche'; validationPopup('myForm2'); return false;" ><div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div></a>
+
+{% block menu_droite %}
+	<div id='validation'>
+    	<form name='myForm2' method='post' action="{{ path('ipc_graphAnalyse') }}">
+    	    <input type="hidden" name="choixSubmit" id="choixSubmit" />
+            <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='Recherche'; validationPopup('myForm2'); return false;" >
+				<div class='bouton blue'><div class='bgbouton'>{{ "bouton.rechercher"|trans|upper }}</div></div>
+			</a>
             {% if is_granted('ROLE_TECHNICIEN') %}
-                <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='RAZ';resetAjaxForm('graphique');return false;" ><div class='bouton orange'><div class='bgbouton'>{{ "bouton.raz"|trans|upper }}</div></div></a>
+                <a href='#' class='right' onClick="document.getElementById('choixSubmit').value='RAZ';resetAjaxForm('graphique');return false;" >
+					<div class='bouton orange'><div class='bgbouton'>{{ "bouton.raz"|trans|upper }}</div></div>
+				</a>
             {% endif %}
-        </div>
-    </form>
-{% endblock choix_validation %}
+    	</form>
+	</div>
+{% endblock menu_droite %}
 
 
 
@@ -159,22 +183,25 @@
 	        });
 	        /**********************************/
 			/* Ré affiche la popup d'ajout de requête si une erreur dans l'enregistrement d'un requête a eu lieu */
-            if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
-            	$('#lightboxSmall').removeClass('cacher');
-            }
-            // Fermeture de la popup lors du clic sur Annuler
-            $('#ipc_configurationbundle_requete_Annuler').click(function(){
-            	closeRequest();
-           	});
-           	{# On n'affiche que les options désirés en fonction des droits utilisateur #}
-            {% if is_granted('ROLE_ADMIN') %}
-            {% elseif is_granted('ROLE_TECHNICIEN') %}
-            	$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
-           	{% else %}
-             	$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
-          		$('#ipc_configurationbundle_requete_compte option[value="Technicien"]').hide();
+			if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
+				$('#lightboxSmall').removeClass('cacher');
+			}
+			// Fermeture de la popup lors du clic sur Annuler
+			$('#ipc_configurationbundle_requete_Annuler').click(function(){
+				closeRequest();
+			});
+			
+			{# On n'affiche que les options désirés en fonction des droits utilisateur #}
+			{% if is_granted('ROLE_ADMIN') %}
+			{% elseif is_granted('ROLE_TECHNICIEN') %}
+				$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
+			{% else %}
+				$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
+				$('#ipc_configurationbundle_requete_compte option[value="Technicien"]').hide();
 			{% endif %}
     	});
+
+		
     </script>
 {% endblock bodyjavascript %}
 

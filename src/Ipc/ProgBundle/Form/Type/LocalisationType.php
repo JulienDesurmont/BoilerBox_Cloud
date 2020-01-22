@@ -9,7 +9,7 @@ class LocalisationType extends AbstractType {
 
 public function buildForm(FormBuilderInterface $builder, array $options) { 
 	$builder 
-		->add('numeroLocalisation', 'integer', array(
+		->add('numeroLocalisation', 'text', array(
 											'label' => 'Numéro de la localisation')
 		)
 		->add('adresseIp', 'text', array(
@@ -18,7 +18,7 @@ public function buildForm(FormBuilderInterface $builder, array $options) {
 		->add('designation', 'text', array(
 											'label' => 'Désignation')
 		)
-		->add('adresseModbus', 'integer', array(
+		->add('adresseModbus', 'text', array(
 											'label' => 'Adresse modbus pour la clotûre des fichiers')
 		)
 		->add('login_ftp', 'text',	array(

@@ -172,26 +172,6 @@ function resetAjaxForm(page) {
 			xhr.send(null);
 			var texte_requete_html = "<table><thead><tr><th class='localisation'>Localisation</th><th class='code'>Code message</th><th class='designation'>Désignation</th><th class='actions'>Actions</th></tr></thead>";
 			texte_requete_html = texte_requete_html + "<tbody>";
-			texte_requete_html = texte_requete_html + "<tr>";
-			if (page == 'graphique') {
-				texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_courbe') + "</td>";
-			} else if (page == 'listing') {
-				texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_listing') + "</td>";
-			} else if (page == 'etat') {
-				texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>Ajouter un compteur</td>";
-			}
-			texte_requete_html = texte_requete_html + "<td class='actions'>";
-			if (page == 'graphique') {
-				texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_graphiques') }}' target='_blank' onClick=\"onLightBox('ipc_graphiques','Sélection des requêtes graphique');openLightBox();return false;\">";
-			} else if (page == 'listing') {
-				texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_listing') }}' target='_blank' onClick=\"onLightBox('ipc_listing','Sélection des requêtes de listing');openLightBox();return false;\">";
-			} else if (page == 'etat') {
-				texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_etat') }}' target='_blank' onClick=\"onLightBox('ipc_etat','Sélection des requêtes etat');openLightBox();return false;\">";
-			}  
-			texte_requete_html = texte_requete_html + "<div class='bouton ajouter'></div>";
-			texte_requete_html = texte_requete_html + "<div class='boutonname'>" + traduire('bouton.ajouter_requete') + "</div>";
-			texte_requete_html = texte_requete_html + "</a>";
-			texte_requete_html = texte_requete_html + "</td></tr>";
 			texte_requete_html = texte_requete_html + "<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='0'>";
 			texte_requete_html = texte_requete_html + "</tbody></table>";
 			$('div.requetemessage').html(texte_requete_html);
@@ -246,27 +226,6 @@ function deleteAjaxForm(page, idForm) {
 			texte_requete_html = texte_requete_html + "</tr>";
 			numListe ++;
 		}
-		texte_requete_html = texte_requete_html + "<tr>";
-		if (page == 'graphique') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_courbe') + "</td>";
-		} else if (page == 'listing') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_listing') + "</td>";
-		} else if (page == 'etat') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>Ajouter un compteur</td>";
-		}
-		texte_requete_html = texte_requete_html + "<td class='actions'>";
-		// Si la lightBox est vide, recherche des données en base, si elle a déjà été affichée réaffichage
-		if (page == 'graphique') {
-			texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_graphiques') }}' target='_blank' onClick=\"onLightBox('ipc_graphiques','Sélection des requêtes graphique');openLightBox();return false;\">";
-		} else if (page == 'listing') {
-			texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_listing') }}' target='_blank' onClick=\"onLightBox('ipc_listing','Sélection des requêtes de listing');openLightBox();return false;\">";
-		} else if (page == 'etat') {
-			texte_requete_html = texte_requete_html + "<a class='bouton' href='{{ path('ipc_etat') }}' target='_blank' onClick=\"onLightBox('ipc_etat','Sélection des requêtes etat');openLightBox();return false;\">";
-		}
-		texte_requete_html = texte_requete_html + "<div class='bouton ajouter'></div>";
-		texte_requete_html = texte_requete_html + "<div class='boutonname'>" + traduire('bouton.ajouter_requete') + "</div>";
-		texte_requete_html = texte_requete_html + "</a></td>";
-		texte_requete_html = texte_requete_html + "</tr>";
 		texte_requete_html = texte_requete_html + "<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='"+nouvelle_liste.length+"'>";
 		texte_requete_html = texte_requete_html + "</tbody></table>";
 		$('div.requetemessage').html(texte_requete_html);
@@ -398,18 +357,6 @@ function sendAjaxForm(page) {
 			texte_requete_html = texte_requete_html + "</tr>";
 			numListe += 1;
 		}
-		texte_requete_html = texte_requete_html + "<tr>";
-		if (page === 'graphique') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_courbe') + "</td>";
-		} else if (page === 'listing') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>" + traduire('label.ajout_listing') + "</td>";
-		} else if (page === 'etat') {
-			texte_requete_html = texte_requete_html + "<td colspan='3' class='texte'>Ajouter un compteur</td>";
-		}
-		texte_requete_html = texte_requete_html + "<td class='actions'><a class='bouton' href='#' target='_blank' onClick='ouverturePopup(\"" + page + "\");return false;'>";
-		texte_requete_html = texte_requete_html + "<div class='bouton ajouter'></div>";
-		texte_requete_html = texte_requete_html + "<div class='boutonname'>" + traduire('bouton.ajouter_requete') + "</div></a></td>";
-		texte_requete_html = texte_requete_html + "</tr>";
 		texte_requete_html = texte_requete_html + "<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='" + nouvelle_liste.length + "'>";
 		texte_requete_html = texte_requete_html + "</tbody></table>";
 		$('div.requetemessage').html(texte_requete_html);

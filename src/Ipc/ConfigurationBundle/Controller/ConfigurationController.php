@@ -842,7 +842,7 @@ public function configurationAuto($type) {
 	}
 	// Variable de la nouvelle version
 	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
-	$liste_conf['numero_version']['value'] = "2.11.0";
+	$liste_conf['numero_version']['value'] = "2.12.0";
 	$liste_conf['numero_version']['parametreAdmin'] = true;
 
 	$liste_conf['nb_jours_nb_db_donnees']['description'] = "Nombre de jours pour la recherche du nombre de données dans la table t_donnee";
@@ -1716,13 +1716,6 @@ public function ajaxGetDateAction() {
 	return new Response();
 }
 
-// Fonction appelée en ajax : Qui retourne la date de la dernière donnée enregistrée en base dans un format texte
-public function ajaxGetLastDataAction() {
-    $service_config = $this->container->get('ipc_prog.configuration');
-    $message_last_data = $service_config->getLastDataTime();
-	echo $message_last_data;
-    return new Response();
-}
 
 //	Fonction qui recoit une date (jj-mm-aaaa) et retourne un tableau contenant l'année et le mois
 function coupeDate($date) {

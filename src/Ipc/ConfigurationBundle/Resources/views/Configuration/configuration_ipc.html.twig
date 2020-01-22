@@ -16,39 +16,65 @@
 
      <div class='gestion_parametres_ipc'>
         <table>
-            <tr><th>Paramètre</th>
-                <th>Désignation</th>
-                <th style='text-align:left'>Valeur</th>
-                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
-                <th class='small'>Modif.</th>
-                {#<th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>#}
-            </tr>
-            {% for liste in liste_configurations %}
-                {% if liste.parametreAdmin %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <tr>
-                            <td>{{ liste.parametre }}</td>
-                            <td>{{ liste.designation }}</td>
-                            <td>{{ liste.valeur }}</td>
-                            <td class='small'><input type='checkbox' checked disabled /></td>
-                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                            {#<td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>#}
-                        </tr>
-                    {% endif %}
-                {% else %}
-                    <tr>
-                        <td>{{ liste.parametre }}</td>
-                        <td>{{ liste.designation }}</td>
-                        <td>{{ liste.valeur }}</td>
-                        <td class='small'><input type='checkbox' disabled class='cacher' /></td>
-                        <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                        {#<td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% else %} - {% endif %}</td>#}
-                    </tr>
-                {% endif %}
-            {% endfor %}
+			<thead>
+            	<tr><th>Paramètre</th>
+            	    <th>Désignation</th>
+            	    <th style='text-align:left'>Valeur</th>
+            	    <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
+            	    <th class='small'>Modif.</th>
+            	    {#<th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>#}
+            	</tr>
+			</thead>
+			<tbody>
+            	{% for liste in liste_configurations %}
+            	    {% if liste.parametreAdmin %}
+            	        {% if is_granted('ROLE_ADMIN') %}
+            	            <tr>
+            	                <td>{{ liste.parametre }}</td>
+            	                <td>{{ liste.designation }}</td>
+            	                <td>{{ liste.valeur }}</td>
+            	                <td class='small'><input type='checkbox' checked disabled /></td>
+            	                <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+            	                {#<td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>#}
+            	            </tr>
+            	        {% endif %}
+            	    {% else %}
+            	        <tr>
+            	            <td>{{ liste.parametre }}</td>
+            	            <td>{{ liste.designation }}</td>
+            	            <td>{{ liste.valeur }}</td>
+                        	<td class='small'><input type='checkbox' disabled class='cacher' /></td>
+                        	<td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                        	{#<td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% else %} - {% endif %}</td>#}
+	                    </tr>
+	                {% endif %}
+	            {% endfor %}
+			</tbody>
        </table>
    </div>
 {% endblock body %}
+
+{% block menu_droite %}
+	{#
+	<div id="validation">
+    	{% if is_granted('ROLE_ADMIN') %}
+            <div>
+               <a href='#' onClick="creationParametre();return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter un paramètre</div></div></a>
+            </div>
+            <div>
+                <a href='#' onClick="modifValidation('initialisation');validationFormulaire();return false;"><div class='bouton red'><div class='bgbouton'>Paramètres d'origine !</div></div></a>
+            </div>
+            <div>
+               <a href='#' onClick="modifValidation('reinitialisation');validationFormulaire();return false;"><div class='bouton blue'><div class='bgbouton'>Réinit des paramètres</div></div></a>
+            </div>
+            <div>
+                <a href='#' onClick="modifValidation('newVersion');validationFormulaire();return false;"><div class='bouton green'><div class='bgbouton'>Paramètres de la version courante</div></div></a>
+            </div>
+        {% endif %}
+	</div>
+	#}
+{% endblock menu_droite %}
+
 
 
 {% block footer %}
@@ -56,20 +82,6 @@
 	    <form name='MyForm' action={{ path('ipc_param_ipc') }} method='post'>
 			<input type='hidden' name='valider' id='valider' />
 			<input type='hidden' name='idconf'  id='idconf' />
-			{% if is_granted('ROLE_ADMIN') %}
-				<div id='validationParametre'>
-   	        	    <div class='validationbouton'>
-   	        	        <div class='center'>
-   	        	            {#
-							<a href='#' style="height:30px;" onClick="creationParametre();return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter un paramètre</div></div></a>
-				    		<a href='#' style="height:30px;" onClick="modifValidation('initialisation');validationFormulaire();return false;"><div class='bouton red'><div class='bgbouton'>Paramètres d'origine !</div></div></a>
-				    		<a href='#' style="height:30px;" onClick="modifValidation('reinitialisation');validationFormulaire();return false;"><div class='bouton blue'><div class='bgbouton'>Réinit des paramètres</div></div></a>
-				    		<a href='#' style="height:30px;" onClick="modifValidation('newVersion');validationFormulaire();return false;"><div class='bouton green'><div class='bgbouton'>Paramètres de la version courante</div></div></a>
-							#}
-   	        	        </div>
-   	        	    </div>
-				</div>
-			{% endif %}
 			<div id='ajout' class='cacher'>
 		    	<table class='parametre'>
 					<tr>
@@ -109,6 +121,7 @@
         }
 
         $(document).ready(function() {
+			$('#blockPiedDePage').addClass('big');
             // Fonction executée lors d'un click sur un bouton input de type radio
             $('input:radio').click(function() {
 				if(! $('#validationParametre').hasClass('cacher')) {

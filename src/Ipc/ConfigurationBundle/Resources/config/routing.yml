@@ -28,9 +28,9 @@ ipc_get_date:
     requirements:
         _method: POST
 
-ipc_conf_ajax_get_lat_data:
+ipc_conf_ajax_get_last_data:
     path: /ajax/getLastData
-    defaults: { _controller: IpcConfigurationBundle:Configuration:ajaxGetLastData }
+    defaults: { _controller: IpcConfigurationBundle:Ajax:ajaxGetLastData }
 
 ipc_prog_newPeriode:
     path: /periode/nouvelle

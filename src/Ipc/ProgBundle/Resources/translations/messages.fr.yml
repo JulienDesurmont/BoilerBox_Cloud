@@ -76,6 +76,7 @@ select:
     requetes_technicien: Requêtes du compte technicien
     requetes_admin: Requêtes du compte admin
     requetes_personnelles: Requêtes personnelles
+    
     requetes_perso:
         titre:
            listing: Requêtes personnelles
@@ -135,7 +136,7 @@ label:
     sur: sur 
     chargement: Chargement ...
     legende:
-        checkbox_courbes: Courbes 
+        checkbox_courbes: Courbes
         requetes: Requêtes
         localisations: Localisations
         genres: Genres
@@ -148,7 +149,7 @@ label:
         nouveau_rapport: "Nouveau rapport d'intervention"
         vue_rapport: "Liste des rapports d'intervention"
         pas_de_donnee: Aucune donnée trouvée
-        page_inexistante: Page %page% inexistante
+        page_inexistante: Page %page% : Aucune donnée trouvée
         compression: COMPRESSION
     export_rapport: Exportation des rapports
     site: Site

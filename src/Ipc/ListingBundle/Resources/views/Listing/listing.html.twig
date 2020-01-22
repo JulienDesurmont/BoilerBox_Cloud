@@ -6,59 +6,58 @@
 
 {% block title_header %}
 	<span id="pageListingView" class="cacher"></span>
-	<h1>{{ 'label.titre.listing'|trans }}
+	<h1 class='notToBePrinted'>{{ 'label.titre.listing'|trans }}
 		{# Affichage du bouton d'impression si l'autorisation est accordée #}
-		{% if impression_listing == 1 %}
-			<div id="boutontitre"  data-urlAccueilListing={{ path('ipc_accueilListing') }} class='notToBePrinted'>
-				<form name='myForm2' method='get' action="{{ path('ipc_listing') }}">
-					<input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_listing|length }}' />
-					<ul>
-						{% if activation_modbus == 1 %}
-							<li>
-								<a href='#' class='right' onClick="goToAccueilListing();return false;" >
-								<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
-								<span>{{ 'label.info.rafraichissement'|trans }}</span></a>
-							</li>
-						{% endif %}<!--
-						--><li><a href="{{ path('ipc_accueilListing') }}" onClick='actionMenu(this.href,this.title); return false;'>
-								<div class='boutonTitreEdition'><img src="{{ asset('bundles/ipcgraphique/images/modification.png') }}" alt='modification' /></div>
-								<span>{{ 'label.info.modification.listing'|trans }}</span></a>
-							</li><!--
-						--><li><a href="#" onClick="newTitle('Listing'); impression(); return false;">
-								<div class='boutonTitrePrint'><img src="{{ asset('bundles/ipcgraphique/images/impression.png') }}" alt='impression' /></div>
-								<span>{{ 'label.info.impression'|trans }}</span></a>
-						</li><!--
-						--><li>
-							<a href="#"><div class='boutonTitreDownload'><img src="{{ asset('bundles/ipcgraphique/images/exportation.png') }}" alt='exportation' /></div></a>
-							<ul class='niveau2'>
-								<li><a href="#" onClick="imprimeCsv('yesCsv', 'myForm'); return false;">{{ 'label.info.export_csv'|trans }}</a></li>
-								<li><a href="#" onClick="imprimeCsv('yesPCsv', 'myForm'); return false;">{{ 'label.info.export_page_csv'|trans }}</a></li>
-							</ul>
-						</li>
-					</ul>
-				</form>
+	</h1>
+	<div id="regRequest">
+        {% if impression_listing == 1 %}
+            <div id="boutontitre" class='notToBePrinted'>
+                <form name='myForm2' method='get' action="{{ path('ipc_listing') }}">
+                    <input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_listing|length }}' />
+                    <ul>
+                        {% if activation_modbus == 1 %}
+                            <li><a href='#' class='right' onClick="$('#refresh_listing').val('refresh');refresh('myForm');return false;" >
+                                <div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
+                                <span>{{ 'label.info.rafraichissement'|trans }}</span></a>
+                            </li>
+                        {% endif %}<!--
+                        --><li><a href="{{ path('ipc_accueilListing') }}" title='Listing' onClick='actionMenu(this.href,this.title); return false;'>
+                                <div class='boutonTitreEdition'><img src="{{ asset('bundles/ipcgraphique/images/modification.png') }}" alt='modification' /></div>
+                                <span>{{ 'label.info.modification.listing'|trans }}</span></a>
+                            </li><!--
+                        --><li><a href="#" onClick="newTitle('Listing'); impression(); return false;">
+                                <div class='boutonTitrePrint'><img src="{{ asset('bundles/ipcgraphique/images/impression.png') }}" alt='impression' /></div>
+                                <span>{{ 'label.info.impression'|trans }}</span></a>
+                        </li><!--
+                        --><li>
+                            <a href="#"><div class='boutonTitreDownload'><img src="{{ asset('bundles/ipcgraphique/images/exportation.png') }}" alt='exportation' /></div></a>
+                            <ul class='niveau2'>
+                                <li><a href="#" onClick="imprimeCsv('yesCsv', 'myForm'); return false;">{{ 'label.info.export_csv'|trans }}</a></li>
+                                <li><a href="#" onClick="imprimeCsv('yesPCsv', 'myForm'); return false;">{{ 'label.info.export_page_csv'|trans }}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        {% endif %}
+
+		{% if tabDesRequetes|length > 0 %}
+			<div id='resultatDebut'>
+				<div class='notToBePrinted Pleft'>
+					Page :
+					<div class='navigation'>
+						<a href='#' class='prevPages' onclick="defineNumPage('first','none');return false;"><<</a>
+						<a href='#' class='prevPages' onclick="defineNumPage('prev','none');return false;"><</a>
+						<input type='text' id='numpage_top' size='4' onChange="defineNumPage('num','top');" value="{{ page }}" /> / {{ maxpages }}
+						<a href='#' class='nextPages' onclick="defineNumPage('next','none');return false;">></a>
+						<a href='#' class='nextPages' onclick="defineNumPage('last','none');return false;">>></a>
+					</div>
+				</div><!--
+				--><div class='Pright'>{{ 'label.titre.listing'|trans }} {{ page }} / {{ maxpages }} ( {{ nbDonneesTotal }} {{ 'label.donnee'|transchoice(nbDonneesTotal) }} )</div>
 			</div>
 		{% endif %}
-	</h1>
-	{% if tabDesRequetes|length > 0 %}
-		<div id='resultatDebut'>
-			<div class='notToBePrinted Pleft'>
-				Page :
-				<div class='navigation'>
-					<a href='#' class='prevPages' onclick="defineNumPage('first','none');return false;"><<</a>
-					<a href='#' class='prevPages' onclick="defineNumPage('prev','none');return false;"><</a>
-					<input type='text' id='numpage_top' size='4' onChange="defineNumPage('num','top');" value="{{ page }}" /> / {{ maxpages }}
-					<a href='#' class='nextPages' onclick="defineNumPage('next','none');return false;">></a>
-					<a href='#' class='nextPages' onclick="defineNumPage('last','none');return false;">>></a>
-				</div>
-			</div><!--
-			--><div class='Pright'>{{ 'label.titre.listing'|trans }} {{ page }} / {{ maxpages }} ( {{ nbDonneesTotal }} {{ 'label.donnee'|transchoice(nbDonneesTotal) }} )</div>
-		</div>
-	{% endif %}
+	</div>
 {% endblock title_header %}
-
-{% block right_menu %}
-{% endblock right_menu %}
 
 {% block body %}
 	<div id='listingmessage'>
@@ -66,7 +65,7 @@
 			{% if tempMax %}
 				<p>{{ 'label.requete_timeout'|trans }}</p>
 			{% else %}
-				{# variable indiquant qu'un refresh est effectué #}
+				<!- variable indiquant qu'un refresh est effectué -->
 				<input type='hidden' id='refresh_listing' name='refresh_listing' value='' />
 				<input type='hidden' name='impression' value='yes' id='impression' />
 				<div id='listingDeDonnees'>
@@ -116,28 +115,28 @@
 										{% if donnee['numero_genre'] == 6 %}
 											<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_parametre.png') }}" alt='parametre' /></div>
                                         {% endif %}
-										{# Si le numéro de la donnée est composée de 3 chiffres on récupère et indiquons le dernier digit #}
+										<!--  Si le numéro de la donnée est composée de 3 chiffres on récupère et indiquons le dernier digit -->
 										{% if donnee['numero_genre']|length == 3 %}
 											{% if ( donnee['numero_genre'] >= 100 ) and ( donnee['numero_genre'] <= 114 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_critique.png') }}" alt='critique' /></div>
 											{% endif %}
-											{# Défaut   Non acquittable #}
+											<!-- Défaut   Non acquittable -->
 											{% if ( donnee['numero_genre'] >= 115 ) and ( donnee['numero_genre'] <= 119 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_critique.png') }}" alt='critique' /></div>
 											{% endif %}
-											{# Alarme   Acquittable #}
+											<!-- Alarme   Acquittable -->
 											{% if ( donnee['numero_genre'] >= 120 ) and ( donnee['numero_genre'] <= 124 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_critique.png') }}" alt='critique' /></div>
 											{% endif %}
-											{# Alarme   Non acquittable #}
+											<!-- Alarme   Non acquittable -->
 											{% if ( donnee['numero_genre'] >= 125 ) and ( donnee['numero_genre'] <= 129 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_alarme.png') }}" alt='alarme' /></div>
 											{% endif %}
-											{# Evènement        Acquittable #}
+											<!-- Evènement        Acquittable -->
 											{% if ( donnee['numero_genre'] >= 130 ) and ( donnee['numero_genre'] <= 134 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_evenement.png') }}" alt='événement' /></div>
 											{% endif %}
-											{# Evènement        Non acquittable #}
+											<!-- Evènement        Non acquittable -->
 											{% if ( donnee['numero_genre'] >= 135 ) and ( donnee['numero_genre'] <= 139 ) %}
 												<div class='genrebox'><img src="{{ asset('bundles/ipcprog/images/ipcWeb/genre_evenement.png') }}" alt='événement' /></div>
 											{% endif %}
@@ -146,7 +145,6 @@
 									</td>
 									<td class="localisation"><div class="txtlocalisation">{{ donnee['numero_localisation'] }}</div></td>
 									<td class="code">{{ donnee['codeModule'] }}</td>
-									{#<td class="designation"><strong>{{ donnee['intitule_module'] | trim | trans | raw }}</strong><br  />#}
 									<td class="designation">
 										<strong>
 											{% if donnee['erreur'] is defined %}
@@ -317,10 +315,5 @@
             });
             /**********************************/
         });
-
-		function goToAccueilListing() {
-		    var $location = $('#boutontitre').attr('data-urlAccueilListing');
-			refresh('myForm', $location);
-		}
     </script>
 {% endblock bodyjavascript %}

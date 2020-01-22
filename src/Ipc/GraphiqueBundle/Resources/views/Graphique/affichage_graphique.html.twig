@@ -13,8 +13,9 @@
     {% if tempMax %}
         <p>{{ 'label.requete_timeout'|trans }}</p>
     {% else %}
-        <h1>{{ 'label.titre.courbe'|trans }}
-            <div id="boutontitre" data-urlAccueilGraphique={{ path('ipc_accueilGraphique') }} class='notToBePrinted'>
+        <h1 class='notToBePrinted'>{{ 'label.titre.courbe'|trans }}</h1>
+		<div id='menu_graphique'>
+            <div id="boutontitre" class='notToBePrinted'>
                 <form name='myForm2' method='post' action="{{ path('ipc_graphAnalyse') }}">
                     <input type='hidden' name="choixSubmit" id="choixSubmit" />
                     <input type='hidden' id='nombre_requetes' name='nombre_requetes' value='{{ liste_req_pour_graphique|length }}' >
@@ -22,7 +23,7 @@
                     <ul>
                         {% if activation_modbus == 1 %}
 							<li>
-								<a href='#' class='right' onClick="$('#choixSubmit').val('Recherche'); $('#refresh_graphique').val('refresh'); goToAccueilGraphique(); return false;" >
+								<a href='#' class='right' onClick="$('#choixSubmit').val('Recherche'); $('#refresh_graphique').val('refresh'); refresh('myForm2'); return false;" >
 									<div class='boutonTitreRefresh'><img src="{{ asset('bundles/ipcgraphique/images/maj.png') }}" alt='maj' /></div>
 									<span>{{ 'label.info.rafraichissement'|trans }}</span>
 								</a>
@@ -64,9 +65,7 @@
                     </ul>
                 </form>
             </div>
-        </h1>
-        <div class='notToBePrinted'>
-            <section id='sectionOptionsGraphiques'>
+            <section id='sectionOptionsGraphiques' class='notToBePrinted'>
                 <div class='debutLigne'>
                     Zoom
                     <span id='zoomPrecedent' class='btn-disable'>
@@ -80,14 +79,16 @@
 						</a>
 					</span>
                 </div>
-                <div class='milieuLigne'>
+                <div>
                     {{ 'label.legende.checkbox_courbes'|trans }} :
                     <span>
 						<input type='checkbox' name='infoLegende' id='infoLegende' onClick="changeLegende()"; checked>
 						{{ 'checkbox.legende'|trans|lower }}
-						<input type='checkbox' name='infoOpacite' id='infoOpacite' onClick="changeOpacite()";>
-						{{ 'checkbox.opacite'|trans|lower }}
+                        <input type='checkbox' name='infoOpacite' id='infoOpacite' onClick="changeOpacite()";>
+                        {{ 'checkbox.opacite'|trans|lower }}
 					</span>
+				</div>
+				<div>
                     {{ 'label.infos_bulles'|trans }} :
                     <span>
 						<input type='checkbox' name='infoTooltip' id='infoTooltip' onClick="changeTooltip();" checked>
@@ -109,12 +110,12 @@
 					<input type='text' class='inputText' name='echellePas' id='echellePas' class='pas' value='10' maxlength='7' size='3' onChange="changeEchelle('maj');" />
                 </div>
             </section>
-        </div>
+		</div>
 	{% endif %}
 {% endblock title_header %}
 
 {% block body %}
-    <div class='pagePayasage'>
+    <div class='pagePaysage'>
 		{% if not tempMax %}
 			<div id='container'></div>
 			<div id='legendeGraphique' class='notToBePrinted'></div>
@@ -216,6 +217,8 @@
         $('#vueRestreinte').click();
 
         $(document).ready(function() {
+			$('#page_footer').addClass('vueRestreinte');
+
 			$('footer').addClass('big');
             /* Récupération de l'heure de la dernière donnée enregistrée en base */
             var $urlGetLastData = $('#datas').attr('data-urlGetLastData');
@@ -231,12 +234,6 @@
             });
             /**********************************/
         });
-
-        function goToAccueilGraphique() {
-            var $location = $('#boutontitre').attr('data-urlAccueilGraphique');
-            refresh('myForm2', $location);
-        }
-
     </script>
 {% endblock bodyjavascript %}
 
