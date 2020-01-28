@@ -7,23 +7,26 @@
     <h1>Outils</h1>
 {% endblock title_header %}
 
+
+{% block right_menu %}
+{% endblock right_menu %}
+
+
 {% block body %}
 	{{ parent() }}
 
 	<section id='menu_general'>
 		<select name='select_outils' id='select_outils' class='principal'>
 			<option class='optionTitre' disabled selected>Outils BoilerBox</option>
-			{#
-			<option class='optionTitre' disabled>Gestion de la crontab</option>
-			<option value="{{ path('ipc_gestionScripts') }}">Arrêt-relance des scripts</option>
-			#}
+			{% if is_granted('ROLE_ADMIN') %}
+				<option class='optionTitre' disabled>Gestion de la crontab</option>
+				<option value="{{ path('ipc_gestionScripts') }}">Arrêt-relance des scripts</option>
+			{% endif %}
 			<option class='optionTitre' disabled>Envoi de mails</option>
 			<option value="{{ path('ipc_gestionRapport') }}">Rapports Boilerbox</option>
-			{#
 			<option class='optionTitre' disabled>Transfert de fichiers</option>
 			<option value="{{ path('ipc_transfertFtp') }}">Transfert ftp</option>
 			<option value="{{ path('ipc_forcageFtpVides') }}">Suppression des fichiers ftp vides</option>
-			#}
 			<option class='optionTitre' disabled>Recherche</option>
 			<option value="{{ path('ipc_search_value') }}">Recherche de valeurs</option>
 			<option class='optionTitre' disabled>Gestion des erreurs</option>
@@ -31,8 +34,6 @@
 			<option class='optionTitre' disabled>Informations</option>
 			<option value="{{ path('ipc_getParamSystem') }}">Informations système</option>
 			<option value="{{ path('ipc_calculNbDBDonnees') }}">Nombre de données sur les X derniers jours</option>
-			<option value="{{ path('ipc_compareNbDBDonnees') }}">Comparaison du nombre de données sur les X derniers jours</option>
-			<option value="{{ path('ipc_compareAllDBDonnees') }}">Comparaison du nombre de données sur tous les sites suivis</option>
 		</select>
 	</section>
 {% endblock body %}

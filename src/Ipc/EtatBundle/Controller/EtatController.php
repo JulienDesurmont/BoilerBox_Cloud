@@ -17,6 +17,8 @@ use Ipc\EtatBundle\Form\Type\EtatAutoType;
 use Ipc\ProgBundle\Entity\EtatDate;
 use Ipc\EtatBundle\Form\Type\EtatDateType;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 class EtatController extends Controller {
 
@@ -47,7 +49,6 @@ private $titre_page_etat;
 private $service_fillNumbers;
 
 public function constructeur(){
-	$this->em = $this->get('ipc_prog.connectbd')->getManager();
     if (empty($this->session)) {
         $service_session = $this->container->get('ipc_prog.session');
         $this->session = $service_session;
@@ -162,17 +163,17 @@ private function verifEtatDates($dateDeb,$dateFin) {
 
 // Initialisation des variables communes aux différentes fonctions
 public function initialisation() {
-	$this->constructeur();
 	$this->connexion = $this->get('ipc_prog.connectbd');
 	$this->service_fillNumbers = $this->get('ipc_prog.fillnumbers');
 	$this->dbh = $this->connexion->getDbh();
+	$this->em = $this->getDoctrine()->getManager();
 	$this->sessStrUserLabel = $this->session->get('label');
 	$this->sessTabPageTitle = $this->session->get('pageTitle');
 	$translator = $this->get('translator');
 	$this->messagePeriode = $translator->trans('periode.info.none');
     if (! isset($this->sessTabPageTitle['affaire'])) {
     	$id_site = $this->getIdSiteCourant($this->dbh);
-        $site = $this->em->getRepository('IpcProgBundle:Site')->find($id_site);
+        $site = $this->container->get('doctrine')->getManager()->getRepository('IpcProgBundle:Site')->find($id_site);
         if ($site != null) {
         	$affaire = $site->getAffaire();
             $intitule = $site->getIntitule();
@@ -185,8 +186,8 @@ public function initialisation() {
         $this->sessTabPageTitle['site'] = $intitule;
         $this->sessTabPageTitle['title'] = $affaire.' : '.$intitule;
        	$this->sessTabPageTitle['version'] = "";
-       	$versionning = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('numero_version');
-        $activation_modbus = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('activation_modbus');
+       	$versionning = $this->container->get('doctrine')->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('numero_version');
+        $activation_modbus = $this->container->get('doctrine')->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('activation_modbus');
         if (($versionning != null)&&($activation_modbus != null)) {
         	$version_boiler = 'V ';
             if ($activation_modbus->getValeur() == 0) {
@@ -216,7 +217,7 @@ public function initialisation() {
         }
         $this->session->set('label', $this->sessStrUserLabel);
     }
-    $timezone = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('timezone');
+    $timezone = $this->container->get('doctrine')->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('timezone');
     if ($timezone != null) {
         date_default_timezone_set($timezone->getValeur());
     }
@@ -230,8 +231,7 @@ public function initialisationListes() {
 	$correspondance_message_code = array();
 
 
-	$this->container->get('ipc_prog.session.boilerbox')->definirListeLocalisationsCourantes();
-
+    $this->session->definirListeLocalisationsCourantes();
     $this->liste_localisations = $this->session->get('tablocalisations');
     if ($this->liste_localisations == null) {
         $this->get('session')->getFlashBag()->add('info',"Aucune Localisation définie pour le site courant (l1)");
@@ -253,8 +253,7 @@ public function initialisationListes() {
 
 
     // Initialisation de la liste des genres autorisés
-	$this->container->get('ipc_prog.session.boilerbox')->definirListeDesGenres();
-
+    $this->session->definirListeDesGenres();
     $this->liste_genres = $this->session->get('tabgenres');
     foreach ($this->liste_genres as $key => $genre) {
         $this->tab_conversion_genre_id[$genre['id']] = $genre['intitule_genre'];
@@ -264,8 +263,7 @@ public function initialisationListes() {
 
 
     // Initialisation de la liste des modules
-	$this->container->get('ipc_prog.session.boilerbox')->definirTabModuleL();
-
+    $this->session->definirTabModuleL();
     $this->tab_modules_e = $this->session->get('tabModules');
     if ($this->tab_modules_e == null) {
         $this->get('session')->getFlashBag()->add('info', "Etat : Aucun module n'est associé aux localisations du site courant : Veuillez importer la/les table(s) d'échanges ou modifier le paramètre popup_simplifiee");
@@ -798,6 +796,7 @@ public function prepareAction() {
 	$tabDesDonnees = array();
 	$tabDesRequetes = array();
 	$message_erreur = '';
+	$em = $this->getDoctrine()->getManager();
 	$service_numbers = $this->get('ipc_prog.fillnumbers');
 	if (! empty($session_date)) {
         setlocale (LC_TIME, 'fr_FR.utf8','fra');
@@ -887,7 +886,7 @@ public function afficheEtat1AccueilAction($idEtat) {
 			}
 		}
 	}
-	$entity_etat = $this->em->getRepository('IpcProgBundle:Etat')->find($idEtat);
+	$entity_etat = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Etat')->find($idEtat);
 	$intitule = $entity_etat->getIntitule();
 	// Récupération et formatage de la période
 	$periode = $entity_etat->getPeriode();
@@ -1934,21 +1933,25 @@ public function creationEtat1FromCsv($url_fichier) {
     }
     $liste_id_forcage = substr($liste_id_forcage, 0, -1);
 
-    foreach($liste_m_combustible1 as $m_combustible1){
-		$tmp_id = $this->getIdModule($m_combustible1, $entity_mode);
-		if ($tmp_id != null) {
-        	$liste_id_combustible1 .= $tmp_id.'___;';
-		}
-    }
-    $liste_id_combustible1 = substr($liste_id_combustible1, 0, -1);
+	if ($liste_m_combustible1[0] != '') {
+    	foreach($liste_m_combustible1 as $m_combustible1){
+			$tmp_id = $this->getIdModule($m_combustible1, $entity_mode);
+			if ($tmp_id != null) {
+    	    	$liste_id_combustible1 .= $tmp_id.'___;';
+			}
+    	}
+    	$liste_id_combustible1 = substr($liste_id_combustible1, 0, -1);
+	}
 
-    foreach($liste_m_combustible2 as $m_combustible2){
-		$tmp_id = $this->getIdModule($m_combustible2, $entity_mode);
-		if ($tmp_id != null) {
-        	$liste_id_combustible2 .= $tmp_id.'___;';
-		}
-   	} 
-    $liste_id_combustible2 = substr($liste_id_combustible2, 0, -1);
+	if ($liste_m_combustible2[0] != '') {
+    	foreach($liste_m_combustible2 as $m_combustible2){
+			$tmp_id = $this->getIdModule($m_combustible2, $entity_mode);
+			if ($tmp_id != null) {
+    	    	$liste_id_combustible2 .= $tmp_id.'___;';
+			}
+   		} 
+    	$liste_id_combustible2 = substr($liste_id_combustible2, 0, -1);
+	}
 
 
     $liste_modules = ($id_flamme2 != null) ? 'bifoyer;' : 'monofoyer;';
@@ -1992,6 +1995,10 @@ private function getIdModule($trigramme_module, $entity_mode){
 }
 
 // Fonction qui retourne la page de création d'un état par importation d'un fichier au format csv
+/**
+ *
+ * @Security("is_granted('ROLE_ADMIN_LTS')")
+*/
 public function creationAutoAction(){
     // Récupération de la liste de calcul possible ( = Listes des différents états existants )
     $this->constructeur();

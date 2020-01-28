@@ -107,9 +107,15 @@ private function getRequetesPerso() {
          	$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'graphique');
 		}
     } else {
-        $this->compteRequetePerso = 'Personnel';
-        // Recherche de l'appelation des requêtes de l'utilisateur
-        $entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'graphique');
+		if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+			$this->compteRequetePerso = 'Personnel';
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'graphique');
+		} else if ($this->get('security.context')->isGranted('ROLE_CLIENT')) {
+			$this->compteRequetePerso = 'Client';
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'graphique');
+		}
     }
     return ($entities_requetes_perso);
 }

@@ -126,9 +126,16 @@ private function getRequetesPerso() {
 			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
 		}
 	} else {
-		$this->compteRequetePerso = 'Personnel';
-		// Recherche de l'appelation des requêtes de l'utilisateur
-		$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
+		//       Le compte personnel n'est accessible qu'a partir des ROLES TECHNICIENS (donc pas pour les CLIENTS)
+		if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+			$this->compteRequetePerso = 'Personnel';
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
+		} else if ($this->get('security.context')->isGranted('ROLE_CLIENT')) {
+			$this->compteRequetePerso = 'Client';
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'listing');
+		}
 	}
 	return ($entities_requetes_perso);
 }
@@ -494,8 +501,6 @@ public function indexAction() {
 			}
 			// Si la recherche est permise 
 			if ($reg == true) {
-				// Vérification que le nombre de requêtes ne dépasse pas la limite définie par le parametre 'listing_nbmax_requetes' pour les droits TECHNICIEN
-				// et par le parametre 'autorisation_listing_nbmax_requetes' pour les droits CLIENT
 				$message_error = null;
 				$message_error_precision = null;
 				// Un Genre Ou un Intitulé de Module Correspondent à plusieurs Id de module

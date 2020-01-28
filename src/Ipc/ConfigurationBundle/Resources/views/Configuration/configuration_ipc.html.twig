@@ -17,62 +17,76 @@
      <div class='gestion_parametres_ipc'>
         <table>
 			<thead>
-            	<tr><th>Paramètre</th>
-            	    <th>Désignation</th>
-            	    <th style='text-align:left'>Valeur</th>
-            	    <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
-            	    <th class='small'>Modif.</th>
-            	    {#<th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>#}
-            	</tr>
+            <tr><th>Paramètre</th>
+                <th>Désignation</th>
+                <th>Valeur</th>
+				<th class='small'>{% if is_granted('ROLE_ADMIN_LTS') %}Technicien{% endif %}</th>
+                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
+                <th class='small'>Modif.</th>
+                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>
+            </tr>
 			</thead>
 			<tbody>
-            	{% for liste in liste_configurations %}
-            	    {% if liste.parametreAdmin %}
-            	        {% if is_granted('ROLE_ADMIN') %}
-            	            <tr>
-            	                <td>{{ liste.parametre }}</td>
-            	                <td>{{ liste.designation }}</td>
-            	                <td>{{ liste.valeur }}</td>
-            	                <td class='small'><input type='checkbox' checked disabled /></td>
-            	                <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-            	                {#<td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>#}
-            	            </tr>
-            	        {% endif %}
-            	    {% else %}
-            	        <tr>
-            	            <td>{{ liste.parametre }}</td>
-            	            <td>{{ liste.designation }}</td>
-            	            <td>{{ liste.valeur }}</td>
-                        	<td class='small'><input type='checkbox' disabled class='cacher' /></td>
-                        	<td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                        	{#<td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% else %} - {% endif %}</td>#}
-	                    </tr>
-	                {% endif %}
-	            {% endfor %}
+            {% for liste in liste_configurations %}
+                {% if liste.parametreAdmin %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <tr>
+                            <td>{{ liste.parametre }}</td>
+                            <td>{{ liste.designation }}</td>
+                            <td>{{ liste.valeur }}</td>
+							<td class='small'><input type='checkbox' disabled /></td>
+							<td class='small'><input type='checkbox' checked disabled /></td>
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                            <td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>
+                        </tr>
+                    {% endif %}
+                {% elseif liste.parametreTechnicien %}
+					{% if is_granted('ROLE_TECHNICIEN_LTS') %}
+						<tr>
+                            <td>{{ liste.parametre }}</td>
+                            <td>{{ liste.designation }}</td>
+                            <td>{{ liste.valeur }}</td>
+							<td class='small'><input type='checkbox' checked disabled {% if not is_granted('ROLE_ADMIN_LTS') %}class='cacher'{% endif %} /></td>
+                            <td class='small'><input type='checkbox' disabled class='cacher' /></td>
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                            <td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% endif %}</td>
+                        </tr>
+					{% endif %}	
+				{% elseif is_granted('ROLE_ADMIN_LTS') %}
+                    <tr>
+                        <td>{{ liste.parametre }}</td>
+                        <td>{{ liste.designation }}</td>
+                        <td>{{ liste.valeur }}</td>
+						<td class='small'><input type='checkbox' disabled /></td>
+                        <td class='small'><input type='checkbox' disabled class='cacher' /></td>
+                        <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
+                        <td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% endif %}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
 			</tbody>
        </table>
    </div>
 {% endblock body %}
 
+
 {% block menu_droite %}
-	{#
-	<div id="validation">
-    	{% if is_granted('ROLE_ADMIN') %}
+    <div id="validation">
+		{% if is_granted('ROLE_ADMIN') %}
             <div>
-               <a href='#' onClick="creationParametre();return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter un paramètre</div></div></a>
-            </div>
-            <div>
+            	<a href='#' onClick="creationParametre();return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter un paramètre</div></div></a>
+			</div>
+			<div>
                 <a href='#' onClick="modifValidation('initialisation');validationFormulaire();return false;"><div class='bouton red'><div class='bgbouton'>Paramètres d'origine !</div></div></a>
-            </div>
-            <div>
-               <a href='#' onClick="modifValidation('reinitialisation');validationFormulaire();return false;"><div class='bouton blue'><div class='bgbouton'>Réinit des paramètres</div></div></a>
-            </div>
-            <div>
+			</div>
+			<div>
+                <a href='#' onClick="modifValidation('reinitialisation');validationFormulaire();return false;"><div class='bouton blue'><div class='bgbouton'>Réinit des paramètres</div></div></a>
+			</div>
+			<div>
                 <a href='#' onClick="modifValidation('newVersion');validationFormulaire();return false;"><div class='bouton green'><div class='bgbouton'>Paramètres de la version courante</div></div></a>
             </div>
         {% endif %}
 	</div>
-	#}
 {% endblock menu_droite %}
 
 
@@ -82,15 +96,28 @@
 	    <form name='MyForm' action={{ path('ipc_param_ipc') }} method='post'>
 			<input type='hidden' name='valider' id='valider' />
 			<input type='hidden' name='idconf'  id='idconf' />
+
 			<div id='ajout' class='cacher'>
 		    	<table class='parametre'>
 					<tr>
-					    <th style="width:20%;">Paramètre</th><th style="width:60%;">Désignation</th><th style="width:20%;">Valeur</th><th>Paramètre administrateur</th></tr>
+					    <th style="width:20%;">Paramètre</th>
+						<th style="width:60%;">Désignation</th>
+						<th style="width:20%;">Valeur</th>
+						{% if is_granted('ROLE_ADMIN_LTS') %}
+							<th>Paramètre technicien</th>
+						{% endif %}
+						{% if is_granted('ROLE_ADMIN') %}
+                            <th>Paramètre administrateur</th>
+                        {% endif %}
+					</tr>
 					<tr>	
 					    <td><input type='text' id='parametre' class='inputText' name='parametre' /></td>
 					    <td><input type='text' id='designation' class='inputText' name='designation'></td>
 					    <td><input type='text' id='valeur' class='inputText' name='valeur' /></td>
-						<td><input type='checkbox' id='parametreAdmin' name='parametreAdmin' /></td>
+						<td><input type='checkbox' id='parametreTechnicien' name='parametreTechnicien' {% if not is_granted('ROLE_ADMIN_LTS') %}class='cacher'{% endif %}/></td>
+						{% if is_granted('ROLE_ADMIN') %}
+                            <td><input type='checkbox' id='parametreAdmin' name='parametreAdmin' /></td>
+                        {% endif %}
 					</tr>
 		    	</table>
    	            <div class='validationbouton'>
@@ -131,7 +158,8 @@
                 var $parametre = $(this).parent().parent().children('td').eq(0).text();
                 var $designation = $(this).parent().parent().children('td').eq(1).text();
                 var $valeur = $(this).parent().parent().children('td').eq(2).text();
-				var $parametreAdmin	= $(this).parent().parent().children('td').eq(3).children('input').prop('checked');
+				var $parametreTechnicien = $(this).parent().parent().children('td').eq(3).children('input').prop('checked');
+				var $parametreAdmin	= $(this).parent().parent().children('td').eq(4).children('input').prop('checked');
                 var $idconf	= $(this).attr('value');
 
                 // Inscription des paramètres récupérés dans les champs modifiables
@@ -139,6 +167,7 @@
                 document.getElementById('designation').value = $designation;
                 document.getElementById('valeur').value	= $valeur;
 				$('#parametreAdmin').prop('checked', $parametreAdmin);
+				$('#parametreTechnicien').prop('checked', $parametreTechnicien);
                 document.getElementById('idconf').value	= $idconf;
 
                 if($(this).attr('name') == 'modif') {
@@ -167,6 +196,7 @@
                     $('#designation').attr('readonly','true');
                     $('#valeur').attr('readonly','true');
 					$('#parametreAdmin').attr('readonly','true');
+					$('#parametreTechncien').attr('readonly','true');
                     // Affichage du div de modification d'un paramètre
                     $("#ajout").removeClass('cacher');
                 }

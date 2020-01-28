@@ -30,11 +30,15 @@ private function initialisation() {
 	$this->userLabel = $this->session->get('label');
     if ($this->userLabel == '' ) {
         if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $this->userLabel = 'Admin'
+        } elseif ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) {
             $this->userLabel = 'Administrateur';
         } elseif ($this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {
             $this->userLabel = 'Superviseur';
-        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN_LTS')) {
             $this->userLabel = 'Technicien';
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+            $this->userLabel = 'Tech';
         } elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
             $this->userLabel = 'Client';
         }

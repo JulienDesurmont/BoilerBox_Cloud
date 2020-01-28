@@ -11,12 +11,12 @@
 
     <div id="regRequest">
 		<div style='margin-bottom:5px'>
-        	<input type='radio' name='requeteClient' value='Personnel'     {% if compte_requete_perso|lower == 'personnel' %}      checked {% endif %} onClick="addCompteRequest('graphique','Personnel');">Requêtes personnelles
-           	{% if is_granted('ROLE_ADMIN') %}
+           	{% if is_granted('ROLE_ADMIN_LTS') %}
             	<input type='radio' name='requeteClient' value='Admin'     {% if compte_requete_perso|lower == 'admin' %}          checked {% endif %} onClick="addCompteRequest('graphique','Admin');">Requêtes Admin
             {% endif %}
             {% if is_granted('ROLE_TECHNICIEN') %}
-               <input type='radio' name='requeteClient' value='Technicien' {% if compte_requete_perso|lower == 'technicien' %} checked {% endif %} onClick="addCompteRequest('graphique','Technicien');">Requêtes Techniciens
+				<input type='radio' name='requeteClient' value='Personnel'     {% if compte_requete_perso|lower == 'personnel' %}      checked {% endif %} onClick="addCompteRequest('graphique','Personnel');">Requêtes personnelles
+            	<input type='radio' name='requeteClient' value='Technicien' {% if compte_requete_perso|lower == 'technicien' %} checked {% endif %} onClick="addCompteRequest('graphique','Technicien');">Requêtes Techniciens
             {% endif %}
         	<input type='radio' name='requeteClient' value='Client'        {% if compte_requete_perso|lower == 'client' %}         checked {% endif %} onClick="addCompteRequest('graphique','Client');">Requêtes Clients
         </div>
@@ -192,7 +192,7 @@
 			});
 			
 			{# On n'affiche que les options désirés en fonction des droits utilisateur #}
-			{% if is_granted('ROLE_ADMIN') %}
+			{% if is_granted('ROLE_ADMIN_LTS') %}
 			{% elseif is_granted('ROLE_TECHNICIEN') %}
 				$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
 			{% else %}

@@ -51,6 +51,15 @@ class Configuration
     */
     protected $parametreAdmin;
 
+    /**
+     * @var parametreTechnicien
+     *
+     * @ORM\Column(name="parametre_technicien", type="boolean", options={"default":false}, nullable=false)
+    */
+    protected $parametreTechnicien;
+
+
+
 
 
     public function __construct()
@@ -102,6 +111,32 @@ class Configuration
     {
         return $this->parametreAdmin;
     }
+
+
+
+    /**
+     * Set parametreTechnicien
+     *
+     * @param boolean $parametreTechnicien
+     * @return Configuration
+     */
+    public function setParametreTechnicien($parametreTechnicien)
+    {
+        $this->parametreTechnicien = $parametreTechnicien;
+        return $this;
+    }
+
+    /**
+     * Get parametreTechnicien
+     *
+     * @return string
+     */
+    public function getParametreTechnicien()
+    {
+        return $this->parametreTechnicien;
+    }
+
+
 
 
 
@@ -178,8 +213,8 @@ class Configuration
     //                                                                  F o n c t i o n s    U t i l i s é e s    par le module       [ C O N F I G U R A T I O N ]
     // *********************************************************************************************************************************************************************************************************************
     public function SqlInsert($dbh) {
-        $donnees = '("'.$this->parametre.'","'.$this->designation.'","'.$this->valeur.'","'.$this->parametreAdmin.'")';
-        $requete = "INSERT INTO t_configuration (parametre, designation, valeur, parametre_admin ) VALUES $donnees;";
+        $donnees = '("'.$this->parametre.'","'.$this->designation.'","'.$this->valeur.'","'.$this->parametreAdmin.'","'.$this->parametreTechnicien.'")';
+        $requete = "INSERT INTO t_configuration (parametre, designation, valeur, parametre_admin, parametre_technicien ) VALUES $donnees;";
         $retour = $dbh->exec($requete);
         return($retour);
     }
@@ -192,7 +227,7 @@ class Configuration
     }
 
     public function SqlUpdate($dbh) {
-		$requete = 'UPDATE t_configuration SET parametre="'.$this->parametre.'",designation="'.$this->designation.'",valeur="'.$this->valeur.'",parametre_admin="'.$this->parametreAdmin.'" WHERE id="'.$this->id.'";';
+		$requete = 'UPDATE t_configuration SET parametre="'.$this->parametre.'",designation="'.$this->designation.'",valeur="'.$this->valeur.'",parametre_admin="'.$this->parametreAdmin.'",parametre_technicien="'.$this->parametreTechnicien.'" WHERE id="'.$this->id.'";';
 		$retour = $dbh->exec($requete);
 		return($retour);
     }

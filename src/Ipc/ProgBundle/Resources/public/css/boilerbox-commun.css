@@ -3693,6 +3693,7 @@ div.listederoulante select {
   width: 530px;
 }
 #etatPage {
+/*
   position: absolute;
   margin-left: 5px;
   top: 0px;
@@ -3700,6 +3701,7 @@ div.listederoulante select {
   bottom: 0px;
   left: 0px;
   overflow: auto;
+*/
 }
 #etat {
   padding-left: 200px;

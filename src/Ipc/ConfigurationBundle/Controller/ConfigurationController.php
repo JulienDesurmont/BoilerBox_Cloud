@@ -52,6 +52,9 @@ use Ipc\ConfigurationBundle\Entity\Requete;
 use Ipc\ConfigurationBundle\Form\Type\RequeteType;
 use Ipc\ConfigurationBundle\Form\Handler\RequeteHandler;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+
 
 
 class ConfigurationController extends Controller {
@@ -96,15 +99,19 @@ private function initialisation() {
 	$this->tab_modules = array();
     if ($this->userLabel == '' ) {
         if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $this->userLabel = 'Admin'
+        } elseif ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) {
             $this->userLabel = 'Administrateur';
         } elseif ($this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {
             $this->userLabel = 'Superviseur';
-        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN_LTS')) {
             $this->userLabel = 'Technicien';
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+            $this->userLabel = 'Tech';
         } elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
             $this->userLabel = 'Client';
         }
-		$this->session->set('label', $this->userLabel);
+        $this->session->set('label', $this->userLabel);
     }
 }
 
@@ -251,6 +258,10 @@ public function getMaxRequetesAction() {
 
 
 //	Fonction qui importe les fichiers excels Table_echange_Ipc  : des données initiales de la base
+/**
+ *
+ * @Security("is_granted('ROLE_TECHNICIEN_LTS')")
+*/
 public function importAction() {
 	$this->initialisation();
 	$fichieripc	= new FichierIpc();
@@ -432,6 +443,11 @@ public function parametresipcAction(Request $requete) {
 			} else {
 				$parametreAdmin = false;
 			}
+			if (isset($_POST['parametreTechnicien'])) {
+				$parametreTechnicien = true;
+			} else {
+				$parametreTechnicien = false;
+			}
 			$designation = htmlspecialchars($_POST['designation']);
 			$valeur = htmlspecialchars($_POST['valeur']);
 
@@ -456,6 +472,7 @@ public function parametresipcAction(Request $requete) {
 				$configuration->setDesignation($designation);
 				$configuration->setValeur($valeur);
 				$configuration->setParametreAdmin($parametreAdmin);
+				$configuration->setParametreTechnicien($parametreTechnicien);
 				$configuration->setId($idconf);
 				if (($parametre != '') && ($designation != '') || ($valeur != '')) {
 					// Si l'identifiant est 0 c'est que la demande concerne l'ajout d'un nouveau paramètre
@@ -600,7 +617,7 @@ public function configurationAuto($type) {
 	if ($type == 'init') {
 		$liste_conf['date_dmes']['description'] = 'Compte Technicien : Date minimum de début de période de recherche (JJ-MM-YYYY)';
 		$liste_conf['date_dmes']['value'] = '01-01-2014';
-		$liste_conf['date_dmes']['parametreAdmin'] = true;
+		$liste_conf['date_dmes']['parametreAdmin'] = false;
 		$liste_conf['autorisation_dmes']['description'] = 'Compte Client : Date minimum de début de période de recherche (JJ-MM-YYYY)';
 		$liste_conf['autorisation_dmes']['value'] = '01-01-2014';
 		$liste_conf['autorisation_dmes']['parametreAdmin'] = true;
@@ -613,29 +630,29 @@ public function configurationAuto($type) {
 		// Paramètres LIVE / Modbus -------------------------------------
 		$liste_conf['live_modules_nb']['description'] = "Nombre maximum de séries [live_modules] qui peuvent être affichées (affichage des X premières séries)";
 		$liste_conf['live_modules_nb']['value'] = 4;
-		$liste_conf['live_modules_nb']['parametreAdmin'] = false;
+		$liste_conf['live_modules_nb']['parametreAdmin'] = true;
 		$liste_conf['live_automate_nb']['description'] = "Nombre d'automates affichés";
-		$liste_conf['live_automate_nb']['value'] = 2;
-		$liste_conf['live_automate_nb']['parametreAdmin'] = false;
+		$liste_conf['live_automate_nb']['value'] = 1;
+		$liste_conf['live_automate_nb']['parametreAdmin'] = true;
 		$liste_conf['live_automate_1']['description'] = "Paramètres de l'automate 1 (adresse ip;numéro de la première série à afficher)";
 		$liste_conf['live_automate_1']['value'] = "192.168.0.110;1;2;3;4";
-		$liste_conf['live_automate_1']['parametreAdmin'] = false;
+		$liste_conf['live_automate_1']['parametreAdmin'] = true;
 		$liste_conf['live_automate_2']['description'] = "Paramètres de l'automate 2 (adresse ip;numéro de la deuxième série à afficher)";
 		$liste_conf['live_automate_2']['value'] = "192.168.0.120;1;2;3";
-		$liste_conf['live_automate_2']['parametreAdmin'] = false;
+		$liste_conf['live_automate_2']['parametreAdmin'] = true;
 		/* Liste des séries live */
 		$liste_conf['live_modules1']['description'] = "Production;Modules utilisés pour l'affichage de la série 1 du Live (Categorie/NuméroModule/NuméroMessage XXYYZZ)";
 		$liste_conf['live_modules1']['value'] = 'CV0102;LT0106;PT0106';
-		$liste_conf['live_modules1']['parametreAdmin'] = false;
+		$liste_conf['live_modules1']['parametreAdmin'] = true;
 		$liste_conf['live_modules2']['description'] = "Gaz;Modules utilisés pour l'affichage de la série 2 du Live (Categorie/NuméroModule/NuméroMessage XXYYZZ)";
 		$liste_conf['live_modules2']['value'] = 'PT0106;PT1106;TT3606;TT3706;CC0705;CC0805';
-		$liste_conf['live_modules2']['parametreAdmin'] = false;
+		$liste_conf['live_modules2']['parametreAdmin'] = true;
 		$liste_conf['live_modules3']['description'] = "Ethylène;Modules utilisés pour l'affichage de la série 3 du Live (Categorie/NuméroModule/NuméroMessage XXYYZZ)";
 		$liste_conf['live_modules3']['value'] = 'PT2406;PT2506;TT5606;TT5706;ZV0402;ZV0502';
-		$liste_conf['live_modules3']['parametreAdmin'] = false;
+		$liste_conf['live_modules3']['parametreAdmin'] = true;
 		$liste_conf['live_modules4']['description'] = "Evazole;Modules utilisés pour l'affichage de la série 4 du Live (Categorie/NuméroModule/NuméroMessage XXYYZZ)";
 		$liste_conf['live_modules4']['value'] = 'PT2806;PT2906;TT6106;TT6206;ZV0602;ZV0702';
-		$liste_conf['live_modules4']['parametreAdmin'] = false;
+		$liste_conf['live_modules4']['parametreAdmin'] = true;
 		// Paramètres Clients	----------------------------------------
 		$liste_conf['autorisation_genres_listing']['description'] = "Liste des genres autorisés au compte client pour l'affichage des listing";
 		$liste_conf['autorisation_genres_listing']['value'] = null;
@@ -655,7 +672,7 @@ public function configurationAuto($type) {
 		// Paramètre pour le module INTERVENTION
 		$liste_conf['trigramme_intervention']['description'] = "Trigramme désignant le module d'intervention";
 		$liste_conf['trigramme_intervention']['value'] = "GE0804";
-		$liste_conf['trigramme_intervention']['parametreAdmin'] = false;
+		$liste_conf['trigramme_intervention']['parametreAdmin'] = true;
 
         $liste_conf['192.168.0.110_frequence_rapport_ftp']['description'] = "Fréquence d'envoi des rapports : (dateRapport; NbRapportsEnErreurAvantEnvoi(-1 pour bloquer); DernierNombreDeRapportsEnErreur(0 pour tous))";
         $liste_conf['192.168.0.110_frequence_rapport_ftp']['value'] = "16-11-2015;4;0;1";
@@ -673,13 +690,13 @@ public function configurationAuto($type) {
 
         $liste_conf['dollar_0']['description'] = "Valeur affectée au caractère 'Dollar' lorsque la valeur est égale à 0";
         $liste_conf['dollar_0']['value'] = "Désactivation";
-        $liste_conf['dollar_0']['parametreAdmin'] = false;
+        $liste_conf['dollar_0']['parametreAdmin'] = true;
         $liste_conf['dollar_1']['description'] = "Valeur affectée au caractère 'Dollar' lorsque la valeur est égale à 1";
         $liste_conf['dollar_1']['value'] = "Activation";
-        $liste_conf['dollar_1']['parametreAdmin'] = false;
+        $liste_conf['dollar_1']['parametreAdmin'] = true;
         $liste_conf['timezone']['description'] = "Paramètre de gestion du fuseau horaire";
         $liste_conf['timezone']['value'] = "Europe/Paris";
-        $liste_conf['timezone']['parametreAdmin'] = true;
+        $liste_conf['timezone']['parametreAdmin'] = false;
 
         // Paramètres des dossiers de sauvegarde des fichiers
         $liste_conf['dossier_fichiers_originaux']['description'] = 'Dossier destination des fichiers à convertir en binaire pour mise en base';
@@ -691,14 +708,14 @@ public function configurationAuto($type) {
         // Paramètre de configuration des alertes emails
         $liste_conf['nb_max_jours_sans_transfert']['description'] = "Nombre de jours sans transfert ftp avant l'envoi d'une alerte email";
         $liste_conf['nb_max_jours_sans_transfert']['value'] = 4;
-        $liste_conf['nb_max_jours_sans_transfert']['parametreAdmin'] = false;
+        $liste_conf['nb_max_jours_sans_transfert']['parametreAdmin'] = true;
         $liste_conf['seuil_alerte_filesystem']['description'] = "Seuil d'alerte du filesystem pour l'envoi du rapport système (en %)";
         $liste_conf['seuil_alerte_filesystem']['value'] = 80;
         $liste_conf['seuil_alerte_filesystem']['parametreAdmin'] = true;
         // Paramètres modbus
-        $liste_conf['activation_modbus']['description'] = "Activation de la fonction modbus (0:Non(défaut)  1:Oui).";
+        $liste_conf['activation_modbus']['description'] = "Activation de la fonction modbus - 0:Non 1:Oui(défaut).";
         $liste_conf['activation_modbus']['value'] = "1";
-        $liste_conf['activation_modbus']['parametreAdmin'] = true;
+        $liste_conf['activation_modbus']['parametreAdmin'] = false;
 	}
 	if (($type == 'init') || ($type == 'reinit')) {
 		// Paramètres Technicien	-----------------------------------
@@ -706,48 +723,49 @@ public function configurationAuto($type) {
 		$liste_conf['ecart_max']['value'] = 90;
 		$liste_conf['ecart_max']['parametreAdmin'] = false;
 		$liste_conf['listing_nbmax_requetes']['description'] = 'Compte Technicien : Nombre maximum de requêtes listing';
-		$liste_conf['listing_nbmax_requetes']['value'] = 3;
+		$liste_conf['listing_nbmax_requetes']['value'] = 10;
 		$liste_conf['listing_nbmax_requetes']['parametreAdmin'] = false;
 		$liste_conf['graphique_nbmax_requetes']['description'] = 'Compte Technicien : Nombre maximum de requêtes graphique';
-		$liste_conf['graphique_nbmax_requetes']['value'] = 3;
+		$liste_conf['graphique_nbmax_requetes']['value'] = 10;
 		$liste_conf['graphique_nbmax_requetes']['parametreAdmin'] = false;
 		// Paramètres Client	-----------------------------------
 		$liste_conf['autorisation_ecart_max']['description'] = 'Compte Client : Nombre de jours maximum de la période';
 		$liste_conf['autorisation_ecart_max']['value'] = 90;
-		$liste_conf['autorisation_ecart_max']['parametreAdmin'] = false;
+		$liste_conf['autorisation_ecart_max']['parametreAdmin'] = true;
 		$liste_conf['autorisation_listing_nbmax_requetes']['description'] = 'Compte Client : Nombre maximum de requêtes listing';
 		$liste_conf['autorisation_listing_nbmax_requetes']['value'] = 3;
-		$liste_conf['autorisation_listing_nbmax_requetes']['parametreAdmin'] = false;
+		$liste_conf['autorisation_listing_nbmax_requetes']['parametreAdmin'] = true;
 		$liste_conf['autorisation_graphique_nbmax_requetes']['description'] = 'Compte Client : Nombre maximum de requêtes graphique';
 		$liste_conf['autorisation_graphique_nbmax_requetes']['value'] = 3;
-		$liste_conf['autorisation_graphique_nbmax_requetes']['parametreAdmin'] = false;
+		$liste_conf['autorisation_graphique_nbmax_requetes']['parametreAdmin'] = true;
 		// Paramètres Admin	-----------------------------------
 		$liste_conf['admin_ecart_max']['description'] = 'Compte administrateur : Nombre de jours maximum de la période';
-		$liste_conf['admin_ecart_max']['value'] = 90;
-		$liste_conf['admin_ecart_max']['parametreAdmin'] = true;
+		$liste_conf['admin_ecart_max']['value'] = 365;
+		$liste_conf['admin_ecart_max']['parametreAdmin'] = false;
 		$liste_conf['autorisation_etat_nbmax_requetes']['description'] = 'Nombre de requêtes maximum autorisées pour la création de Etat1';
 		$liste_conf['autorisation_etat_nbmax_requetes']['value'] = 5;
-		$liste_conf['autorisation_etat_nbmax_requetes']['parametreAdmin'] = false;
+		$liste_conf['autorisation_etat_nbmax_requetes']['parametreAdmin'] = true;
 		// Paramètre de configuration de requêtes sql
 		$liste_conf['maximum_execution_time']['description'] = "Temps maximum d'execution des requêtes avant qu'elles ne soient killées (seconde)";
 		$liste_conf['maximum_execution_time']['value'] = 120;
-		$liste_conf['maximum_execution_time']['parametreAdmin'] = true;
+		$liste_conf['maximum_execution_time']['parametreAdmin'] = false;
     	// Paramètres pour le module GRAPHIQUE
-    	$liste_conf['graphique_max_points']['description'] = "CRITIQUE : Nombre de points maximum par courbe (4000 par défaut. !!!  Augmenter cette limite peut entrainer un blocage applicatif)";
+    	$liste_conf['graphique_max_points']['description'] = "CRITIQUE : Nombre de points maximum par courbe (4000 par défaut). !!!  Augmenter cette limite peut entrainer un blocage applicatif)";
     	$liste_conf['graphique_max_points']['value'] = 4000;
 		$liste_conf['graphique_max_points']['parametreAdmin'] = false;
+		$liste_conf['graphique_max_points']['parametreTechnicien'] = true;
     	$liste_conf['live_graph_nb_mois']['description'] = "La recherche Live graphique portera sur ces X derniers mois";
     	$liste_conf['live_graph_nb_mois']['value'] = 12;
-		$liste_conf['live_graph_nb_mois']['parametreAdmin'] = false;
+		$liste_conf['live_graph_nb_mois']['parametreAdmin'] = true;
     	$liste_conf['live_graph_nb_points_max']['description'] = "La recherche Live graphique retournera X points maximum par courbe";
     	$liste_conf['live_graph_nb_points_max']['value'] = 500;
-		$liste_conf['live_graph_nb_points_max']['parametreAdmin'] = false;
+		$liste_conf['live_graph_nb_points_max']['parametreAdmin'] = true;
     	$liste_conf['live_nb_mois']['description'] = "La recherche Live des événements portera sur ces X derniers mois";
     	$liste_conf['live_nb_mois']['value'] = 6;
-		$liste_conf['live_nb_mois']['parametreAdmin'] = false;
+		$liste_conf['live_nb_mois']['parametreAdmin'] = true;
     	$liste_conf['live_nb_evenements']['description'] = "Nombre d'évenements retournés";
     	$liste_conf['live_nb_evenements']['value'] = 20;
-		$liste_conf['live_nb_evenements']['parametreAdmin'] = false;
+		$liste_conf['live_nb_evenements']['parametreAdmin'] = true;
     	$liste_conf['live_refresh_listing']['description'] = "Durée de rafraichissement de la page live des listings (en millisecondes)";
     	$liste_conf['live_refresh_listing']['value'] = 3000;
 		$liste_conf['live_refresh_listing']['parametreAdmin'] = true;
@@ -756,7 +774,7 @@ public function configurationAuto($type) {
 		$liste_conf['live_refresh_graphique']['parametreAdmin'] = true;
     	$liste_conf['arrondi']['description'] = "Nombre de chiffres après la virgules à afficher";
     	$liste_conf['arrondi']['value'] = 4;
-		$liste_conf['arrondi']['parametreAdmin'] = false;
+		$liste_conf['arrondi']['parametreAdmin'] = true;
     	$liste_conf['siecle']['description'] = 'Siècle actuel';
     	$liste_conf['siecle']['value'] = 21;
 		$liste_conf['siecle']['parametreAdmin'] = true;
@@ -771,17 +789,17 @@ public function configurationAuto($type) {
 		$liste_conf['ping_intervalle']['parametreAdmin'] = true;
     	$liste_conf['192.168.0.110_defaut_bruleur_1']['description'] = "Code du message défaut bruleur 1 pour la localisation d'adresse ip 192.168.0.110";
     	$liste_conf['192.168.0.110_defaut_bruleur_1']['value'] = "CS7070";
-    	$liste_conf['192.168.0.110_defaut_bruleur_1']['parametreAdmin'] = false;
+    	$liste_conf['192.168.0.110_defaut_bruleur_1']['parametreAdmin'] = true;
     	$liste_conf['192.168.0.110_defaut_bruleur_2']['description'] = "Code du message défaut bruleur 2 pour la localisation d'adresse ip 192.168.0.110";
     	$liste_conf['192.168.0.110_defaut_bruleur_2']['value'] = "CS7062";
-    	$liste_conf['192.168.0.110_defaut_bruleur_2']['parametreAdmin'] = false;
+    	$liste_conf['192.168.0.110_defaut_bruleur_2']['parametreAdmin'] = true;
     	$liste_conf['duree_periode_analyse_bruleur']['description'] = "Durée de la période Analyse Bruleur (en seconde)";
     	$liste_conf['duree_periode_analyse_bruleur']['value'] = 30;
-    	$liste_conf['duree_periode_analyse_bruleur']['parametreAdmin'] = false;
-    	$liste_conf['envoi_rapports_journaliers']['description'] = "Envoi systématique du rapport journalier (même si aucune erreur détectée) (0:Non(défaut)  1:Oui).";
+    	$liste_conf['duree_periode_analyse_bruleur']['parametreAdmin'] = true;
+    	$liste_conf['envoi_rapports_journaliers']['description'] = "Envoi systématique du rapport journalier (même si aucune erreur détectée) - 0:Non(défaut)  1:Oui.";
     	$liste_conf['envoi_rapports_journaliers']['value'] = false;
     	$liste_conf['envoi_rapports_journaliers']['parametreAdmin'] = true;
-    	$liste_conf['sauvegarde_rapports_journaliers']['description'] = "Sauvegarde du rapport journalier au format html (0:Non  1:Oui(défaut)).";
+    	$liste_conf['sauvegarde_rapports_journaliers']['description'] = "Sauvegarde du rapport journalier au format html - 0:Non  1:Oui(défaut).";
     	$liste_conf['sauvegarde_rapports_journaliers']['value'] = true;
     	$liste_conf['sauvegarde_rapports_journaliers']['parametreAdmin'] = true;
     	$liste_conf['autorisation_mails']['description'] = "Autorisation de l'envoi des mails";
@@ -812,7 +830,7 @@ public function configurationAuto($type) {
     // Paramètres rapports : Remplace l'ancien paramètre 'rapports_erreur' -----------------------------------------
     $liste_conf['autorisation_rapports_erreur']['description'] = "Autorisation d'envoi des rapports d'erreurs (0:Non  1:Oui)";
     $liste_conf['autorisation_rapports_erreur']['value'] = 1;
-    $liste_conf['autorisation_rapports_erreur']['parametreAdmin'] = false;
+    $liste_conf['autorisation_rapports_erreur']['parametreAdmin'] = true;
 
 
     // Paramètres pour les impressions des fichiers CSV
@@ -839,6 +857,11 @@ public function configurationAuto($type) {
     $liste_conf['limitation_export_sql_listing']['parametreAdmin'] = false;
 
 
+    $liste_conf['url_http_boilerbox']['description'] = "Url accès au serveur Web";
+    $liste_conf['url_http_boilerbox']['value'] = "http://cXXX.boiler-box.fr/";
+    $liste_conf['url_http_boilerbox']['parametreAdmin'] = false;
+    $liste_conf['url_http_boilerbox']['parametreTechnicien'] = true;
+
 	}
 	// Variable de la nouvelle version
 	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
@@ -859,6 +882,11 @@ public function configurationAuto($type) {
 		$configuration->setDesignation($conf['description']);
 		$configuration->setParametre($intitule);
 		$configuration->setParametreAdmin($conf['parametreAdmin']);
+		if (isset($conf['parametreTechnicien'])) {
+			$configuration->setParametreTechnicien($conf['parametreTechnicien']);
+		} else {
+			$configuration->setParametreTechnicien(false);
+		}
 		$id_config = $configuration->SqlGetId($dbh, $intitule);
 		// Si le paramètre existe : Mise à jour
 		if ($id_config) {
@@ -874,6 +902,11 @@ public function configurationAuto($type) {
 	$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('localisations_modules');
 }
 
+/**
+ * Require ROLE_ADMIN for only this controller method.
+ *
+ * @Security("is_granted('ROLE_ADMIN')")
+*/
 public function creationUserAction() {
 	$this->initialisation();
 	// Service de connexion à la base de donnée IPC
@@ -928,6 +961,10 @@ public function creationUserAction() {
 }
 
 //      Fonction de création d'un nouveau Site
+/**
+ *
+ * @Security("is_granted('ROLE_TECHNICIEN_LTS')")
+*/
 public function creationSiteAction($numfresh) {
 	$this->initialisation();
 	$new_session_pageTitle = $this->pageTitle;
@@ -1430,6 +1467,11 @@ public function creationSiteAction($numfresh) {
 
 
 // Détermine quels sont les droits d'accès fournis au client
+/**
+ * Require ROLE_ADMIN for only this controller method.
+ *
+ * @Security("is_granted('ROLE_ADMIN')")
+*/
 public function autorisationClientAction() {
 	$this->initialisation();
 	// Récupération de la liste des genres présents en base
@@ -1744,6 +1786,10 @@ public function supprimeZero($nombre) {
 
 
 // Fonction qui effectue l'exportation de la table d'échange
+/**
+ *
+ * @Security("is_granted('ROLE_TECHNICIEN_LTS')")
+*/
 public function exportationTableAction() {
 	$this->constructeur();
 	$requete = $this->get('request');
@@ -1938,6 +1984,11 @@ public function getEntityAction() {
 	return new Response();
 }
 
+
+/**
+ *
+ * @Security("is_granted('ROLE_ADMIN_LTS')")
+*/
 public function infosLocalisationAction() {
 	$this->initialisation();
 	// Récupération du site courant
@@ -2151,6 +2202,11 @@ public function accueilInterventionAction() {
 	return $response;
 }
 
+/**
+ * Require ROLE_ADMIN for only this controller method.
+ *
+ * @Security("is_granted('ROLE_ADMIN')")
+*/
 public function addTypeGenerateurAction() {
 	$this->initialisation();
 	$requete = $this->get('request');
@@ -2189,6 +2245,11 @@ public function addTypeGenerateurAction() {
 
 
 // Fonction qui permet de modifier la couleur des genres.
+/**
+ * Require ROLE_ADMIN for only this controller method.
+ *
+ * @Security("is_granted('ROLE_ADMIN')")
+*/
 public function gestionGenresAction() {
 	$this->initialisation();
 	$requete = $this->get('request');
@@ -2239,7 +2300,7 @@ public function deleteRequestPersoAction() {
     $id_requete = $_GET['id_requete'];
     	if ($id_requete != 0) {
        		$requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
-           	if ( ($requete->getCreateur() == $this->userLabel) || ($this->get('security.context')->isGranted('ROLE_ADMIN')) ) {
+           	if ( ($requete->getCreateur() == $this->userLabel) || ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) ) {
                	// Suppression de la requête personnelle
                	$this->em->remove($requete);
                	$this->em->flush();

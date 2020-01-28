@@ -28,6 +28,8 @@ use Ipc\ConfigurationBundle\Form\Type\FichierRapport2Type;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormError;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 
 class OutilsController extends Controller {
@@ -74,6 +76,11 @@ public function indexAction(Request $request) {
 
 // Fonction qui retourne vers la page de gestion des scripts.
 //  Cette page indique la liste des scripts. Ceux qui sont actif et ceux qui ne le sont pas
+/**
+ * Require ROLE_ADMIN for only this controller method.
+ *
+ * @Security("is_granted('ROLE_ADMIN')")
+*/
 public function gestionScriptsAction() {
     $this->initialisation();
     // Recherche de l'état des scripts

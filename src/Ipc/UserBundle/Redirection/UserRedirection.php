@@ -19,7 +19,7 @@ class UserRedirection implements AuthenticationSuccessHandlerInterface
     public function onAuthenticationSuccess(Request $request, TokenInterface $token){
         $rolesTab = $token->getRoles();
         $redirection = new RedirectResponse($this->router->generate('contact_homepage'));
-        if (in_array("ROLE_ADMIN", $rolesTab))
+        if (in_array("ROLE_ADMIN_LTS", $rolesTab))
             $redirection = new RedirectResponse($this->router->generate('admin_homepage'));
         return $redirection;
     }

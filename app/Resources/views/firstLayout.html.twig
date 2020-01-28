@@ -139,13 +139,17 @@
 					<div id='headerUser' class='user'>
 						{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 							<div id='bloc-infos-user' class='notToBePrinted'>
-								<span id='userLabel' data-label={{ service_session.get('label') }} >{{ service_session.get('label') }}</span>
+								<span id='userLabel' data-label={{ service_session.get('label') }} ><span {% if service_session.get('label') == 'anon.' %} class='cacher' {% endif %}>{{ service_session.get('label') }}</span>
 								{% if is_granted('ROLE_ADMIN') %}
+									<span> ( Admin ) </span>
+								{% elseif is_granted('ROLE_ADMIN_LTS') %}
 									<span> ( Administrateur ) </span>
 								{% elseif is_granted('ROLE_SUPERVISEUR') %}
 									<span>( Superviseur ) </span>
-								{% elseif is_granted('ROLE_TECHNICIEN') %}
+								{% elseif is_granted('ROLE_TECHNICIEN_LTS') %}
 									<span> ( Technicien ) </span>
+								{% elseif is_granted('ROLE_TECHNICIEN') %}
+									<span> ( Tech ) </span>
 								{% else %}
 									<span> ( Client ) </span>
 								{% endif %}
@@ -194,7 +198,13 @@
 					<li class='menu-left'></li>
 					{% if is_granted('ROLE_TECHNICIEN') %}
 						<li>
-							<a href="{{ path('ipc_etat_affiche') }}" id="Etats" title="Etats" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+							<a 	href="{{ path('ipc_etat_affiche') }}" 
+								id="Etats" 
+								title="Etats" 
+								onMouseOver="switchActive(this.id,'{{ pageActive }}');"  
+								onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+								onClick='stopPing();actionMenu(this.href,this.title);return false;'
+							>
 								{% if pageActive == 'Etats' %}
 									<div class='img etats-active'></div>
 									<div class='txt pageactive'>{{ 'entete.menu.etat'|trans }}</div>
@@ -205,23 +215,31 @@
 							</a>
 						</li>
 						<li></li>
-	                    <li>
-	                       <a href="{{ path('ipc_analyse_bruleurs') }}" id="Bruleurs" title="Bruleurs" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
-	                            {% if pageActive == 'Bruleurs' %}
-	                                <div class='img bruleurs-active'></div>
-	                                <div class='txt pageactive'>{{ 'entete.menu.bruleur'|trans }}</div>
-	                            {% else %}
-	                                <div class='img bruleurs'></div>
-	                                <div class='txt'>{{ 'entete.menu.bruleur'|trans }}</div>
-	                            {% endif %}
-	                        </a>
-	                    </li>
-						<li></li>
+						{% if is_granted('ROLE_ADMIN') %}
+	                    	<li>
+	                    	   <a href="{{ path('ipc_analyse_bruleurs') }}" id="Bruleurs" title="Bruleurs" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+	                    	        {% if pageActive == 'Bruleurs' %}
+	                    	            <div class='img bruleurs-active'></div>
+	                    	            <div class='txt pageactive'>{{ 'entete.menu.bruleur'|trans }}</div>
+	                    	        {% else %}
+	                    	            <div class='img bruleurs'></div>
+	                    	            <div class='txt'>{{ 'entete.menu.bruleur'|trans }}</div>
+	                    	        {% endif %}
+	                    	    </a>
+	                    	</li>
+							<li></li>
+						{% endif %}
 						<li>
 					{% else %}
        	                <li>
 					{% endif %}
-							<a href="{{ path('ipc_accueilListing') }}" id="Listing" title='Listing' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');"  onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+							<a 	href="{{ path('ipc_accueilListing') }}" 
+								id="Listing" 
+								title='Listing' 
+								onMouseOver="switchActive(this.id,'{{ pageActive }}');" 
+								onMouseOut="switchInactive(this.id,'{{ pageActive }}');"  
+								onClick='stopPing();actionMenu(this.href,this.title);return false;'
+							>
                    	    		{% if pageActive == 'Listing' %}
                    	        		<div class='img listing-active'></div>
                    	        		<div class='txt pageactive'>{{ 'entete.menu.listing'|trans }}</div>
@@ -233,7 +251,13 @@
                     	</li>
 					<li></li>
                     <li>
-                        <a href="{{ path('ipc_accueilGraphique') }}" id='Courbes' title='Courbes' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                        <a 	href="{{ path('ipc_accueilGraphique') }}" 
+							id='Courbes' 
+							title='Courbes' 
+							onMouseOver="switchActive(this.id,'{{ pageActive }}');" 
+							onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+							onClick='stopPing();actionMenu(this.href,this.title);return false;'
+						>
                             {% if pageActive == 'Courbes' %}
                                 <div class='img courbes-active'></div>
                                 <div class='txt pageactive'>{{ 'entete.menu.courbe'|trans }}</div>
@@ -245,7 +269,13 @@
                     </li>
 					<li></li>
 					<li>	
-        	            <a href="{{ path('ipc_rapports_conf') }}" id='Rapports' title='Rapports' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+        	            <a 	href="{{ path('ipc_rapports_conf') }}" 
+							id='Rapports' 
+							title='Rapports' 
+							onMouseOver="switchActive(this.id,'{{ pageActive }}');" 
+							onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+							onClick='stopPing();actionMenu(this.href,this.title);return false;'
+						>
         	                {% if pageActive == 'Rapports' %}
         	                    <div class='img rapports-active'></div>
         	                    <div class='txt pageactive'>{{ 'entete.menu.rapport'|trans }}</div>
@@ -255,10 +285,16 @@
         	                {% endif %}
         	            </a>
         	        </li>
-					{% if is_granted('ROLE_SUPERVISEUR') %}
+					{% if is_granted('ROLE_ADMIN_LTS') %}
 						<li></li>
                         <li>
-                            <a href="{{ path('ipc_outils_conf') }}" id='Outils' title='Outils' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
+                            <a 	href="{{ path('ipc_outils_conf') }}" 
+								id='Outils' 
+								title='Outils' 
+								onMouseOver="switchActive(this.id,'{{ pageActive }}');" 
+								onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+								onClick='stopPing();actionMenu(this.href,this.title);return false;'
+							>
                                 {% if pageActive == 'Outils' %}
                                     <div class='img outils-active'></div>
                                     <div class='txt pageactive'>{{ 'entete.menu.outil'|trans }}</div>
@@ -268,9 +304,17 @@
                                 {% endif %}
                             </a>
                         </li>
+					{% endif %}
+					{% if is_granted('ROLE_TECHNICIEN_LTS') %}
 						<li></li>
 						<li> 
-							<a href="{{ path('ipc_conf') }}" id='Configurations' title='Configurations' onMouseOver="switchActive(this.id,'{{ pageActive }}');" onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'> 
+							<a 	href="{{ path('ipc_conf') }}" 
+								id='Configurations' 
+								title='Configurations' 
+								onMouseOver="switchActive(this.id,'{{ pageActive }}');" 
+								onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+								onClick='stopPing();actionMenu(this.href,this.title);return false;'
+							> 
 								{% if pageActive == 'Configurations' %}
 									<div class='img configurations-active'></div>
 									<div class='txt pageactive'>{{ 'entete.menu.configuration'|trans }}</div>

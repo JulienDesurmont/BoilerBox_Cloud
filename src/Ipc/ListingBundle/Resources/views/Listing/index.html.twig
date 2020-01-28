@@ -9,12 +9,12 @@
 
     <div id="regRequest">
 		<div style='margin-bottom:5px'>
-			<input type='radio' name='requeteClient' value='Personnel' 		{% if compte_requete_perso|lower == 'personnel' %} 	checked {% endif %} onClick="addCompteRequest('listing','Personnel');">Requêtes personnelles
-			{% if is_granted('ROLE_ADMIN') %}
+			{% if is_granted('ROLE_ADMIN_LTS') %}
         		<input type='radio' name='requeteClient' value='Admin' 		{% if compte_requete_perso|lower == 'admin' %} 		checked {% endif %} onClick="addCompteRequest('listing','Admin');">Requêtes Admin
 			{% endif %}	
 			{% if is_granted('ROLE_TECHNICIEN') %}
         		<input type='radio' name='requeteClient' value='Technicien' {% if compte_requete_perso|lower == 'technicien' %} checked {% endif %} onClick="addCompteRequest('listing','Technicien');">Requêtes Techniciens
+				<input type='radio' name='requeteClient' value='Personnel'      {% if compte_requete_perso|lower == 'personnel' %}  checked {% endif %} onClick="addCompteRequest('listing','Personnel');">Requêtes personnelles
 			{% endif %}	
         	<input type='radio' name='requeteClient' value='Client' 		{% if compte_requete_perso|lower == 'client' %}		checked {% endif %} onClick="addCompteRequest('listing','Client');">Requêtes Clients
 		</div>
@@ -38,17 +38,12 @@
                 	{% elseif compte_requete_perso|lower == 'admin' %}
                 	    {{ 'select.requetes_admin'|trans }}
 					{% else %}
-						{{ 'select.requetes_personnelles'|trans }}
+						{{ 'select.requetes_personnelles'|trans }} {{compte_requete_perso|lower}}
 					{% endif %}
 				</option>
 				{% for ent_requete in entities_requetes_perso %}
 					<option value="{{ ent_requete.id }}" {% if ent_requete.id == id_requete_perso %}selected {% endif %}>{{ ent_requete.appellation }}</option>
 				{% endfor %}
-				{#
-            	{% for key,requeteValue in tab_requetes_perso %}
-            	    <option value="{{ requeteValue }}">{{ requeteValue }}</option>
-            	{% endfor %}
-				#}
         	</select>
 		</div>
 		<div>
@@ -150,12 +145,14 @@
 
 {% block bodyjavascript %}
 	{# Fonctions et variables communes aux index listing et graphique #}
+	{#
     {% javascripts output='js/listingAndGraphiqueCommun.js' filter='jsqueeze'
         'bundles/ipcprog/js/listingAndGraphiqueCommun.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    {#<script type="text/javascript" src="{{ asset('bundles/ipcprog/js/listingAndGraphiqueCommun.js') }}"></script>#}
+	#}
+    <script type="text/javascript" src="{{ asset('bundles/ipcprog/js/listingAndGraphiqueCommun.js') }}"></script>
 
 	<script type='text/javascript'>
 		$('page').addClass('noLeftMenus');
@@ -189,7 +186,7 @@
 		});
 
 		{# On n'affiche que les options désirés en fonction des droits utilisateur #}
-    	{% if is_granted('ROLE_ADMIN') %}
+    	{% if is_granted('ROLE_ADMIN_LTS') %}
     	{% elseif is_granted('ROLE_TECHNICIEN') %}
 			$('#ipc_configurationbundle_requete_compte option[value="Admin"]').hide();
 		{% else %}

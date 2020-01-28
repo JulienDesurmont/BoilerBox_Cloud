@@ -584,11 +584,11 @@ function checkNbMaxRequetes(page) {
     } else {
         var message = '';
         if (page == 'listing') {
-            messageErreur = 'Attention, vous demandez trop de listing simultanément. En fonction du type de connection, des lenteurs ou déconnexions sont possibles.';
+			messageErreur = 'Nombre de requêtes maximum autorisé atteint';
         } else if (page == 'graphique') {
-            messageErreur = 'Attention, vous demandez trop de courbes simultanément. En fonction du type de connection, des lenteurs ou déconnexions sont possibles.';
+			messageErreur = 'Nombre de requêtes maximum autorisé atteint';
         } else if (page == 'etat') {
-            messageErreur = 'Attention, vous demandez trop de requêtes simultanément. En fonction du type de connection, des lenteurs ou déconnexions sont possibles.';
+			messageErreur = 'Nombre de requêtes maximum autorisé atteint';
         }
         $('#messageboxTexte').text(messageErreur);
         $('#messagebox').removeClass('cacher');
@@ -596,10 +596,11 @@ function checkNbMaxRequetes(page) {
             addShadow('message');
             desactivateLinks();
         }, 2);
+		fin_attente();
         // Restriction des requêtes
-        //return false;
+        return false;
         // Pas de restriction
-        return true;
+        //return true;
     }
 }
 

@@ -28,7 +28,7 @@ class detectKernelListener {
     }
 
     public function processResponse(FilterResponseEvent $event) {
-		if ($this->security->isGranted('ROLE_ADMIN')) {
+		if ($this->security->isGranted('ROLE_ADMIN_LTS')) {
 			$test = $this->session->get('redirection');
 			if ($test == null) {
 				$test = 0;

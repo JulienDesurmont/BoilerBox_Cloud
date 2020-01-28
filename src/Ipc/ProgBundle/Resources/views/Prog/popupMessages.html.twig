@@ -239,14 +239,26 @@
         </div>
         <div class='actions' id='submitPopup'>
             {% if page_appelante == 'listing' %}
-                <a href='#' id="fermerPopup" onclick="razUpdate(); reinitialise_popup_liste(); selection('listing', 'reinitModule', true); closeLightBox(); return false;"><div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div></a>
-				<a href='#' id="validPopup" onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('listing');checkValidationPopup();return false;" ><div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div></a>
+                <a href='#' id="fermerPopup" onclick="razUpdate(); reinitialise_popup_liste(); selection('listing', 'reinitModule', true); closeLightBox(); return false;">
+					<div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div>
+				</a>
+				<a href='#' id="validPopup" onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('listing');checkValidationPopup();return false;" >
+					<div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div>
+				</a>
             {% elseif page_appelante == 'graphique' %}
-                <a href='#' id="fermerPopup" onClick="razUpdate(); reinitialise_popup_liste(); selection('graphique', 'reinitModule', true); closeLightBox(); return false;"><div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div></a>
-				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('graphique');checkValidationPopup();return false;" ><div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div></a>
+                <a href='#' id="fermerPopup" onClick="razUpdate(); reinitialise_popup_liste(); selection('graphique', 'reinitModule', true); closeLightBox(); return false;">
+					<div class='bouton red'><div class='bgbouton'>{{ 'bouton.popup.fermer'|trans|upper }}</div></div>
+				</a>
+				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';sendAjaxForm('graphique');checkValidationPopup();return false;" >
+					<div class='bouton green'><div class='bgbouton'>{{ 'bouton.popup.valider'|trans|upper }}</div></div>
+				</a>
 			{% elseif page_appelante == 'etat' %}
-				<a href='#' id="fermerPopup" onClick="closeLightBox();razUpdate();reinitialise_popup_liste();selection('graphique', null, true); return false;"><div class='bouton red'><div class='bgbouton'>FERMER</div></div></a>
-				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';etatSendAjaxForm('etat');return false;" ><div class='bouton green'><div class='bgbouton'>VALIDER</div></div></a>
+				<a href='#' id="fermerPopup" onClick="closeLightBox();razUpdate();reinitialise_popup_liste();selection('graphique', null, true); return false;">
+					<div class='bouton red'><div class='bgbouton'>FERMER</div></div>
+				</a>
+				<a href='#' id="validPopup"  onClick="document.getElementById('choixSubmit_add').value='ajoutRequete';etatSendAjaxForm('etat');return false;" >
+					<div class='bouton green'><div class='bgbouton'>VALIDER</div></div>*
+				</a>
             {% endif %}
        	</div>
 	</form>

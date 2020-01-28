@@ -16,11 +16,13 @@ class RegistrationType extends AbstractType
 			'type' => 'choice',
 			'options' => array(
 				'choices' => array(
-					'ROLE_USER' 	   => 'Client',
-					'ROLE_ADMIN' 	   => 'Admin',
-					'ROLE_SUPER_ADMIN' => 'SuperAdmin',
-					'ROLE_SUPERVISEUR' => 'Superviseur',
-					'ROLE_TECHNICIEN'  => 'Technicien Lci'
+					'ROLE_USER' 	   		=> 'Client',
+					'ROLE_ADMIN' 	   		=> 'Admin',
+					'ROLE_ADMIN_LTS'        => 'Admin Lts',
+					'ROLE_SUPER_ADMIN' 		=> 'SuperAdmin',
+					'ROLE_SUPERVISEUR' 		=> 'Superviseur',
+					'ROLE_TECHNICIEN'  		=> 'Technicien Lci',
+					'ROLE_TECHNICIEN_LTS'   => 'Technicien Lts'
 				)
 			)
 		));

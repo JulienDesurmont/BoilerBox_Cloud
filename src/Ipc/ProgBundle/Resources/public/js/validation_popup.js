@@ -235,8 +235,9 @@ function deleteAjaxForm(page, idForm) {
 }
 
 
-//	Fonction qui envoi les données de la popup d'ajout d'un message de module 
+//	Fonction qui envoie les données de la popup d'ajout d'un message de module 
 function sendAjaxForm(page) {
+  if (checkNbMaxRequetes(page)) {
 	attente();
 	setTimeout(function() {
 		var localisationSelection = document.getElementById('localisations').value;
@@ -363,6 +364,9 @@ function sendAjaxForm(page) {
 		fin_attente();
 		return;
 	}, 50);
+  } else {
+	$("#fermerPopup").click();
+  }
 }
 
 // Remise à vide du champs "modificationRequete"
