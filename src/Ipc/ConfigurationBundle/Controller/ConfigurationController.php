@@ -97,9 +97,9 @@ private function initialisation() {
 	$this->userLabel = $this->session->get('label');
 	$this->fillnumbers = $this->get('ipc_prog.fillnumbers');
 	$this->tab_modules = array();
-    if ($this->userLabel == '' ) {
+    if (($this->userLabel == 'anon.' ) || ($this->userLabel == '' )) {
         if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            $this->userLabel = 'Admin'
+            $this->userLabel = 'Admin';
         } elseif ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) {
             $this->userLabel = 'Administrateur';
         } elseif ($this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {

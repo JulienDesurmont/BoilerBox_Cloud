@@ -114,11 +114,7 @@ class UsernamePasswordFormAuthenticationListener extends AbstractAuthenticationL
 			$database = $request->get($this->options['database_parameter'], null, true);
         }
         $request->getSession()->set(SecurityContextInterface::LAST_USERNAME, $username);
-        // Définition de la variable de session 'label'
-		$request->getSession()->set('label', $label);
-		$request->getSession()->set('database', $database);
-        $_SESSION['label'] = $label;
-		$_SESSION['database'] = $database;
+
         // Inscription de l'utilisateur connecté au fichier de log
         $urlFichierConnexion = getenv("DOCUMENT_ROOT").'/web/logs/tokenIpcWeb.txt';
         $fichierConnexion = fopen($urlFichierConnexion, 'a+');
@@ -129,6 +125,16 @@ class UsernamePasswordFormAuthenticationListener extends AbstractAuthenticationL
             fwrite($fichierConnexion, $date->format('Y-m-d H:i:s').";Tentative de connexion de $label\n");
 		}
        	fclose($fichierConnexion);
+
+		// Définition de la variable de session 'label'
+		if (empty($label)) {
+            $label=$username;
+        }
+        $request->getSession()->set('label', $label);
+		$request->getSession()->set('database', $database);
+        $_SESSION['label'] = $label;
+		$_SESSION['database'] = $database;
+
         return $this->authenticationManager->authenticate(new UsernamePasswordToken($username, $password, $this->providerKey));
     }
 }

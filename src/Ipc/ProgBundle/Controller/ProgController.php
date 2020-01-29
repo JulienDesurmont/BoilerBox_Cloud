@@ -23,6 +23,7 @@ private $connexion;
 private $urlFichierToken;
 private $dbh;
 private $em;
+private $userLabel;
 
 public function constructeur(){
     // Connexion à la base de donnée
@@ -40,6 +41,25 @@ public function constructeur(){
 		$service_session = $this->container->get('ipc_prog.session');
 		$this->session = $service_session;
 	}
+
+    $this->userLabel = $this->session->get('label');
+    if (($this->userLabel == 'anon.') || ($this->userLabel == '' )) {
+        if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $this->userLabel = 'Admin';
+        } elseif ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) {
+            $this->userLabel = 'Administrateur';
+        } elseif ($this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {
+            $this->userLabel = 'Superviseur';
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN_LTS')) {
+            $this->userLabel = 'Technicien';
+        } elseif ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
+            $this->userLabel = 'Tech';
+        } elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
+            $this->userLabel = 'Client';
+        }
+        $this->session->set('label', $this->userLabel);
+    }
+
 }
 
 // Constructeur de l'objet : Instancie le nom du fichier de log - Initialisation du tableau des modules présents en base de donnée

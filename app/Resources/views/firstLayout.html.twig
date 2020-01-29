@@ -139,7 +139,9 @@
 					<div id='headerUser' class='user'>
 						{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 							<div id='bloc-infos-user' class='notToBePrinted'>
-								<span id='userLabel' data-label={{ service_session.get('label') }} ><span {% if service_session.get('label') == 'anon.' %} class='cacher' {% endif %}>{{ service_session.get('label') }}</span>
+								<span id='userLabel' data-label={{ service_session.get('label') }} >
+									<span {% if service_session.get('label') == 'anon.' %} class='cacher' {% endif %}>{{ service_session.get('label') }}</span>
+								</span>
 								{% if is_granted('ROLE_ADMIN') %}
 									<span> ( Admin ) </span>
 								{% elseif is_granted('ROLE_ADMIN_LTS') %}
