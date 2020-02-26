@@ -3,7 +3,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: null
-    database_name: boilerbox_c782
+    database_name: boilerbox_c820
     database_user: cargo
     database_password: adm5667
     mailer_transport: smtp

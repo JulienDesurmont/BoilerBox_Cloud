@@ -209,6 +209,12 @@
 
 {% block bodyjavascript %}
     {{ parent() }}
+	{#	THEMES HIGHCHART 
+		Pour ajouter des thèmes graphiques : A tester
+		<script type='text/javascript' src="{{ asset('bundles/ipcgraphique/js/themes/grid-light.js') }}"></script>
+		avocado.js  dark-blue.js  dark-green.js  dark-unica.js  gray.js  grid.js  grid-light.js  sand-signika.js  skies.js
+	#}
+
     {% include "Graphique/gestioncourbes.js" %}
 
 	 <script type='text/javascript'>

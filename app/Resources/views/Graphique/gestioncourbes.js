@@ -67,6 +67,12 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
     var laxe;
     if ($position == 'left') {
         laxe = {
+			minorTickInterval: 'auto',
+        	lineColor: '#000',
+        	lineWidth: 1,
+        	tickWidth: 1,
+        	tickColor: '#000',
+
             allowDecimals: $allowDecimal,
             endOnTick: true,
             maxPadding: 0.2,
@@ -75,7 +81,8 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
             labels: {
                 x: -20 * ($numAxe - 1),
                 style:{
-                    color: les_couleurs[$numGraphique]
+                    color: les_couleurs[$numGraphique],
+					font: '11px Trebuchet MS, Verdana, sans-serif'
                 }
             },
             title: {
@@ -84,6 +91,9 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
                 text: graphData[$numGraphique]['unite'],
                 x: -20 * ($numAxe - 1),
                 style: {
+					fontWeight: 'bold',
+                	fontSize: '12px',
+                	fontFamily: 'Trebuchet MS, Verdana, sans-serif',
                     color: les_couleurs[$numGraphique]
                 }
             },
@@ -92,6 +102,12 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
     }
     if ($position == 'right') {
         laxe = {
+			minorTickInterval: 'auto',
+            lineColor: '#000',
+            lineWidth: 1,
+            tickWidth: 1,
+            tickColor: '#000',
+
             allowDecimals: $allowDecimal,
             endOnTick: true,
             maxPadding: 0.2,
@@ -100,7 +116,8 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
             labels: {
                 x: 25 * ($numAxe - 2),
                 style:{
-                    color: les_couleurs[$numGraphique]
+                    color: les_couleurs[$numGraphique],
+					font: '11px Trebuchet MS, Verdana, sans-serif'
                 }
             },
             title: {
@@ -110,6 +127,9 @@ function setAxe($numGraphique, $numAxe, $allowDecimal, $position) {
                 text: graphData[$numGraphique]['unite'],
                 x: 25 * ($numAxe - 2),
                 style: {
+					fontWeight: 'bold',
+                    fontSize: '12px',
+                    fontFamily: 'Trebuchet MS, Verdana, sans-serif',
                     color: les_couleurs[$numGraphique]
                 }
             },
@@ -277,7 +297,6 @@ if (axes_y.length % 2 == 0) {
 var $chartMarginRight = parseInt(axes_y.length/2,10)*$margeParUnite+1;
 
 $(function() {
-	var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
 	Highcharts.setOptions({
 		lang: {
 			months:	["Janvier "," Février "," Mars "," Avril "," Mai "," Juin "," Juillet "," Août ","Septembre "," Octobre "," Novembre "," Décembre"],
@@ -306,6 +325,10 @@ $(function() {
 			marginTop: 10,
 			panning: true,
         	panKey: 'shift',
+			backgroundColor: null,
+			style: {
+				fontFamily: "Dosis, sans-serif"
+			},
 			events:	{
 				load: function (e) {
                     var chart = this,
@@ -480,7 +503,16 @@ $(function() {
 			enabled: false
 		},
 		xAxis: {
+			gridLineWidth: 1,
+        	lineColor: '#000',
+        	tickColor: '#000',
 			minTickInterval: 2,
+			labels: {
+            	style: {
+            	    color: '#000',
+            	    font: '11px Trebuchet MS, Verdana, sans-serif'
+            	}
+        	},
 			type: 'datetime',
 			// Espacement entre les points afin de garder une distance réelle entre 2 points
 			ordinal: false
