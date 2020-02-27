@@ -1097,6 +1097,7 @@ public function creationSiteAction($numfresh) {
 								$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 								$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 								$parametreFrequenceRapport->setParametreAdmin(true);
+								$parametreFrequenceRapport->setParametreTechnicien(false);
 								$this->em->persist($parametreFrequenceRapport);
 								$this->em->flush();
 							}
@@ -1273,6 +1274,7 @@ public function creationSiteAction($numfresh) {
 					$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 					$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (date de la connexion;Nb erreurs avant mail(-1 = bloquer,0 = tous); Nb erreurs en cours; Etat de la connexion courante)");
 					$parametreFrequenceRapport->setParametreAdmin(true);
+					$parametreFrequenceRapport->setParametreTechnicien(false);
 					$this->em->persist($parametreFrequenceRapport);
 					$this->em->flush();
 				}
@@ -1357,6 +1359,7 @@ public function creationSiteAction($numfresh) {
 						$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 						$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 						$parametreFrequenceRapport->setParametreAdmin(true);
+						$parametreFrequenceRapport->setParametreTechnicien(false);
 						$this->em->persist($parametreFrequenceRapport);
 						$this->em->flush();
 					}
@@ -1390,6 +1393,7 @@ public function creationSiteAction($numfresh) {
 						$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 						$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 						$parametreFrequenceRapport->setParametreAdmin(true);
+						$parametreFrequenceRapport->setParametreTechnicien(false);
 						$this->em->persist($parametreFrequenceRapport);
 						$this->em->flush();
 					}

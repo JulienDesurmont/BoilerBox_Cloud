@@ -18,6 +18,7 @@ public function __construct($srv_connexion) {
         $configuration->setDesignation('Fuseau horaire');
         $configuration->setValeur('Europe/Paris');
         $configuration->setParametreAdmin(true);
+		$configuration->setParametreTechnicien(false);
 		$this->em->persist($configuration);
 		$this->em->flush();
 	}

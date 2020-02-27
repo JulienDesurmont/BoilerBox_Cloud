@@ -54,7 +54,7 @@ class Configuration
     /**
      * @var parametreTechnicien
      *
-     * @ORM\Column(name="parametre_technicien", type="boolean", options={"default":false}, nullable=false)
+     * @ORM\Column(name="parametre_technicien", type="boolean", options={"default":false}, nullable=true)
     */
     protected $parametreTechnicien;
 

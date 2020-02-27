@@ -623,6 +623,7 @@ public function verifContenu($contenu_du_fichier, $verifdoublon) {
             $entity_configuration->setDesignation('Identifiant de la dernières donnée insérée pour la localisation '.$this->localisation->getNumeroLocalisation());
             $entity_configuration->setValeur($max_insert_id);
             $entity_configuration->setParametreAdmin(true);
+			$entity_configuration->setParametreTechnicien(false);
             $this->em->persist($entity_configuration);
         } else {
             $entity_config_last_id->setValeur($max_insert_id);

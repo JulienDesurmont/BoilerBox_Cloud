@@ -5,6 +5,17 @@
 
 {% block title %}{{ parent() }}Paramètres{% endblock title %}
 
+{#
+// INFO : Les Techniciens LCI n'ont pas accès aux configurations
+    // Si parametreAdmin
+        Seul Admin LCI peut modifier / supprimer
+    // Si paramètreTechnicien
+        Admin, AdminLTS et Techniciens LTS peuvent modifier
+    // Si pas parameterAdmin et pas parametreTechnicien
+        Admin et AdminLTS peuvent modifier
+#}
+
+
 
 {% block title_header %}
     <h1>Paramètres Boilerbox</h1>
@@ -20,56 +31,38 @@
             <tr><th>Paramètre</th>
                 <th>Désignation</th>
                 <th>Valeur</th>
-				<th class='small'>{% if is_granted('ROLE_ADMIN_LTS') %}Technicien{% endif %}</th>
-                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
+				<th class='small'>Technicien</th>
+                <th class='small'>Admin.</th>
                 <th class='small'>Modif.</th>
-                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>
+                <th class='small'>Supp.</th>
             </tr>
 			</thead>
 			<tbody>
             {% for liste in liste_configurations %}
-                {% if liste.parametreAdmin %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <tr>
-                            <td>{{ liste.parametre }}</td>
-                            <td>{{ liste.designation }}</td>
-                            <td>{{ liste.valeur }}</td>
-							<td class='small'><input type='checkbox' disabled /></td>
-							<td class='small'><input type='checkbox' checked disabled /></td>
-                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                            <td class='small'><input type='radio' name='supp' value={{ liste.id }} /></td>
-                        </tr>
-                    {% endif %}
-                {% elseif liste.parametreTechnicien %}
-					{% if is_granted('ROLE_TECHNICIEN_LTS') %}
-						<tr>
-                            <td>{{ liste.parametre }}</td>
-                            <td>{{ liste.designation }}</td>
-                            <td>{{ liste.valeur }}</td>
-							<td class='small'><input type='checkbox' checked disabled {% if not is_granted('ROLE_ADMIN_LTS') %}class='cacher'{% endif %} /></td>
-                            <td class='small'><input type='checkbox' disabled class='cacher' /></td>
-                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                            <td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% endif %}</td>
-                        </tr>
-					{% endif %}	
-				{% elseif is_granted('ROLE_ADMIN_LTS') %}
                     <tr>
                         <td>{{ liste.parametre }}</td>
                         <td>{{ liste.designation }}</td>
                         <td>{{ liste.valeur }}</td>
-						<td class='small'><input type='checkbox' disabled /></td>
-                        <td class='small'><input type='checkbox' disabled class='cacher' /></td>
-                        <td class='small'><input type='radio' name='modif' value={{ liste.id }} /></td>
-                        <td class='small'>{% if is_granted('ROLE_ADMIN') %}<input type='radio' name='supp' value={{ liste.id }} />{% endif %}</td>
+                        <td class='small'><input type='checkbox' {% if liste.parametreTechnicien %} checked {% endif %} disabled /></td>
+                        <td class='small'><input type='checkbox' {% if liste.parametreAdmin %} checked {% endif %} disabled /></td>
+                        {% if liste.parametreAdmin %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN') %} disabled {% endif %} /></td>
+                        {% elseif liste.parametreTechnicien %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_TECHNICIEN_LTS') %} disabled {% endif %} /></td>
+                        {% else %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN_LTS') %} disabled {% endif %} /></td>
+                        {% endif %}
+                        <td class='small'><input type='radio' name='supp' value={{ liste.id }} disabled /></td>
                     </tr>
-                {% endif %}
             {% endfor %}
 			</tbody>
        </table>
    </div>
 {% endblock body %}
 
+	
 
+{# MENU NON AFFICHES SUR LE CLOUD
 {% block menu_droite %}
     <div id="validation">
 		{% if is_granted('ROLE_ADMIN') %}
@@ -88,7 +81,7 @@
         {% endif %}
 	</div>
 {% endblock menu_droite %}
-
+#}
 
 
 {% block footer %}

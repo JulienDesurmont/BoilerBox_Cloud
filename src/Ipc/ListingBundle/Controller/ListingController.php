@@ -1017,7 +1017,7 @@ public function afficheListingAction($page) {
 					}
 					$tmp_date_deb = $this->getDatePeriode($session_date['datedebut'], $tabDesRequetes[$key]['id_localisation'], 'debut');
                     $tmp_date_fin = $this->getDatePeriode($session_date['datefin'], $tabDesRequetes[$key]['id_localisation'], 'fin');
-					// Requête Sql : Recherche des données
+					// Requête Sql : Recherche des données 
 					$tabDesDonnees = $tmp_donnee->sqlAllLimitedOrdered($dbh, $this->reverseDate($tmp_date_deb), $this->reverseDate($tmp_date_fin), $requeteTotale, $limit_req, $offset);
 					// Pour chaque donnée retournée par la requête
 					// On indique le numéro de localisation correspondant à l'id de la localisation indiquée dans la donnée ( grâce à la variable $this->liste_localisations)
@@ -1051,7 +1051,7 @@ public function afficheListingAction($page) {
 								$entity_module_indefini = $this->em->getRepository('IpcProgBundle:Module')->find($recupdonnee['module_id']);
 								$tabDesDonnees[$key2]['codeModule'] = $entity_module_indefini->getCategorie().$service_numbers->fillNumber($entity_module_indefini->getNumeroModule(), 2).$service_numbers->fillNumber($entity_module_indefini->getNumeroMessage(), 2);
 								$tabDesDonnees[$key2]['intitule_module'] = $entity_module_indefini->getMessage();
-								$tabDesDonnees[$key2]['erreur'] = "Aucune correspondance [ module / localisation ] trouvée dans la table d'échange";
+								$tabDesDonnees[$key2]['erreur'] = "Aucune correspondance [ module " + $recupdonnee['module_id'] + " / localisation " + $tabDesDonnees[$key2]['numero_localisation'] + "] trouvée dans la table d'échange";
 								$tabDesDonnees[$key2]['message'] = 'Id Module : '.$recupdonnee['module_id'];
 								$genre_id_module_indefini = $entity_module_indefini->getGenre()->getId();
 								$tabDesDonnees[$key2]['intitule_genre']	= $this->tab_conversion_genre_id[$genre_id_module_indefini];

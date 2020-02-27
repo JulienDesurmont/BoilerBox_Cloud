@@ -71,6 +71,7 @@ private $srv_mailing;
             $ent_configuration->setDesignation('Nombre de données en table t_donnee sur les X derniers jours');
             $ent_configuration->setValeur($date_du_jour.';'.$nb_db_donnees);
             $ent_configuration->setParametreAdmin(true);
+			$ent_configuration->setParametreTechnicien(false);
             $ent_configuration->SqlInsert($this->dbh);
         }
 		$fichier_log = 'parametresIpc.log';
