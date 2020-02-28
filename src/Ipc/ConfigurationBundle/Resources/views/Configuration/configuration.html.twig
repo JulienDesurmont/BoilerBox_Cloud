@@ -15,7 +15,7 @@
 	{{ parent() }}
 
     <section id='menu_general'>
-        <select name='select_configuration' id='select_configuration' class='principal'>
+        <select name='select_configuration' id='select_configuration' class='principal' disabled>
 
             <option class='optionTitre' disabled selected>Configuration BoilerBox</option>
             {% if is_granted('ROLE_TECHNICIEN_LTS') %}
@@ -59,6 +59,9 @@
 {% block bodyjavascript %}
 	{{ parent() }}
 	<script type='text/javascript'>
+        $(document).ready(function() {
+                $('#select_configuration').prop('disabled', false);
+        });
         $(function(){
             $('#select_configuration').change(function(){
                 attente();

@@ -16,7 +16,7 @@
 	{{ parent() }}
 
 	<section id='menu_general'>
-		<select name='select_outils' id='select_outils' class='principal'>
+		<select name='select_outils' id='select_outils' class='principal' disabled>
 			<option class='optionTitre' disabled selected>Outils BoilerBox</option>
 			{% if is_granted('ROLE_ADMIN') %}
 				<option class='optionTitre' disabled>Gestion de la crontab</option>
@@ -42,6 +42,11 @@
 	{{ parent() }}
 
 	<script type='text/javascript'>
+        $(document).ready(function() {
+                $('#select_outils').prop('disabled', false);
+        });
+
+
         $(function() {
             $('#select_outils').change(function() {
                 attente();
