@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="t_requete_perso")
  * @ORM\Entity(repositoryClass="Ipc\ConfigurationBundle\Entity\RequeteRepository")
  * @UniqueEntity(
- *    fields={"appellation", "createur"},
+ *    fields={"appellation", "compte"},
  *    message="Ce nom de requête est déjà utilisé"
  * )
  */
@@ -89,7 +89,7 @@ class Requete
 
    /**
     *
-    * @ORM\ManyToOne(targetEntity="Ipc\UserBundle\Entity\User", inversedBy="requetes", cascade={"persist"} )
+    * @ORM\ManyToOne(targetEntity="Ipc\UserBundle\Entity\User", inversedBy="requetes", cascade={"persist"})
     */
     protected $utilisateur;
 

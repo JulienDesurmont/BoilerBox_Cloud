@@ -573,8 +573,9 @@ public function indexAction() {
 		$request = $this->get('request');
 		// Récupération du handler de formulaire
   		$form_handler = new RequeteHandler($form_requete, $request);
+		$entity_user = $this->em->getRepository('IpcUserBundle:User')->find($this->container->get('security.context')->getToken()->getUser()->getId());
        	// Execution de la méthode d'execution du handler : Retourne True si les données du formulaire sont validées
-        $process = $form_handler->process($this->em, 'graphique', $this->container->get('security.context')->getToken()->getUser(), $this->session);
+        $process = $form_handler->process($this->em, 'graphique', $entity_user, $this->session);
 		// Récupération de l'id de la requête personnelle
 		$id_requete_perso = $this->session->get('graphique_requete_selected', null);
 		$this->entities_requetes_perso = $this->getRequetesPerso();
