@@ -615,6 +615,9 @@ public function verifContenu($contenu_du_fichier, $verifdoublon) {
         // Récupération de l'id de la derniere valeur insérée en base.
         $donnee = new Donnee();
         $max_insert_id = $donnee->getMaxId($this->dbh);
+        if ($max_insert_id == null) {
+        	$max_insert_id = 0;
+       	}
         $parametre_last_insert_id = 'localisation_'.$this->localisation->getId()."_last_id";
         $entity_config_last_id = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($parametre_last_insert_id);
         if (! $entity_config_last_id){
