@@ -12,6 +12,7 @@
 
 {% block body %}
 	{{ parent() }}
+	{% set caseCochee = false %}
 
 	<div class='gestion_modif_site'>
 	   	<form action={{ path('ipc_export_tableEchange') }} method='post' name='MyForm'>
@@ -24,7 +25,7 @@
 			   				{% for keyLocalisation,localisation in site.localisations %}
 			       				{% if loop.index0 == 0 %}
 			               			<td class='gauche'>{{ localisation.designation }}</td>
-			               			<td><input type='radio' name='radioIdLoc' value="{{ localisation.id }}" /></td></tr>
+			               			<td><input type='radio' name='radioIdLoc' value="{{ localisation.id }}" {% if caseCochee == false %}checked{% endif %}  /></td></tr>
 			       				{% else %}
 			    					<tr>
 			        					<td class='gauche'>{{ localisation.designation }}</td>
@@ -35,8 +36,9 @@
 			   			<tr><td>{{ site.intitule }}</td></tr>
 		    		{% endif %}
 		    		<tr><td colspan="3"><hr></td></tr>
+					{% set caseCochee = true %}
                 {% endfor %}
-				<tr><td colspan='2'>Toutes localisations</td><td><input type='radio' name='radioIdLoc' value='allLoc' checked /></td></tr>
+				<tr><td colspan='2'>Toutes localisations</td><td><input type='radio' name='radioIdLoc' value='allLoc'/></td></tr>
           	</table>
 	   	</form>
 	</div>
