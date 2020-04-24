@@ -277,7 +277,7 @@ function openLightBoxDiffere() {
             desactivateLinks();
             $('#lightbox').removeClass('cacher');
             fin_attente();
-        }, 50);
+        }, 2500);
     }
 }
 
@@ -828,7 +828,7 @@ function updateAjaxForm(url, page, idForm, keyTabRequete) {
                     }
                 }
             }
-            openLightBox();
+            openLightBoxDiffere();
         }, 50);
     }, 100);
 }

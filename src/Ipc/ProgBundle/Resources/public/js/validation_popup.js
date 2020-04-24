@@ -254,7 +254,9 @@ function sendAjaxForm(page) {
 		var valeur1Max = null;
 		var valeur2Min = null;
 		var valeur2Max = null;
+		// On récupère le champs indiquant le numéro de message à modifier, puis on réinitialise la valeur
 		var modificationRequete = document.getElementById('modificationRequete').value;
+		razUpdate();
 		var choixSubmit = document.getElementById('choixSubmit_add').value;
 		var suppressionRequete = $("input[type='radio'][name='suppression_requete']").filter(':checked').val();
 		var ajax = 'ajax';
@@ -372,7 +374,6 @@ function sendAjaxForm(page) {
 // Remise à vide du champs "modificationRequete"
 function razUpdate() {
 	document.getElementById('modificationRequete').value = '';
-	razCodeModule(); 
 }
 
 function razCodeModule() {

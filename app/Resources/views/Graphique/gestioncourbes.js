@@ -1943,7 +1943,7 @@ function isEntier(nombre) {
     pattern_virgule = /,/;
     nombre = nombre.replace(pattern_virgule, '\.');
 	// Suppression des espaces
-	pattern_espace = /\s/;
+	pattern_espace = /\s/g;
 	nombre = nombre.replace(pattern_espace, '');
     var entier = parseInt(nombre);
     var result = parseFloat(nombre) - entier;

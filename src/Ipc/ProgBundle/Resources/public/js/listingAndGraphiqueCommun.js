@@ -110,8 +110,11 @@
     }
 
     function afficheListeMessage(){
-        $message = $('#messages option:selected').text();
+        var $message = $('#messages option:selected').text();
+		var $pattern_code = /^.+?\s/;
+		var $code = $.trim($message.match($pattern_code));
         $('#messageDeLaListe').text($message);
+		$('#codeModule').val($code);
     }
 
     /* Fonction qui change la valeur du paramètre popup_simplifiee et qui réinitialise les listes */
