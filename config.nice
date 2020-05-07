@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# Created by configure
+
+'/home/debian/.phpbrew/build/php-7.1.33/configure' \
+'--with-zlib=/usr/local/zlib' \
+'–with-bz2' \
+'--with-pdo-mysql' \
+'build_alias=–with-bz2' \
+'host_alias=–with-bz2' \
+'target_alias=–with-bz2' \
+"$@"

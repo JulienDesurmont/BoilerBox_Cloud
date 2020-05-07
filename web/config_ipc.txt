@@ -1,2 +1,2 @@
-boilerbox_c820
+boilerbox_noaccess
 /run/mysqld/mysqld.sock

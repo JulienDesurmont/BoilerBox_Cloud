@@ -891,12 +891,12 @@ private function setFichiersLog($date_rapport) {
 		$date_fichier_rapport = date('Ymd', strtotime($this->date_rapport));
 		$this->fichier_log_ipc = $this->log->getLogDir().'backup/'.$date_fichier_rapport.'/'.$date_fichier_rapport.'*_importBin.log.bz2';
 		$this->fichier_log_transfert = $this->log->getLogDir().'backup/'.$date_fichier_rapport.'/'.$date_fichier_rapport.'*_transfertFtp.log.bz2';
-		$this->fichier_log_security = $this->log->getLogDir().'backup/'.$date_fichier_rapport.'/'.$date_fichier_rapport.'*_tokenIpcWeb.txt.bz2';
+		$this->fichier_log_security = $this->log->getLogDir().'backup/'.$date_fichier_rapport.'/'.$date_fichier_rapport.'*_login.log.bz2';
 		$this->commande_cat = "bzcat ";
 	} else {
 		$this->fichier_log_ipc = $this->log->getLogDir().'importBin.log';
 		$this->fichier_log_transfert = $this->log->getLogDir().'transfertFtp.log';
-		$this->fichier_log_security = $this->log->getLogDir().'tokenIpcWeb.txt';
+		$this->fichier_log_security = $this->log->getLogDir().'login.log';
 		$this->commande_cat = "cat ";
 	}
 }

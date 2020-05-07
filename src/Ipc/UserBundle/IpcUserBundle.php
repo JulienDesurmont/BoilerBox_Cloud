@@ -7,6 +7,6 @@ class IpcUserBundle extends Bundle
 {
 	public function getParent()
 	{
-		return 'LciBoilerBoxBundle';
+		return 'FOSUserBundle';
 	}
 }

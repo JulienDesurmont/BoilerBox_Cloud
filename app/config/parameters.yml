@@ -3,7 +3,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: null
-    database_name: boilerbox_c820
+    database_name: boilerbox_noaccess
     database_user: cargo
     database_password: adm5667
     mailer_transport: smtp
@@ -18,11 +18,12 @@ parameters:
     locale: fr
     secret: ThisTokenIsNotSoSecretChangeIt
     socket_unix: /var/run/mysqld/mysqld.sock
-
     change_db.class: Ipc\ProgBundle\Services\ChangeDB\ServiceChangeDB
     configuration.class: Ipc\ProgBundle\Services\Configuration\ServiceConfiguration
     connectbd.class: Ipc\ProgBundle\Services\Connexion\ServiceConnexion
     detectLocaleListener.class: Ipc\ProgBundle\Listener\Locale\LocaleListener
+    detectLogin.class: Ipc\UserBundle\Services\detectLogin
+    detectLoginListener.class: Ipc\UserBundle\Services\detectLoginListener
     etats.class: Ipc\EtatBundle\Services\ServiceEtatQueries
     fillnumber.class: Ipc\ProgBundle\Services\FillNumbers\ServiceFillNumbers
     importbin.class: Ipc\ProgBundle\Services\ImportBin\ServiceImportBin

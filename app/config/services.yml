@@ -55,7 +55,7 @@ services:
         class: "%configuration.class%"
         arguments: ["@ipc_prog.connectbd", "@security.context", "@ipc_prog.session"]
     ipc_user.detect.login:
-        class: "Ipc\UserBundle\Services\detectLogin"
+        class: "%detectLogin.class%"
     ipc_outil.getNbDBDonnees:
         class: "%getNbDBDonnees.class%"
         arguments: ["@ipc_prog.connectbd", "@ipc_configuration.configurationCloud", "@ipc_prog.log", "@ipc_prog.mailing"]
@@ -63,7 +63,7 @@ services:
         class: "%configuration_cloud.class%"
         arguments: ["%kernel.root_dir%"]
     ipc_user.detect.login.listener:
-        class: "Ipc\UserBundle\Services\detectLoginListener"
+        class: "%detectLoginListener.class%"
         arguments: ["@ipc_user.detect.login"]
         tags:
             - { name:kernel.event_listener, event:security.authentication.success, method:successLogin, priority:2 }
