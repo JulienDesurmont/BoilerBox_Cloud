@@ -579,7 +579,7 @@ function checkNbMaxRequetes(page) {
     var nombre_max_requetes = $.trim(xhr.responseText);
     // Récupération du nombre de requêtes demandées
     var nombre_requete_en_cours = verifNombreRequetes();
-    if (nombre_requete_en_cours < nombre_max_requetes) {
+    if (parseInt(nombre_requete_en_cours) < parseInt(nombre_max_requetes)) {
         return true;
     } else {
         var message = '';

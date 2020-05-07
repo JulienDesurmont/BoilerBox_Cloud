@@ -50,7 +50,7 @@ class UsernamePasswordFormAuthenticationListener extends AbstractAuthenticationL
     public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = array(), LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, $csrfTokenManager = null) {
 		$configuration = new Configuration();
         try {
-			$fichier_config = fopen(getenv("DOCUMENT_ROOT").'/web/config_ipc.txt', 'r');
+			$fichier_config = fopen(getenv("DOCUMENT_ROOT").'/config_ipc.txt', 'r');
             $base = trim(fgets($fichier_config));
 			$socket = trim(fgets($fichier_config));
             fclose($fichier_config);
@@ -116,7 +116,7 @@ class UsernamePasswordFormAuthenticationListener extends AbstractAuthenticationL
         $request->getSession()->set(SecurityContextInterface::LAST_USERNAME, $username);
 
         // Inscription de l'utilisateur connecté au fichier de log
-        $urlFichierConnexion = getenv("DOCUMENT_ROOT").'/web/logs/tokenIpcWeb.txt';
+        $urlFichierConnexion = getenv("DOCUMENT_ROOT").'/logs/tokenIpcWeb.txt';
         $fichierConnexion = fopen($urlFichierConnexion, 'a+');
         $date = new \Datetime();
 		if (empty($label)) {

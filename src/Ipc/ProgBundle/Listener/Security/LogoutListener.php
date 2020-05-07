@@ -57,7 +57,7 @@ class LogoutListener implements ListenerInterface {
 
         $configuration = new Configuration();
         try{
-			$fichier_config = fopen(getenv("DOCUMENT_ROOT").'/web/config_ipc.txt', 'r');
+			$fichier_config = fopen(getenv("DOCUMENT_ROOT").'/config_ipc.txt', 'r');
             $base = trim(fgets($fichier_config));
 			$socket = trim(fgets($fichier_config));
             fclose($fichier_config);
