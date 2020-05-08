@@ -21,8 +21,8 @@ public function __construct(\Swift_Mailer $mailer, $templating, $log, $connexion
 	$this->mailer = $mailer;
 	$this->templating = $templating;
 	$this->dbh = $connexion->getDbh();
-	//$this->document_root = getenv("DOCUMENT_ROOT");
-	$this->document_root = __DIR__.'/../../../../..';
+	//$this->document_root = __DIR__.'/../../../../..';
+	$this->document_root = getenv("DOCUMENT_ROOT");
 	$this->email_assistance = $email_assistance;
 }
 
@@ -33,7 +33,7 @@ public function sendAssistance($sujet, $contenu_titre, $liste_contenus) {
         ->setSubject($sujet)
         ->setFrom($this->email_assistance)
         ->setTo($this->email_assistance);
-    $image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/web/images/icones/logo_lci.jpg'));
+    $image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/images/icones/logo_lci.jpg'));
 	$liste_contenus= [];
     $message ->setBody($this->templating->render('IpcProgBundle:Mail:email.html.twig', array(
                                                                                         'liste_contenus' => $liste_contenus,
@@ -62,7 +62,7 @@ public function send($destinataire, $sujet, $contenu_titre, $liste_contenus) {
 		->setSubject($sujet)
 		->setFrom($affaire_site)
 		->setTo($destinataire);
-	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/web/images/icones/logo_lci.jpg'));
+	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/images/icones/logo_lci.jpg'));
 	$message ->setBody($this->templating->render('IpcProgBundle:Mail:email.html.twig', array(
 																						'liste_contenus' => $liste_contenus,
 																						'image_link' => $image_link))
@@ -80,9 +80,9 @@ public function send($destinataire, $sujet, $contenu_titre, $liste_contenus) {
 	}
 }	
 
-// Sauvegarde le contenu du mail dans un fichier html situé dans le dossier $this->document_root./web/uploads/rapportsJournaliers
+// Sauvegarde le contenu du mail dans un fichier html situé dans le dossier $this->document_root./uploads/rapportsJournaliers
 public function saveMail($destinataire, $titreMail, $liste_contenus) {
-	$fichierSauvegarde = $this->document_root.'/web/uploads/rapportsJournaliers/'.$titreMail;
+	$fichierSauvegarde = $this->document_root.'/uploads/rapportsJournaliers/'.$titreMail;
 	// Sauvegarde du fichier si il n'existe pas déjà
 	if (file_exists($fichierSauvegarde) === false){
     	// Récupération de l'affaire du site courant
@@ -134,7 +134,7 @@ public function sendAnalyse($destinataire, $sujet, $contenu_titre, $liste_conten
 		->setSubject($sujet)
 		->setFrom($affaire_site)
 		->setTo($destinataire);
-	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/web/images/icones/logo_lci.jpg'));
+	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/images/icones/logo_lci.jpg'));
 	$message ->setBody($this->templating->render('IpcProgBundle:Mail:emailAnalyse.html.twig', array(
 																								'liste_contenus' => $liste_contenus,
 																								'image_link' => $image_link))
@@ -160,7 +160,7 @@ public function sendTableEchange($destinataire, $sujet, $cheminFichier, $liste_c
 		->setSubject($sujet)
 		->setFrom($affaire_site)
 		->setTo($destinataire);
-	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/web/images/icones/logo_lci.jpg'));
+	$image_link = $message->embed(\Swift_Image::fromPath($this->document_root.'/images/icones/logo_lci.jpg'));
 	$message 
 		->attach(\Swift_Attachment::fromPath($cheminFichier))
 		->setBody($this->templating->render('IpcProgBundle:Mail:emailTableEchange.html.twig', array('liste_contenus' => $liste_contenus, 'image_link' => $image_link)))
@@ -177,7 +177,7 @@ public function sendTableEchange($destinataire, $sujet, $cheminFichier, $liste_c
 }
 
 public function sendAllMails() {
-	$cheminConsole = $this->document_root.'/app/console';
+	$cheminConsole = $this->document_root.'../app/console';
 	$commande = "php $cheminConsole swiftmailer:spool:send --env=prod";
 	//$commande = "php $cheminConsole swiftmailer:spool:send";
 	$retour = shell_exec($commande);

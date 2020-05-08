@@ -121,7 +121,7 @@ class LogoutListener implements ListenerInterface {
 		//	Enregistrement du logout
 		$date = new \Datetime();
 		$dateDeconnexion = $date->format('Y-m-d H:i:s');
-		$urlFichierToken = getenv("DOCUMENT_ROOT").'/web/logs/tokenIpcWeb.txt';
+		$urlFichierToken = getenv("DOCUMENT_ROOT").'/logs/tokenIpcWeb.txt';
 		$fichierToken = fopen($urlFichierToken,'a+');
         if (! empty($_SESSION['label'])) {
             fputs($fichierToken,"$dateDeconnexion;Demande de déconnexion de ".$_SESSION['label']."\n");

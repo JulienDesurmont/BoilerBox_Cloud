@@ -1,5 +1,4 @@
 <?php
-// getenv("DOCUMENT_ROOT")/src/Ipc/UserBundle/Services/detectLoginListener.php
 namespace Ipc\UserBundle\Services;
 
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
