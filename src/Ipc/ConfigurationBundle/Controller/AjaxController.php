@@ -98,13 +98,13 @@ public function setScriptAction() {
 	case 'activation':
 		// Start script
 		$script = 's'.strtolower($_GET['script']);
-		$commande = $document_root."/web/sh/GestionSystem/gestionScripts.sh $script";
+		$commande = $document_root."/sh/GestionSystem/gestionScripts.sh $script";
 		exec($commande);
 		break;
 	case 'desactivation':
 		// Arrêt du script
 		$script = 'a'.strtolower($_GET['script']);
-		$commande = $document_root."/web/sh/GestionSystem/gestionScripts.sh $script";
+		$commande = $document_root."/sh/GestionSystem/gestionScripts.sh $script";
 		exec($commande);
 		echo "Desactivation : $commande";
 		break;

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class detectLogin {
     // Méthode pour modification de la réponse
     public function enregistreUtilisateur($typeConnexion, $dateConnexion, $token) {
-		$urlFichierToken = getenv("DOCUMENT_ROOT").'/web/logs/tokenIpcWeb.txt';
+		$urlFichierToken = getenv("DOCUMENT_ROOT").'/logs/tokenIpcWeb.txt';
         $fichierToken = fopen($urlFichierToken, 'a+');
 		// Enregistremùent du token dans le fichier
 		fputs($fichierToken, "$dateConnexion;Connexion $typeConnexion;$token\n");

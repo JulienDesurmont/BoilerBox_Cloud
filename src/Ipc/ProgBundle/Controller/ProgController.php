@@ -36,7 +36,7 @@ public function constructeur(){
 		unset($_SESSION['database']);
     }
 	$this->em = $srv_connexion->getManager();
-	$this->urlFichierToken = getenv("DOCUMENT_ROOT").'/web/logs/tokenIpcWeb.txt';
+	$this->urlFichierToken = getenv("DOCUMENT_ROOT").'/logs/tokenIpcWeb.txt';
 	if (empty($this->session)) {
 		$service_session = $this->container->get('ipc_prog.session');
 		$this->session = $service_session;
