@@ -1,5 +1,4 @@
 <?php
-// getenv("DOCUMENT_ROOT")/src/Ipc/UserBundle/Services/detectKernelListener.php
 namespace Ipc\UserBundle\Services;
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;

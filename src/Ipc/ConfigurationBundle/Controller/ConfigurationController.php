@@ -205,14 +205,14 @@ public function changeMaxExecTimeAction() {
 		$maxExecTime = $configuration->SqlGetParam($dbh, 'maximum_execution_time');
 	}
 	// Modification dans le script sh : suppHighRequest.sh
-	$commande = "cat ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh | sed s/tempAttente=.*/tempAttente=$maxExecTime/g > ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh_tempo";
+	$commande = "cat ".$this->document_root."/sh/GestionSql/suppHighRequest.sh | sed s/tempAttente=.*/tempAttente=$maxExecTime/g > ".$this->document_root."/sh/GestionSql/suppHighRequest.sh_tempo";
 	$execCmd = exec($commande);
-	$commande = "mv ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh_tempo ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh";
+	$commande = "mv ".$this->document_root."/sh/GestionSql/suppHighRequest.sh_tempo ".$this->document_root."/sh/GestionSql/suppHighRequest.sh";
 	$execCmd = exec($commande);
-	$commande = "chmod 777 ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh";
+	$commande = "chmod 777 ".$this->document_root."/sh/GestionSql/suppHighRequest.sh";
 	$execCmd = exec($commande);
 	// Demande d'Arrêt-Relance du script
-	$commande = $this->document_root."/web/sh/GestionSql/arretRelanceSuppHighRequest.sh";
+	$commande = $this->document_root."/sh/GestionSql/arretRelanceSuppHighRequest.sh";
 	$execCmd = exec($commande);
 	echo $maxExecTime;
 	$dbh = $connexion->disconnect();
@@ -700,10 +700,10 @@ public function configurationAuto($type) {
 
         // Paramètres des dossiers de sauvegarde des fichiers
         $liste_conf['dossier_fichiers_originaux']['description'] = 'Dossier destination des fichiers à convertir en binaire pour mise en base';
-        $liste_conf['dossier_fichiers_originaux']['value'] = $this->document_root.'/web/uploads/fichiers_origines';
+        $liste_conf['dossier_fichiers_originaux']['value'] = $this->document_root.'/uploads/fichiers_origines';
         $liste_conf['dossier_fichiers_originaux']['parametreAdmin'] = true;
         $liste_conf['dossier_fichiers_tmpftp']['description'] = 'Dossier destination des fichiers transférés par Ftp';
-        $liste_conf['dossier_fichiers_tmpftp']['value'] = $this->document_root.'/web/uploads/fichiers_tmpftp';
+        $liste_conf['dossier_fichiers_tmpftp']['value'] = $this->document_root.'/uploads/fichiers_tmpftp';
         $liste_conf['dossier_fichiers_tmpftp']['parametreAdmin'] = true;
         // Paramètre de configuration des alertes emails
         $liste_conf['nb_max_jours_sans_transfert']['description'] = "Nombre de jours sans transfert ftp avant l'envoi d'une alerte email";

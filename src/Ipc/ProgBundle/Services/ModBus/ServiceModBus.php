@@ -463,7 +463,7 @@ public function writeModbus($typeAction, $typeMot, $ipLocalisation) {
 
 				$this->log->setLog("[INFO];[MODBUS];import(Bin);Création des fichiers binaires", $this->fichier_log);
 				// Lancement de la création des fichiers binaires
-				$commande = "sudo ".$document_root."/web/sh/GestionTransferts/TransfertsIpc/creationBin.sh $document_root";
+				$commande = "sudo ".$document_root."/sh/GestionTransferts/TransfertsIpc/creationBin.sh $document_root";
 				exec($commande);
 				// Attente de la création des fichiers binaires
 				$timestartCreation = microtime(true);
@@ -479,7 +479,7 @@ public function writeModbus($typeAction, $typeMot, $ipLocalisation) {
 				}
 				// Lancement de l'importation des fichiers en base
 				$this->log->setLog("[INFO];[MODBUS];import(Bin);Importation des données en base", $this->fichier_log);
-				$commande = "sudo ".$document_root."/web/sh/GestionTransferts/TransfertsIpc/importBin.sh $document_root";
+				$commande = "sudo ".$document_root."/sh/GestionTransferts/TransfertsIpc/importBin.sh $document_root";
 				exec($commande);
 				$flagImportBin = "/tmp/.flagSymfonyImportBinaires";
 				$timestartImport = microtime(true);
