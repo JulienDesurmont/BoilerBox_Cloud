@@ -381,6 +381,12 @@ function razCodeModule() {
 }
 
 function ajaxSetChoixLocalisation() {
+    var $message = $('#messages option:selected').text();
+    if ($message != 'Tous les messages') {
+        var $pattern_code = /^.+?\s/;
+        var $code = $.trim($message.match($pattern_code));
+        $('#codeModule').val($code);
+    }
 	var localisationSelection = document.getElementById('localisations').value;
     var $url_setLocalisation = $("#localisations").attr('data-url');
     // Envoi d'une requête ajax pour sauvegarder la localisation à afficher
