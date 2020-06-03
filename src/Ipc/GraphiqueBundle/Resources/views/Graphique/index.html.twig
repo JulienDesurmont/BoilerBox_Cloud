@@ -178,8 +178,11 @@
 	        });
 	        /**********************************/
 			/* Ré affiche la popup d'ajout de requête si une erreur dans l'enregistrement d'un requête a eu lieu */
-			if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
-				$('#lightboxSmall').removeClass('cacher');
+			if ({{ form_requete.appellation.vars.errors }})
+			{
+				if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
+					$('#lightboxSmall').removeClass('cacher');
+				}
 			}
 			// Fermeture de la popup lors du clic sur Annuler
 			$('#ipc_configurationbundle_requete_Annuler').click(function(){

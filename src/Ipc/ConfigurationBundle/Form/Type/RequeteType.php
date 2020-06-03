@@ -35,7 +35,7 @@ class RequeteType extends AbstractType
                 ->add('createur', 'hidden')
                 ->add('compte', 'choice', array(
                         'label' => 'Compte utilisateur : ',
-                        'placeholder' => "Requête personnelle",
+                        //'placeholder' => "Requête personnelle",
                         'required' => false,
                         'choices' => array(
                             'Admin'         => 'Admin',
