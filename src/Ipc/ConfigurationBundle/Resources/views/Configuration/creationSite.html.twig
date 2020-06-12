@@ -15,13 +15,12 @@
         {% for liste in liste_sites %}
             <table class='table_gestion_site'>
                 <tr>
-                    <th colspan='9' class='th_title'>Site</th></tr>
+                    <th colspan='8' class='th_title'>Site</th></tr>
                 <tr>
                     <th class='mini'>Site courant</th>
                     <th>Intitulé</th>
                     <th class='small'>Nombre d'automates</th>
                     <th class='small'>Code affaire</th>
-					<th class='cacher'>LoginFtp</th>
                     <th class='small'>Début d'exploitation</th>
                     <th class='small'>Fin d'exploitation</th>
                     <th class='mini'>Modif.</th>
@@ -36,15 +35,14 @@
                     <td class='centrer'>{{ liste.intitule }}</td>
                     <td class='small centrer'>{{ liste.localisations|length }}</td>
                     <td class='small centrer'>{{ liste.affaire }}</td>
-					<td class='cacher'>{{ liste.loginFtp }}</td>
-                    <td class='small centrer'>{% if liste.debutExploitation %}{{ liste.debutExploitation|date("Y/m/d") }}{% endif %}</td>
-                    <td class='small centrer'>{% if liste.finExploitation %}{{ liste.finExploitation|date("Y/m/d") }}{% endif %}</td>
+                    <td class='small centrer'>{% if liste.debutExploitation %}{{ liste.debutExploitation|date("d/m/Y") }}{% endif %}</td>
+                    <td class='small centrer'>{% if liste.finExploitation %}{{ liste.finExploitation|date("d/m/Y") }}{% endif %}</td>
                     <td class='mini centrer'><input type='radio' name='modifSite' value={{ liste.id }} /></td>
                     <td class='mini centrer'><input type='radio' name='suppSite' value={{ liste.id }} /></td>
                 </tr>
                 {% if liste.localisations|length > 0 %}
                 <tr>
-                    <th colspan='9' class='th_subtitle'>Localisation{% if liste.localisations|length > 1 %}s{% endif %}</th></tr>
+                    <th colspan='8' class='th_subtitle'>Localisation{% if liste.localisations|length > 1 %}s{% endif %}</th></tr>
                 <tr>
                     <th class='mini'>Numéro</th>
                     <th>Désignation</th>
@@ -80,9 +78,6 @@
 				<div class='tableauConfig'>
 				 	<div><div>{{ form_label(form.intitule) }}				</div><div>{{ form_widget(form.intitule,{'attr':{'class':'inputText'}}) }}				</div></div>
                     <div><div>{{ form_label(form.affaire) }}				</div><div>{{ form_widget(form.affaire,{'attr':{'class':'inputText'}}) }}				</div></div>
-                    <div><div>{{ form_label(form.login_ftp) }}				</div><div>{{ form_widget(form.login_ftp,{'attr':{'class':'inputText'}}) }}				</div></div>
-                    <div><div>{{ form_label(form.password_ftp.first) }}		</div><div>{{ form_widget(form.password_ftp.first,{'attr':{'class':'inputText'}}) }}	</div></div>
-                    <div><div>{{ form_label(form.password_ftp.second) }}	</div><div>{{ form_widget(form.password_ftp.second,{'attr':{'class':'inputText'}}) }}	</div></div>
                     <div><div>{{ form_label(form.siteCourant) }}			</div><div>{{ form_widget(form.siteCourant) }}											</div></div>
                     <div><div>{{ form_label(form.localisations) }}			</div><div>{{ form_widget(form.localisations) }}										</div></div>
 				</div>
@@ -91,14 +86,6 @@
                 </ul>
                 {{ form_rest(form) }}
                 <input type="hidden" name="valider" value="Valider" />
-				{#
-                <div class='validationbouton'>
-                    <div class='center'>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireCreation');return false;" ><div class='bouton blue'><div class='bgbouton'>Créer le site</div></div></a>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
-                    </div>
-                </div>
-				#}
             {{ form_end(form) }}
         </div>
         <div id='modifSite' class='cacher'>
@@ -106,9 +93,6 @@
 				<div class='tableauConfig'>
                     <div><div>Intitule				</div><div><input type='text' class='inputText' name='intitule' id='intitule' size='30' />					</div></div>
                     <div><div>Code affaire			</div><div><input type='text' class='inputText' name='affaire' id='affaire' size='10' />					</div></div>
-                    <div><div>Login Ftp				</div><div><input type='text' class='inputText' name='loginFtp' id='loginFtp' size='15' />					</div></div>
-                    <div><div>Mot de passe			</div><div><input type='password' class='inputText' name='passwordFtp' id='passwordFtp' size='15' />		</div></div>
-                    <div><div>Confirmation			</div><div><input type='password' class='inputText' name='confirmation'   id='confirmation' size='15' />	</div></div>
                     <div><div>Début d'exploitation	</div><div><input type='date' class='inputText' name='debutExploitation' id='debutExploitation' size='10' /></div></div>
                     <div><div>Fin d'exploitation	</div><div><input type='date' class='inputText' name='finExploitation' id='finExploitation' size='10' />	</div></div>
                     <div><div>Site Courant			</div><div><input type='checkbox' class='inputText' name='siteCourant' id='siteCourant' disabled /></div></div>
@@ -116,15 +100,6 @@
                 <br />
                 <input type="hidden" name='idconf'  id='idconf' />
                 <input type="hidden" name="valider" value="Modifier le site" id='submitSite' />
-				{#
-                <div class='validationbouton'>
-                    <div class='center'>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireModification');return false;" ><div class='bouton blue'><div class='bgbouton'><div id='titreSiteValidation'>Valider</div></div></div></a>
-                        <span id="ajoutLoc"><a href='#' style="height:30px;" onClick="validationFormulaire('ajoutLoc');return false;" ><div class='bouton blue'><div class='bgbouton'>Ajouter une localisation</div></div></a></span>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
-                    </div>
-                </div>
-				#}
             </form>
         </div>
         <div id='modifLoc' class='cacher'>
@@ -143,14 +118,6 @@
                 <input type='hidden' name='idconfsite'   id='idconfsite' />
                 <input type='hidden' name='idconfloc'   id='idconfloc' />
                 <input type="hidden" name="valider" value="Valider" id='submitLocalisation' />
-				{#
-                <div class='validationbouton'>
-                    <div class='center'>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('formulaireModificationLoc');return false;"><div class='bouton blue'><div class='bgbouton'><div id='titreLocValidation'>Modifier</div></div></div></a>
-                        <a href='#' style="height:30px;" onClick="validationFormulaire('annuler');return false;" ><div class='bouton blue'><div class='bgbouton'>Annuler</div></div></a>
-                    </div>
-                </div>
-				#}
             {{ form_end(form_loc) }}
         </div>
     </div>
@@ -265,15 +232,13 @@
                     var $siteCourant = $(this).parent().parent().children('td').children('input').attr('checked');
                     var $intitule = $(this).parent().parent().children('td').eq(1).text();
                     var $affaire = $(this).parent().parent().children('td').eq(3).text();
-                    var $loginFtp = $(this).parent().parent().children('td').eq(4).text();
-                    var $debutExploitation = $(this).parent().parent().children('td').eq(5).text();
-                    var $finExploitation = $(this).parent().parent().children('td').eq(6).text();
+                    var $debutExploitation = $(this).parent().parent().children('td').eq(4).text();
+                    var $finExploitation = $(this).parent().parent().children('td').eq(5).text();
                     var $idconf = $(this).attr('value');
                     // Inscription des paramètres récupérés dans les champs modifiables
                     document.getElementById('intitule').value = $intitule;
                     document.getElementById('affaire').value = $affaire;
-                    document.getElementById('loginFtp').value = $loginFtp;
-                    document.getElementById('debutExploitation').value = $debutExploitation;
+                    document.getElementById('debutExploitation').value = reverseJsDate($debutExploitation);
                     document.getElementById('idconf').value = $idconf;
                     document.getElementById('idconfsite').value = $idconf;
                     if ($siteCourant === 'checked') {
@@ -408,9 +373,6 @@
 
                 document.getElementById('intitule').value = '';
                 document.getElementById('affaire').value = '';
-                document.getElementById('loginFtp').value = '';
-                document.getElementById('passwordFtp').value = '';
-                document.getElementById('confirmation').value = '';
                 document.getElementById('debutExploitation').value = '';
                 document.getElementById('finExploitation').value = '';
                 document.getElementById('idconf').value = 0;
@@ -534,6 +496,15 @@
 					
 			}
 			$boutonSelection = $bouton;
+		}
+
+
+		function reverseJsDate($date_str)
+		{
+			var $expr = /(..)\/(..)\/(....)/;
+			var $tab_match = $date_str.match($expr);
+			var $retour = $tab_match[3] +  '-' + $tab_match[2] + '-' + $tab_match[1];
+			return $retour;
 		}
 </script>
 {% endblock bodyjavascript %}
