@@ -15,10 +15,10 @@ use Ipc\ProgBundle\Entity\Site;
 use Symfony\Component\HttpFoundation\Request;
 use \PDO;
 use \PDOException;
-
 use Ipc\ConfigurationBundle\Entity\Requete;
 use Ipc\ConfigurationBundle\Form\Type\RequeteType;
 use Ipc\ConfigurationBundle\Form\Handler\RequeteHandler;
+
 
 
 class ListingController extends Controller {
@@ -49,8 +49,6 @@ private $activation_modbus;
 private $compteRequetePerso;
 private $limit_excel;
 private $limit_export_sql;
-// variable indiquant le retour de la messages box ' = Continuer ou Annuler'
-
 private $entities_requetes_perso;
 
 
@@ -67,12 +65,13 @@ private $entities_requetes_perso;
 #ajaxTrieDonneesAction      Appelée en AJAX : Retourne les données triées selon la colonne selectionnée par l'utilisateur
 
 
+
 public function constructeur(){
-	$this->em = $this->getDoctrine()->getManager();
     if (empty($this->session)) {
         $service_session = $this->container->get('ipc_prog.session');
         $this->session = $service_session;
     }
+	$this->em = $this->get('ipc_prog.connectbd')->getManager();
 }
 
 // Initialisation des variables communes à toutes les fonctions
@@ -87,9 +86,9 @@ public function constructeur(){
 // $maximum_execution_time indique le temps maximum d'execution des requêtes avant le kill automatique de celles-ci
 
 public function initialisation() {
+	$this->constructeur();
 	$this->connexion = $this->get('ipc_prog.connectbd');
 	$this->dbh = $this->connexion->getDbh();
-	$this->em = $this->getDoctrine()->getManager();
 	$this->pageTitle = $this->session->get('pageTitle');
 	$this->tabModulesL = array();
     $translator = $this->get('translator');
@@ -97,19 +96,19 @@ public function initialisation() {
 	$this->activation_modbus = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('activation_modbus')->getValeur();
 	$this->limit_excel = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_excel_listing')->getValeur();
 	$this->limit_export_sql = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_export_sql_listing')->getValeur();
-	// Si une demande de nouvelle page est demandée on ne cherche pas à savoir si le nombre de données dépasse la limite
-	// 		Sinon Si il ya validation de la message box qui demande d'effectuer la recherche, la limite n'est pas restrictive
-	//			Sinon la limite est définie par le paramètre [limitation_export_sql_listing]	
-	if (isset($_GET["listing"])) {
-		$this->limit_export_sql = -1;
-	} else {
-		if ($this->session->get('validation_message_box', array())) {
-			$this->limit_export_sql = -1;
-		    $this->session->remove('validation_message_box');
-		} else {
-			$this->limit_export_sql = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_export_sql_listing')->getValeur();
-		}
-	}
+    // Si une demande de nouvelle page est demandée on ne cherche pas à savoir si le nombre de données dépasse la limite
+    //      Sinon Si il ya validation de la message box qui demande d'effectuer la recherche, la limite n'est pas restrictive
+    //          Sinon la limite est définie par le paramètre [limitation_export_sql_listing]
+    if (isset($_GET["listing"])) {
+        $this->limit_export_sql = -1;
+    } else {
+        if ($this->session->get('validation_message_box', array())) {
+            $this->limit_export_sql = -1;
+            $this->session->remove('validation_message_box');
+        } else {
+            $this->limit_export_sql = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('limitation_export_sql_listing')->getValeur();
+        }
+    }
 }
 
 
@@ -122,28 +121,27 @@ private function getRequetesPerso() {
 		if ($this->compteRequetePerso != 'Personnel') {
 			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'listing');
 		} else {
-        	$this->compteRequetePerso = 'Personnel';
-        	// Recherche de l'appelation des requêtes de l'utilisateur
-        	$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
-    	}
-	} else {	 
-		//	 Le compte personnel n'est accessible qu'a partir des ROLES TECHNICIENS (donc pas pour les CLIENTS)
+			$this->compteRequetePerso = 'Personnel';
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
+		}
+	} else {
+		//       Le compte personnel n'est accessible qu'a partir des ROLES TECHNICIENS (donc pas pour les CLIENTS)
 		if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
 			$this->compteRequetePerso = 'Personnel';
 			// Recherche de l'appelation des requêtes de l'utilisateur
 			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCreateur($this->session->get('label'), 'listing');
 		} else if ($this->get('security.context')->isGranted('ROLE_CLIENT')) {
 			$this->compteRequetePerso = 'Client';
-        	// Recherche de l'appelation des requêtes de l'utilisateur
-        	$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'listing');
-		}	
+			// Recherche de l'appelation des requêtes de l'utilisateur
+			$entities_requetes_perso = $this->em->getRepository('IpcConfigurationBundle:Requete')->myFindByCompte($this->compteRequetePerso, 'listing');
+		}
 	}
 	return ($entities_requetes_perso);
 }
 
 public function initialisationListes($localisation_id = null) {
 	$dbh = $this->dbh;
-	$em = $this->em;
 	$liste_genres_en_base = null;
 	$liste_genres = null;
 	//$liste_modules = null;
@@ -159,7 +157,8 @@ public function initialisationListes($localisation_id = null) {
 	
 
 	// Initialisation des listes de localisation : Récupération des localisations associées au site courant
-	$this->session->definirListeLocalisationsCourantes();
+	$this->container->get('ipc_prog.session.boilerbox')->definirListeLocalisationsCourantes();
+
 	$this->liste_localisations = $this->session->get('tablocalisations');
 	if ($this->liste_localisations == null) {
 		$this->get('session')->getFlashBag()->add('info',"Aucune Localisation définie pour le site courant (l1)");
@@ -180,7 +179,8 @@ public function initialisationListes($localisation_id = null) {
 
 
 	// Initialisation de la liste des genres autorisés
-	$this->session->definirListeDesGenres();
+	$this->container->get('ipc_prog.session.boilerbox')->definirListeDesGenres();
+
 	$this->liste_genres = $this->session->get('session_genrel_autorise');
 	//   Tableau qui indique l'intitulé du genre selon son id
 	foreach ($this->liste_genres as $key => $genre) {
@@ -189,7 +189,8 @@ public function initialisationListes($localisation_id = null) {
 	}
 
 	// Initialisation de la liste des modules
-    $this->session->definirTabModuleL();
+	$this->container->get('ipc_prog.session.boilerbox')->definirTabModuleL();
+
 	$this->tabModulesL = $this->session->get('tabModules');
     if ($this->tabModulesL == null) {
         $this->get('session')->getFlashBag()->add('info', "Listing : Aucun module n'est associé aux localisations du site courant : Veuillez importer la/les table(s) d'échanges ou modifier le paramètre popup_simplifiee");
@@ -500,7 +501,6 @@ public function indexAction() {
 			}
 			// Si la recherche est permise 
 			if ($reg == true) {
-				$em = $this->getDoctrine()->getManager();
 				$message_error = null;
 				$message_error_precision = null;
 				// Un Genre Ou un Intitulé de Module Correspondent à plusieurs Id de module
@@ -710,30 +710,26 @@ public function indexAction() {
 		return new Response();
 	} else {
 		// Création du formulaire des requêtes personnelles
-    	$ent_requete = new Requete();
+		$ent_requete = new Requete();
 		$ent_requete->setCreateur($this->session->get('label'));
 		$ent_requete->setType('listing');
-    	$form_requete = $this->createForm(new RequeteType(), $ent_requete, [
-            	'action' => $this->generateUrl('ipc_accueilListing'),
-            	'method' => 'POST'
-         	]
-    	);
+		$form_requete = $this->createForm(new RequeteType(), $ent_requete, [
+			'action' => $this->generateUrl('ipc_accueilListing'),
+			'method' => 'POST'
+			]
+		);
+		// Récupération de la requête
+		$request = $this->get('request');
 
-    	// Récupération de la requête
-    	$request = $this->get('request');
-
-    	// Récupération du handler de formulaire
-    	$form_handler = new RequeteHandler($form_requete, $request);
-
+		// Enregistrement de la nouvelle requête personnelle
+		// Récupération du handler de formulaire
+		$form_handler = new RequeteHandler($form_requete, $request);
 		$entity_user = $this->em->getRepository('IpcUserBundle:User')->find($this->container->get('security.context')->getToken()->getUser()->getId());
-    	// Execution de la méthode d'execution du handler : Retourne True si les données du formulaire sont validées
-    	$process = $form_handler->process($this->em, 'listing', $entity_user, $this->session);
-
-		// Récupération de l'id de la requête personnelle 
+		// Execution de la méthode d'execution du handler : Retourne True si les données du formulaire sont validées
+		$process = $form_handler->process($this->em, 'listing', $entity_user, $this->session);
+		// Récupération de l'id de la requête personnelle
 		$id_requete_perso = $this->session->get('listing_requete_selected', null);
-
 		$this->entities_requetes_perso = $this->getRequetesPerso();
-		//return new Response();
 		$response = new Response(
 			$this->renderView('IpcListingBundle:Listing:index.html.twig', array(
 				'messagePeriode' 		=> $messagePeriode,
@@ -743,14 +739,14 @@ public function indexAction() {
 				'liste_genres' 			=> $this->liste_genres,
 				'liste_nomsModules' 	=> $this->liste_noms_modules,
 				'liste_messagesModules' => $this->liste_messages_modules,
-				'maximum_execution_time' => $maximum_execution_time,
+				'maximum_execution_time'=> $maximum_execution_time,
 				//'tab_requetes_perso' => $this->tabRequetesPerso,
 				'entities_requetes_perso' => $this->entities_requetes_perso,
-				'id_requete_perso' 		=> $id_requete_perso,
+				'id_requete_perso'      => $id_requete_perso,
             	'compte_requete_perso' 	=> $this->compteRequetePerso,
 				'sessionCourante' 		=> $this->session->getSessionName(),
 				'tabSessions' 			=> $this->session->getTabSessions(),
-			 	'form_requete'  		=> $form_requete->createView()
+				'form_requete'          => $form_requete->createView()
 			))
 		);
 		$response->setPrivate();
@@ -760,14 +756,13 @@ public function indexAction() {
 }
 
 public function afficheListingAction($page) {
-	$this->constructeur();
 	$this->initialisation();
 	$autorisation_acces = $this->initialisationListes();
 	$heure_debut = strtotime(date('Y-m-d h:i:s'));
 	// Numéro de page par défaut
 	$page = 1;
 	// Nombre de données par page
-	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page'); 
+	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page');
 	$limit_initial = $limit;
 	$session_date = $this->session->get('session_date');
 	$messagePeriode = $this->messagePeriode;
@@ -775,7 +770,6 @@ public function afficheListingAction($page) {
 	$tabDesRequetes = array();
 	$message_erreur = '';
 	// Définir 2000000 max
-	$em = $this->getDoctrine()->getManager();
 	$service_numbers = $this->get('ipc_prog.fillnumbers');
 	if (! empty($session_date)) {
 		setlocale (LC_TIME, 'fr_FR.utf8', 'fra');
@@ -854,7 +848,7 @@ public function afficheListingAction($page) {
 		// L'impression est toujours autorisée aux techniciens et administrateurs
 		$impression_listing = null;
 		if (! $this->get('security.context')->isGranted('ROLE_TECHNICIEN'))	{
-			$impression_listing = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing')->getValeur();
+			$impression_listing = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing')->getValeur();
 		} else {
 			$impression_listing = 1;
 		}
@@ -909,19 +903,19 @@ public function afficheListingAction($page) {
 			$tmp_donnee = new Donnee();
 			$tabUnionRequete = array();
 			foreach ($liste_req_pour_listing as $key => $requete) {
-                // Récupération de la liste des identifiants de module à rechercher
-                $tabDesRequetes[$key]['liste_id_modules'] = '';
-                foreach ($requete['tab_id_modules'] as $tmp_idmodule) {
-                    if ($tmp_idmodule == 'all') {
-                        $tabDesRequetes[$key]['liste_id_modules'] = "all";
-                    } else if (in_array($requete['id_localisation'], $this->tabModulesL[$tmp_idmodule]['localisation'])) {
-                        $tabDesRequetes[$key]['liste_id_modules'] .= "'".$tmp_idmodule."',";
-                    }
-                }
-                // Suppression de la virgule
-                if ($tabDesRequetes[$key]['liste_id_modules'] != 'all') {
-                    $tabDesRequetes[$key]['liste_id_modules'] = substr($tabDesRequetes[$key]['liste_id_modules'], 0, -1);
-                }
+				// Récupération de la liste des identifiants de module à rechercher
+				$tabDesRequetes[$key]['liste_id_modules'] = '';
+				foreach ($requete['tab_id_modules'] as $tmp_idmodule) {
+					if ($tmp_idmodule == 'all') {
+						$tabDesRequetes[$key]['liste_id_modules'] = "all";
+					} else if (in_array($requete['id_localisation'], $this->tabModulesL[$tmp_idmodule]['localisation'])) {
+						$tabDesRequetes[$key]['liste_id_modules'] .= "'".$tmp_idmodule."',";
+					}
+				}
+				// Suppression de la virgule
+				if ($tabDesRequetes[$key]['liste_id_modules'] != 'all') {
+					$tabDesRequetes[$key]['liste_id_modules'] = substr($tabDesRequetes[$key]['liste_id_modules'], 0, -1);
+				}
 				// Récupération de l'identifiant de la localisation 
 				$tabDesRequetes[$key]['id_localisation'] = "'".$requete['id_localisation']."'";
 				// Recherche du nombre de pages max de la requête, si il n'a pas été calculé
@@ -959,6 +953,7 @@ public function afficheListingAction($page) {
 				}
 				$tmp_date_deb = $this->getDatePeriode($session_date['datedebut'], $tabDesRequetes[$key]['id_localisation'], 'debut');
 				$tmp_date_fin = $this->getDatePeriode($session_date['datefin'], $tabDesRequetes[$key]['id_localisation'], 'fin');
+
 				// Requete sql COUNT : Si le COUNT dépasse la limite la valeur retournée = limite + 1
 				$nb_de_donnees = $tmp_donnee->sqlCountListing($dbh, $this->reverseDate($tmp_date_deb), $this->reverseDate($tmp_date_fin), 'count', $requeteTotale, $this->limit_export_sql);
 				if (($this->limit_export_sql == -1) || ($nb_de_donnees <  $this->limit_export_sql))
@@ -1025,7 +1020,7 @@ public function afficheListingAction($page) {
 					}
 					$tmp_date_deb = $this->getDatePeriode($session_date['datedebut'], $tabDesRequetes[$key]['id_localisation'], 'debut');
                     $tmp_date_fin = $this->getDatePeriode($session_date['datefin'], $tabDesRequetes[$key]['id_localisation'], 'fin');
-					// Requête Sql : Recherche des données
+					// Requête Sql : Recherche des données 
 					$tabDesDonnees = $tmp_donnee->sqlAllLimitedOrdered($dbh, $this->reverseDate($tmp_date_deb), $this->reverseDate($tmp_date_fin), $requeteTotale, $limit_req, $offset);
 					// Pour chaque donnée retournée par la requête
 					// On indique le numéro de localisation correspondant à l'id de la localisation indiquée dans la donnée ( grâce à la variable $this->liste_localisations)
@@ -1056,7 +1051,7 @@ public function afficheListingAction($page) {
 								$tabDesDonnees[$key2]['intitule_genre']	= $this->tab_conversion_genre_id[$tmp_genre_id];
 								$tabDesDonnees[$key2]['numero_genre'] = $this->tab_conversion_genre_num[$tmp_genre_id];
 							} else{ 
-								$entity_module_indefini = $em->getRepository('IpcProgBundle:Module')->find($recupdonnee['module_id']);
+								$entity_module_indefini = $this->em->getRepository('IpcProgBundle:Module')->find($recupdonnee['module_id']);
 								$tabDesDonnees[$key2]['codeModule'] = $entity_module_indefini->getCategorie().$service_numbers->fillNumber($entity_module_indefini->getNumeroModule(), 2).$service_numbers->fillNumber($entity_module_indefini->getNumeroMessage(), 2);
 								$tabDesDonnees[$key2]['intitule_module'] = $entity_module_indefini->getMessage();
 								$tabDesDonnees[$key2]['erreur'] = "Aucune correspondance [ module " + $recupdonnee['module_id'] + " / localisation " + $tabDesDonnees[$key2]['numero_localisation'] + "] trouvée dans la table d'échange";
@@ -1444,15 +1439,13 @@ private function getIdSiteCourant($dbh) {
 
 // Fonction qui change la liste des requêtes après selection d'une requête enregistrée
 public function changeListeReqAction() {
-	$this->constructeur();
-	// On recherche la requête perso à afficher
-	$id_requete = $this->session->get('listing_requete_selected');
-	$ent_requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
-	// On modifie la variable de session avec la liste des requêtes de la requête perso
-	$this->session->set('liste_req', json_decode($ent_requete->getRequete(), true));
-	// On renvoi la page d'accueil de Listing
-	return $this->redirect($this->generateUrl('ipc_accueilListing'));
+       $this->constructeur();
+       // On recherche la requête perso à afficher
+       $id_requete = $this->session->get('listing_requete_selected');
+       $ent_requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
+       // On modifie la variable de session avec la liste des requêtes de la requête perso
+       $this->session->set('liste_req', json_decode($ent_requete->getRequete(), true));
+       // On renvoi la page d'accueil de Listing
+       return $this->redirect($this->generateUrl('ipc_accueilListing'));
 }
-
 }
-
