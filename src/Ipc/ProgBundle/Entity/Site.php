@@ -82,22 +82,6 @@ class Site
    */
     protected $finExploitation;
 
-   /**
-    * @var string
-    * 
-    * @ORM\Column(name="login_ftp", type="string", length=50, nullable=true)
-   */
-   protected $loginFtp;
-
-
-   /** 
-    * @var string
-    *
-    * @ORM\Column(name="password_ftp", type="string", length=255, nullable=true)
-   */
-   protected $passwordFtp;
-
-
     public function __construct()
     {
 		$this->localisations = new ArrayCollection();
@@ -324,54 +308,6 @@ class Site
     {
         return $this->siteCourant;
     }
-
-    /**
-     * Set login_ftp
-     *
-     * @param string $loginFtp
-     * @return Site
-     */
-    public function setLoginFtp($loginFtp)
-    {
-        $this->loginFtp = $loginFtp;
-
-        return $this;
-    }
-
-    /**
-     * Get login_ftp
-     *
-     * @return string
-     */
-    public function getLoginFtp()
-    {
-        return $this->loginFtp;
-    }
-
-    /**
-     * Set password_ftp
-     *
-     * @param string $passwordFtp
-     * @return Site
-     */
-    public function setPasswordFtp($passwordFtp)
-    {
-        $this->passwordFtp = $passwordFtp;
-
-        return $this;
-    }
-
-    /**
-     * Get password_ftp
-     *
-     * @return string
-     */
-    public function getPasswordFtp()
-    {
-        return $this->passwordFtp;
-    }
-
-
 
     // Recherche et retour de l'id d'un site en fonction de l'affaire
 	// Utilisé par ServiceImportBin

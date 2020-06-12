@@ -17,15 +17,7 @@ class SiteType extends AbstractType {
                                          		'label' => 'Code affaire',
                                          		'trim' => true))
                 ->add('siteCourant', 'checkbox', array(	'label' => 'Définir comme site courant',
-														'required'=> false))
-				->add('login_ftp', 'text', array('max_length' => 50,
-							 					'label'	=> 'Login Ftp',
-												'trim' => true))
-				->add('password_ftp', 'repeated', array('type' => 'password',
-														'options' => array('required' => true),
-														'first_options' => array('label' => 'Mot de passe Ftp'),
-														'second_options' => array('label' => 'Confirmation du mot de passe')
-							));
+														'required'=> false));
 		$builder->add('localisations', 'collection', array(	'label' => 'Localisations',
 															'type' => new LocalisationType(), 
 															'allow_add' => true, 
