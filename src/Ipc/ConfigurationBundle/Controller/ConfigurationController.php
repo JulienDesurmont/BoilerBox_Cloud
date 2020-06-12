@@ -56,6 +56,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 
+
 class ConfigurationController extends Controller {
 private $fillnumber;
 private $liste_localisations;
@@ -78,7 +79,7 @@ private $log;
 private $document_root;
 
 public function constructeur(){
-	$this->em = $this->getDoctrine()->getManager();
+	$this->em = $this->get('ipc_prog.connectbd')->getManager();
 	$this->fichier_log = 'parametresIpc.log';
 	$this->log = $this->container->get('ipc_prog.log');
     if (empty($this->session)) {
@@ -89,12 +90,11 @@ public function constructeur(){
 }
 
 private function initialisation() {
-	$this->constructeur();
+	$this->constructeur();	
 	$this->service_configuration = $this->get('ipc_prog.configuration');
 	$this->pageTitle = $this->session->get('pageTitle');
 	$this->pageActive = $this->session->get('page_active');
 	$this->userLabel = $this->session->get('label');
-	$this->em = $this->getDoctrine()->getManager();
 	$this->fillnumbers = $this->get('ipc_prog.fillnumbers');
 	$this->tab_modules = array();
     if (($this->userLabel == 'anon.' ) || ($this->userLabel == '' )) {
@@ -111,7 +111,7 @@ private function initialisation() {
         } elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
             $this->userLabel = 'Client';
         }
-		$this->session->set('label', $this->userLabel);
+        $this->session->set('label', $this->userLabel);
     }
 }
 
@@ -126,16 +126,14 @@ public function initialiseModbus() {
 	$this->adresseMot['dataBinaryFiles'] = array(1);
 	$this->adresseMot['typeBinaryFiles'] = array("INT");
 	// Récupération de la liste des automates
-	$em = $this->getDoctrine()->getManager();
 	$site = new Site();
 	$site_id = $site->SqlGetIdCourant($dbh);
-	$site = $em->getRepository('IpcProgBundle:Site')->find($site_id);
+	$site = $this->em->getRepository('IpcProgBundle:Site')->find($site_id);
 	$this->adresseMot['automates'] = $site->getLocalisations();
 	return(0);
 }
 
 public function getInfosSessionAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$tab_session = array();
 	$tab_session['pageTitle'] = $this->pageTitle;
@@ -147,10 +145,9 @@ public function getInfosSessionAction() {
 }
 
 public function configurationAction(Request $request) {
-	$this->constructeur();
 	$this->initialisation();
 	// Si la configuration d'origine n'a pas été crée, création de celle-ci
-	$configuration_auto = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('configuration_installation');
+	$configuration_auto = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('configuration_installation');
 	if (! $configuration_auto) {
 		$this->configurationAuto('init');
 		return $this->redirect($this->generateUrl('ipc_param_ipc'));
@@ -208,14 +205,14 @@ public function changeMaxExecTimeAction() {
 		$maxExecTime = $configuration->SqlGetParam($dbh, 'maximum_execution_time');
 	}
 	// Modification dans le script sh : suppHighRequest.sh
-	$commande = "cat ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh | sed s/tempAttente=.*/tempAttente=$maxExecTime/g > ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh_tempo";
+	$commande = "cat ".$this->document_root."/sh/GestionSql/suppHighRequest.sh | sed s/tempAttente=.*/tempAttente=$maxExecTime/g > ".$this->document_root."/sh/GestionSql/suppHighRequest.sh_tempo";
 	$execCmd = exec($commande);
-	$commande = "mv ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh_tempo ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh";
+	$commande = "mv ".$this->document_root."/sh/GestionSql/suppHighRequest.sh_tempo ".$this->document_root."/sh/GestionSql/suppHighRequest.sh";
 	$execCmd = exec($commande);
-	$commande = "chmod 777 ".$this->document_root."/web/sh/GestionSql/suppHighRequest.sh";
+	$commande = "chmod 777 ".$this->document_root."/sh/GestionSql/suppHighRequest.sh";
 	$execCmd = exec($commande);
 	// Demande d'Arrêt-Relance du script
-	$commande = $this->document_root."/web/sh/GestionSql/arretRelanceSuppHighRequest.sh";
+	$commande = $this->document_root."/sh/GestionSql/arretRelanceSuppHighRequest.sh";
 	$execCmd = exec($commande);
 	echo $maxExecTime;
 	$dbh = $connexion->disconnect();
@@ -224,26 +221,24 @@ public function changeMaxExecTimeAction() {
 
 // Fonction qui vérifie le nombre maximum de requêtes autorisées : La restriction ne s'applique que pour les clients et les techniciens
 public function getMaxRequetesAction() {
-	$this->constructeur();
 	$this->initialisation();
-	$em = $this->getDoctrine()->getManager();
 	if (! $this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {
 		if (isset($_GET['page'])) {
 			$page = $_GET['page'];
 			if ($page == 'graphique') {
 				if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
-					$param_de_conf = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('graphique_nbmax_requetes');
+					$param_de_conf = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('graphique_nbmax_requetes');
 				} elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
-					$param_de_conf = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_graphique_nbmax_requetes');    
+					$param_de_conf = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_graphique_nbmax_requetes');    
 				}
 			} elseif ($page == 'listing') {
 				if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
-					$param_de_conf = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nbmax_requetes');
+					$param_de_conf = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nbmax_requetes');
 				} elseif ($this->get('security.context')->isGranted('ROLE_USER')) {
-					$param_de_conf = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_listing_nbmax_requetes');
+					$param_de_conf = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_listing_nbmax_requetes');
 				}
 			} elseif ($page == 'etat') {
-				$param_de_conf = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_etat_nbmax_requetes');
+				$param_de_conf = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_etat_nbmax_requetes');
 			}
 			$nb_requetes_max = $param_de_conf->getValeur();
 		} else {
@@ -268,9 +263,7 @@ public function getMaxRequetesAction() {
  * @Security("is_granted('ROLE_TECHNICIEN_LTS')")
 */
 public function importAction() {
-	$this->constructeur();
 	$this->initialisation();
-	$em = $this->getDoctrine()->getManager();
 	$fichieripc	= new FichierIpc();
 	// Création du formulaire grâce à la méthode du contrôleur
 	$form = $this->createForm(new FichierIpcType, $fichieripc);
@@ -281,7 +274,7 @@ public function importAction() {
 	$dbh = $connexion->getDbh();
 	// On passe en argument un tableau contenant la liste des site et des localisations associées
 	$tabDesLocalisations = array();
-	$sites = $em->getRepository('IpcProgBundle:Site')->findAll();
+	$sites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 	foreach ($sites as $site) {
 		$tmpIdSite = $site->getId();
 		$tabDesLocalisations[$tmpIdSite]['SiteName'] = $site->getIntitule();
@@ -347,7 +340,7 @@ public function importAction() {
 				}
 				$pattern = '/^tei_(.+?)_(.+?)_#(.+?)#_.+?$/';
 				if (! preg_match($pattern, $nomfichier, $tabNomFichier)) {
-					$this->getRequest()->getSession()->getFlashBag()->add('info', 'Nomenclature du fichier attendue : TEI_CodeAffaire_NumLocalisation_#(CodeProgramme || noprog)#_Horodatage. ( Fichier reçu '.$nomfichier.' )');
+					 $this->getRequest()->getSession()->getFlashBag()->add('info', 'Nomenclature du fichier attendue : TEI_CodeAffaire_NumLocalisation_#(CodeProgramme || noprog)#_Horodatage. ( Fichier reçu '.$nomfichier.' )');
 					$dbh = $connexion->disconnect();
 					return $this->render('IpcConfigurationBundle:Configuration:import_table_echange_ipc.html.twig', array(
 						'form' => $form->createView(),
@@ -368,18 +361,19 @@ public function importAction() {
 					// Indication de la désignation du programme si elle est indiquée et si le programme fonctionne en multi-sites
 					$description_mode = $this->session->get('descriptionMode');
 					if (! empty($description_mode)) {
-						$mode = $em->getRepository('IpcProgBundle:Mode')->findOneByDesignation($designation_mode);
+						$mode = $this->em->getRepository('IpcProgBundle:Mode')->findOneByDesignation($designation_mode);
 						if ($description_mode['type'] == 'maj') {
 							$mode->setDescription($mode->getDescription().'; '.$description_mode['texte']);
 						} else {
 							$mode->setDescription($description_mode['texte']);
 						}
-						$em->flush();
+						$this->em->flush();
 					}
 					$message = 'Le fichier '.$fichieripc->getNom().' a bien été traité : '.$fichieripc->getNombreMessages().' données analysées';
 					$this->getRequest()->getSession()->getFlashBag()->add('info', $message);
 					// Réinitialisation de la variable des modules
-					$this->session->reinitialisationSession('liste_des_requetes');
+					$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('liste_des_requetes');
+
 					// Retour à la page d'accueil avec un message indiquant la prise en compte du fichier
 				}
 				$this->definePeriode();
@@ -411,7 +405,6 @@ public function importAction() {
 }
 
 public function voiripcAction(Fichier $fichier) {
-	$this->constructeur();
 	$this->initialisation();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:voiripc.html.twig', array(
 		'fichier' => $fichier,
@@ -426,8 +419,6 @@ public function voiripcAction(Fichier $fichier) {
 // Fonction qui retourne le formulaire permettant de paramétrer la configuration de l'IPC
 // Cette fonction est également utilisée lors de la modification de paramètres
 public function parametresipcAction(Request $requete) {
-	$message_tmp = '';
-	$this->constructeur();
 	$this->initialisation();
 	$service_password = $this->get('ipc_prog.password');
 	// Récupération des paramètres de configuration
@@ -453,10 +444,10 @@ public function parametresipcAction(Request $requete) {
 				$parametreAdmin = false;
 			}
 			if (isset($_POST['parametreTechnicien'])) {
-                $parametreTechnicien = true;
-            } else {
-                $parametreTechnicien = false;
-            }
+				$parametreTechnicien = true;
+			} else {
+				$parametreTechnicien = false;
+			}
 			$designation = htmlspecialchars($_POST['designation']);
 			$valeur = htmlspecialchars($_POST['valeur']);
 
@@ -504,7 +495,7 @@ public function parametresipcAction(Request $requete) {
 							break;
 						case 'ping_timeout' : 
 							// Le timeout doit être inférieur à l'intervalle des pings
-							$ping_intervalle = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('ping_intervalle')->getValeur();
+							$ping_intervalle = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('ping_intervalle')->getValeur();
 							if ($valeur > $ping_intervalle) {
 								$this->get("session")->getFlashBag()->add('info',"La valeur doit être inférieure à l'intervalle des pings ($ping_intervalle)");
 								$acceptUpdate = false;
@@ -516,7 +507,7 @@ public function parametresipcAction(Request $requete) {
 								$this->get("session")->getFlashBag()->add('info',"Valeur non correcte");
 								$acceptUpdate = false;
 							} else {
-								$this->session->reinitialisationSession('localisations_modules');
+								$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('localisations_modules');
 							}
 							break;
 						case 'live_timeout_automate' :
@@ -537,7 +528,7 @@ public function parametresipcAction(Request $requete) {
                             $acceptUpdate = false;
 							break;
 						case 'live_refresh_listing' :
-							$valeurRefreshGraphique = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('live_refresh_graphique')->getValeur();
+							$valeurRefreshGraphique = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('live_refresh_graphique')->getValeur();
 							//  Le rafraichissement des données live de la partie Listing doit être inférieur à celui des Graphiques et > 3000 (3secondes)
 							if ($valeur > 3000) { 
 								$this->get("session")->getFlashBag()->add('info',"Valeur minimale acceptée : 3000 (3 secondes)");
@@ -548,7 +539,7 @@ public function parametresipcAction(Request $requete) {
 							}
 							break;
 						case 'live_refresh_graphique' :
-							$valeurRefreshListing = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->findOneByParametre('live_refresh_listing')->getValeur();
+							$valeurRefreshListing = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('live_refresh_listing')->getValeur();
 							if ($valeur < $valeurRefreshListing) {
 								$this->get("session")->getFlashBag()->add('info',"La valeur doit être supérieure à celle du paramétre 'live_refresh_listing' ($valeurRefreshListing)");
                                 $acceptUpdate = false;
@@ -565,14 +556,13 @@ public function parametresipcAction(Request $requete) {
 							break;
 						}
 						if ($acceptUpdate === true) {
-							$old_entity_configuration = $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Configuration')->find($idconf);
+							$old_entity_configuration = $this->em->getRepository('IpcProgBundle:Configuration')->find($idconf);
 							// Mise à jour du paramètre + Enregistrement dans le fichier de log
 							$configuration->SqlUpdate($dbh);
 							$this->log->setLog("Modification du paramètre ".$configuration->getParametre(), $this->fichier_log);
 							$this->log->setLog("Anciennes données : ".$old_entity_configuration->getDesignation()." [ ".$old_entity_configuration->getValeur()." ]", $this->fichier_log);
 							$this->log->setLog("Nouvelles données : ".$configuration->getDesignation()." [ ".$configuration->getValeur()." ]", $this->fichier_log);
 							$message_tmp = "Modification effectuée".$this->setMessageConfiguration($parametre);
-
 							$this->get("session")->getFlashBag()->add('info',$message_tmp);
 							return $this->configurationAction($requete);
 						}
@@ -589,7 +579,7 @@ public function parametresipcAction(Request $requete) {
 			}
 		}
 	}
-	$liste_configurations = $this->container->get('doctrine')->getManager()->getRepository('IpcProgBundle:Configuration')->findBy(array(), array('parametre' => 'ASC'));
+	$liste_configurations = $this->em->getRepository('IpcProgBundle:Configuration')->findBy(array(), array('parametre' => 'ASC'));
 	$dbh = $connexion->disconnect();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:configuration_ipc.html.twig', array(
 		'liste_configurations' => $liste_configurations,
@@ -710,10 +700,10 @@ public function configurationAuto($type) {
 
         // Paramètres des dossiers de sauvegarde des fichiers
         $liste_conf['dossier_fichiers_originaux']['description'] = 'Dossier destination des fichiers à convertir en binaire pour mise en base';
-        $liste_conf['dossier_fichiers_originaux']['value'] = $this->document_root.'/web/uploads/fichiers_origines';
+        $liste_conf['dossier_fichiers_originaux']['value'] = $this->document_root.'/uploads/fichiers_origines';
         $liste_conf['dossier_fichiers_originaux']['parametreAdmin'] = true;
         $liste_conf['dossier_fichiers_tmpftp']['description'] = 'Dossier destination des fichiers transférés par Ftp';
-        $liste_conf['dossier_fichiers_tmpftp']['value'] = $this->document_root.'/web/uploads/fichiers_tmpftp';
+        $liste_conf['dossier_fichiers_tmpftp']['value'] = $this->document_root.'/uploads/fichiers_tmpftp';
         $liste_conf['dossier_fichiers_tmpftp']['parametreAdmin'] = true;
         // Paramètre de configuration des alertes emails
         $liste_conf['nb_max_jours_sans_transfert']['description'] = "Nombre de jours sans transfert ftp avant l'envoi d'une alerte email";
@@ -764,7 +754,6 @@ public function configurationAuto($type) {
     	$liste_conf['graphique_max_points']['value'] = 4000;
 		$liste_conf['graphique_max_points']['parametreAdmin'] = false;
 		$liste_conf['graphique_max_points']['parametreTechnicien'] = true;
-
     	$liste_conf['live_graph_nb_mois']['description'] = "La recherche Live graphique portera sur ces X derniers mois";
     	$liste_conf['live_graph_nb_mois']['value'] = 12;
 		$liste_conf['live_graph_nb_mois']['parametreAdmin'] = true;
@@ -816,7 +805,6 @@ public function configurationAuto($type) {
     	$liste_conf['autorisation_mails']['description'] = "Autorisation de l'envoi des mails";
     	$liste_conf['autorisation_mails']['value'] = true;
     	$liste_conf['autorisation_mails']['parametreAdmin'] = true;
-
     $liste_conf['rapport_pourcentage_messages_max']['description'] = "Pourcentage maximum avant déclanchement d'une erreur dans le rapport journalier";
     $liste_conf['rapport_pourcentage_messages_max']['value'] = 90;
     $liste_conf['rapport_pourcentage_messages_max']['parametreAdmin'] = true;
@@ -829,7 +817,6 @@ public function configurationAuto($type) {
     $liste_conf['rapport_nombre_max_messages']['value'] = 80000;
     $liste_conf['rapport_nombre_max_messages']['parametreAdmin'] = true;
 
-
     // Variable de la nouvelle version
     $liste_conf['etat_amc_codes_syst_stat_io_avert']['description'] = "Listes des modules de type Syst. Stat. Io Avert.";
     $liste_conf['etat_amc_codes_syst_stat_io_avert']['value'] = "GE2094;GE2095;GE2096;GE2097;GE2098;GE2099";
@@ -839,7 +826,6 @@ public function configurationAuto($type) {
     $liste_conf['popup_simplifiee']['description'] = "Indique si la popup ne doit afficher que les messages enregistrés en base  (0:'Non' 1:'Oui')";
     $liste_conf['popup_simplifiee']['value'] = 1;
     $liste_conf['popup_simplifiee']['parametreAdmin'] = false;
-
 
     // Paramètres rapports : Remplace l'ancien paramètre 'rapports_erreur' -----------------------------------------
     $liste_conf['autorisation_rapports_erreur']['description'] = "Autorisation d'envoi des rapports d'erreurs (0:Non  1:Oui)";
@@ -858,7 +844,10 @@ public function configurationAuto($type) {
     $liste_conf['limitation_export_sql_graphique']['parametreAdmin'] = false;
 
 
-   	$liste_conf['limitation_excel_listing']['description'] = "Limitation du nombre de lignes autorisées dans les fichiers excel lors des impressions des données de listing";
+
+
+
+    $liste_conf['limitation_excel_listing']['description'] = "Limitation du nombre de lignes autorisées dans les fichiers excel lors des impressions des données de listing";
     $liste_conf['limitation_excel_listing']['value'] = 200000;
     $liste_conf['limitation_excel_listing']['parametreAdmin'] = false;
 
@@ -867,25 +856,27 @@ public function configurationAuto($type) {
     $liste_conf['limitation_export_sql_listing']['value'] = 200000;
     $liste_conf['limitation_export_sql_listing']['parametreAdmin'] = false;
 
+
     $liste_conf['url_http_boilerbox']['description'] = "Url accès au serveur Web";
     $liste_conf['url_http_boilerbox']['value'] = "http://cXXX.boiler-box.fr/";
     $liste_conf['url_http_boilerbox']['parametreAdmin'] = false;
-	$liste_conf['url_http_boilerbox']['parametreTechnicien'] = true;
-	}
+    $liste_conf['url_http_boilerbox']['parametreTechnicien'] = true;
 
+	}
 	// Variable de la nouvelle version
 	$liste_conf['numero_version']['description'] = "Numéro de version du site web";
 	$liste_conf['numero_version']['value'] = "2.14.0";
 	$liste_conf['numero_version']['parametreAdmin'] = true;
 
-
-    $liste_conf['nb_jours_nb_db_donnees']['description'] = "Nombre de jours pour la recherche du nombre de données dans la table t_donnee";
-    $liste_conf['nb_jours_nb_db_donnees']['value'] = "3";
-    $liste_conf['nb_jours_nb_db_donnees']['parametreAdmin'] = true;
+	$liste_conf['nb_jours_nb_db_donnees']['description'] = "Nombre de jours pour la recherche du nombre de données dans la table t_donnee";
+	$liste_conf['nb_jours_nb_db_donnees']['value'] = "3";
+	$liste_conf['nb_jours_nb_db_donnees']['parametreAdmin'] = true;
 
 	$liste_conf['listing_nb_par_page']['description'] = "Indique le nombre de listing à afficher par page";
 	$liste_conf['listing_nb_par_page']['value'] = "1000";
 	$liste_conf['listing_nb_par_page']['parametreAdmin'] = false;
+
+
 
 		
 
@@ -899,7 +890,7 @@ public function configurationAuto($type) {
 		if (isset($conf['parametreTechnicien'])) {
 			$configuration->setParametreTechnicien($conf['parametreTechnicien']);
 		} else {
-			 $configuration->setParametreTechnicien(false);
+			$configuration->setParametreTechnicien(false);
 		}
 		$id_config = $configuration->SqlGetId($dbh, $intitule);
 		// Si le paramètre existe : Mise à jour
@@ -913,7 +904,7 @@ public function configurationAuto($type) {
 	}
 	$dbh = $connexion->disconnect();
 	// Réinitialisation des variables de session
-	$this->session->reinitialisationSession('localisations_modules');
+	$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('localisations_modules');
 }
 
 /**
@@ -922,7 +913,6 @@ public function configurationAuto($type) {
  * @Security("is_granted('ROLE_ADMIN')")
 */
 public function creationUserAction() {
-	$this->constructeur();
 	$this->initialisation();
 	// Service de connexion à la base de donnée IPC
 	$connexion = $this->get('ipc_prog.connectbd');
@@ -934,22 +924,21 @@ public function creationUserAction() {
 	$token = $security->getToken();
 	// Récupération de l'utilisateur: = anon pour un utilisateur anonyme
 	$id_current_user = $token->getUser()->getId();
-	$em = $this->getDoctrine()->getManager();
 	$request = $this->get('request');
 	if ($request->getMethod() == 'POST') {
 		$choix = $_POST['choix'];
 		switch ($choix) {
 		case 'Supprimer':
 			$id = $_POST['userid'];
-			$user = $em->getRepository('IpcUserBundle:User')->find($id);
-			$em->remove($user);
-			$em->flush();
+			$user = $this->em->getRepository('IpcUserBundle:User')->find($id);
+			$this->em->remove($user);
+			$this->em->flush();
 			break;
 		case 'Activation':
 			$id = $_POST['userid'];
-			$user = $em->getRepository('IpcUserBundle:User')->find($id);
+			$user = $this->em->getRepository('IpcUserBundle:User')->find($id);
 			$user->changeActivation();
-			$em->flush();
+			$this->em->flush();
 			break;
 		}
 	}
@@ -962,7 +951,7 @@ public function creationUserAction() {
 		'action' => $this->generateUrl('fos_user_registration_register')
 	));
 	
-	$liste_utilisateurs = $this->getDoctrine()->getManager()->getRepository('IpcUserBundle:User')->findAll();
+	$liste_utilisateurs = $this->em->getRepository('IpcUserBundle:User')->findAll();
 	$dbh = $connexion->disconnect();
 	$response = new Response($this->renderView('IpcUserBundle:Configuration:creationUser.html.twig', array(
 		'liste_utilisateurs' => $liste_utilisateurs,
@@ -982,10 +971,8 @@ public function creationUserAction() {
  * @Security("is_granted('ROLE_TECHNICIEN_LTS')")
 */
 public function creationSiteAction($numfresh) {
-	$this->constructeur();
 	$this->initialisation();
 	$new_session_pageTitle = $this->pageTitle;
-	$em = $this->getDoctrine()->getManager();
 	$returnMenu	= false;
 	// Service de connexion à la base de donnée IPC
 	$connexion = $this->get('ipc_prog.connectbd');
@@ -997,11 +984,12 @@ public function creationSiteAction($numfresh) {
 	// Récupération de la requête
 	$request = $this->get('request');
 	// Réinitialisation des variables de session
-	$this->session->reinitialisationSession('localisations_modules');
+	$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('localisations_modules');
+
 	// La liste des types du générateurs sont enregistrés en dur dans le fichiers HTML (dans un champs crée par le formulaire boilerbox et utilisée par javascript)
 	// Le nombre de type est censé est fixe. En cas de modification du nombre de type : Création d'un message d'alerte
 	// Liste des Types de générateur enregistrés en base
-	$entities_typeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->findAll();
+	$entities_typeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->findAll();
 	// Si ils différent de la liste entrée en dure dans le fichier html -> annonce par un message
 	$tab_TypeGenerateur = array('VP', 'ES', 'SU', 'AC');	//Vapeur','Eau surchauffée','Surchauffeur','Automate des communs'
 	$validationTypeGenerateur = true;
@@ -1061,14 +1049,14 @@ public function creationSiteAction($numfresh) {
 						$adresseIp = htmlspecialchars($loc['adresseIp']);
 						$adresseModbus = htmlspecialchars($loc['adresseModbus']);
 						$designation = htmlspecialchars($loc['designation']);
-						$typeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->findOneByMode(htmlspecialchars($loc['typeGenerateur']));
+						$typeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->findOneByMode(htmlspecialchars($loc['typeGenerateur']));
 						$loginloc_ftp = htmlspecialchars($loc['login_ftp']);
 						$mot_de_passeloc_ftp = htmlspecialchars($loc['password_ftp']['first']);
 						$confirmationloc_ftp = htmlspecialchars($loc['password_ftp']['second']);
 						// Vérification de la conformité des mdp
 						if ($mot_de_passeloc_ftp != $confirmationloc_ftp) {
 							$this->container->get("session")->getFlashBag()->add('info', "Les mots de passes d'une localisation ne sont pas identiques");
-							$liste_sites = $em->getRepository('IpcProgBundle:Site')->findAll();
+							$liste_sites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 							$dbh = $connexion->disconnect();
 							$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:creationSite.html.twig', array(
 								'liste_sites'=> $liste_sites,
@@ -1084,7 +1072,7 @@ public function creationSiteAction($numfresh) {
 						}
 						if ((! in_array($adresseIp, $tabLocalisation)) && (! array_key_exists($numeroLocalisation, $tabLocalisation))) {
 							// Vérification que le paramètre de configuration 'adressip_frequence_rapport_ftp' existe/ Si il n'existe pas création de celui-ci.
-							$parametreFrequenceRapport = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
+							$parametreFrequenceRapport = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
 							if ($parametreFrequenceRapport === null) {
 								$parametreFrequenceRapport = new Configuration();
 								$parametreFrequenceRapport->setParametre($adresseIp.'_frequence_rapport_ftp');
@@ -1092,8 +1080,9 @@ public function creationSiteAction($numfresh) {
 								$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 								$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 								$parametreFrequenceRapport->setParametreAdmin(true);
-								$em->persist($parametreFrequenceRapport);
-								$em->flush();
+								$parametreFrequenceRapport->setParametreTechnicien(false);
+								$this->em->persist($parametreFrequenceRapport);
+								$this->em->flush();
 							}
 							$localisation->setNumeroLocalisation($numeroLocalisation);
 							$localisation->setAdresseIp($adresseIp);
@@ -1115,9 +1104,9 @@ public function creationSiteAction($numfresh) {
 			if ($error_donnees == false) {
 				$site->setNbAutomates($nbAutomates);
 				// Insertion du nouveau Site : Retourne False en cas d'echec
-				$em->persist($site);
+				$this->em->persist($site);
 				try {
-					$em->flush();
+					$this->em->flush();
 					// Si il y a eu modification du site courant : Modification du titre
 					if ($siteCourant == 1) {
 						$new_session_pageTitle['title'] = $affaire.' : '.$intitule;
@@ -1141,7 +1130,7 @@ public function creationSiteAction($numfresh) {
 				break;
 			}
 			// Récupération du site dont l'id est $id
-			$site = $em->getRepository('IpcProgBundle:Site')->find($id);
+			$site = $this->em->getRepository('IpcProgBundle:Site')->find($id);
 			if (isset($_POST['siteCourant'])) {
 				$siteCourant = 1;
 			} else {
@@ -1162,7 +1151,7 @@ public function creationSiteAction($numfresh) {
 				$site->setFinExploitation(new \Datetime($finExploit));
 			}
 			try {
-				$em->flush();
+				$this->em->flush();
 				$this->get("session")->getFlashBag()->add('info', "Modification du site effectuée");
 				// Si il y a eu modification du site courant : Modification du titre
 				if ($siteCourant == 1) {
@@ -1178,7 +1167,7 @@ public function creationSiteAction($numfresh) {
 			$adresseIp = htmlspecialchars($_POST['Localisation']['adresseIp']);
 			$adresseModbus = htmlspecialchars($_POST['Localisation']['adresseModbus']);
 			$designation = htmlspecialchars($_POST['Localisation']['designation']);
-			$typeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->find(htmlspecialchars($_POST['Localisation']['typeGenerateur']));
+			$typeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->find(htmlspecialchars($_POST['Localisation']['typeGenerateur']));
 			$loginloc_ftp = htmlspecialchars($_POST['Localisation']['login_ftp']);
 			$mot_de_passeloc_ftp = htmlspecialchars($_POST['Localisation']['password_ftp']['first']);
 			$confirmationloc_ftp = htmlspecialchars($_POST['Localisation']['password_ftp']['second']); 
@@ -1190,7 +1179,7 @@ public function creationSiteAction($numfresh) {
 			// Vérification de la conformité des mdp
 			if ($mot_de_passeloc_ftp != $confirmationloc_ftp) {
 				$this->container->get("session")->getFlashBag()->add('info', "Les mots de passes ne sont pas identiques");
-				$liste_sites = $em->getRepository('IpcProgBundle:Site')->findAll();
+				$liste_sites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 				$dbh = $connexion->disconnect();
 				$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:creationSite.html.twig', array(
 					'liste_sites' => $liste_sites,
@@ -1205,7 +1194,7 @@ public function creationSiteAction($numfresh) {
 				return $response;
 			}
 			$id_site = intval(htmlspecialchars($_POST['idconfsite']));
-			$site = $em->getRepository('IpcProgBundle:Site')->find($id_site);
+			$site = $this->em->getRepository('IpcProgBundle:Site')->find($id_site);
 			$localisation = new Localisation();
 			$localisation->setNumeroLocalisation($numeroLocalisation);
 			$localisation->setAdresseIp($adresseIp);
@@ -1216,7 +1205,7 @@ public function creationSiteAction($numfresh) {
 			$localisation->setPasswordFtp($mot_de_passeloc_ftp);
 			$localisation->setSite($site);
 			// Récupération de la liste des localisations
-			$localisations = $em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
+			$localisations = $this->em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
 			$tabLocalisation = array();
 			// Création d'un tableau répertoriant les numéros des localisations et leur adresses IP
 			foreach ($localisations as $tmp_localisation) {
@@ -1229,7 +1218,7 @@ public function creationSiteAction($numfresh) {
 				$this->get("session")->getFlashBag()->add('info', 'Le numéro de localisation existe déjà');
 			} else {
 				// Vérification que le paramètre de configuration 'adressip_frequence_rapport_ftp' existe/ Si il n'existe pas création de celui-ci.
-				$parametreFrequenceRapport = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
+				$parametreFrequenceRapport = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
 				if ($parametreFrequenceRapport === null) {
 					$parametreFrequenceRapport = new Configuration();
 					$parametreFrequenceRapport->setParametre($adresseIp.'_frequence_rapport_ftp');
@@ -1237,11 +1226,12 @@ public function creationSiteAction($numfresh) {
 					$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 					$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (date de la connexion;Nb erreurs avant mail(-1 = bloquer,0 = tous); Nb erreurs en cours; Etat de la connexion courante)");
 					$parametreFrequenceRapport->setParametreAdmin(true);
-					$em->persist($parametreFrequenceRapport);
-					$em->flush();
+					$parametreFrequenceRapport->setParametreTechnicien(false);
+					$this->em->persist($parametreFrequenceRapport);
+					$this->em->flush();
 				}
-				$em->persist($localisation);
-				$em->flush();
+				$this->em->persist($localisation);
+				$this->em->flush();
 				$this->get("session")->getFlashBag()->add('info', 'Ajout de la localisation effectué');
 				$returnMenu = true;
 			}
@@ -1253,7 +1243,7 @@ public function creationSiteAction($numfresh) {
 			$adresseIp = htmlspecialchars($_POST['Localisation']['adresseIp']);
 			$adresseModbus = htmlspecialchars($_POST['Localisation']['adresseModbus']);
 			$designation = htmlspecialchars($_POST['Localisation']['designation']);
-			$typeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->find(htmlspecialchars($_POST['Localisation']['typeGenerateur']));
+			$typeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->find(htmlspecialchars($_POST['Localisation']['typeGenerateur']));
 			$loginloc_ftp = htmlspecialchars($_POST['Localisation']['login_ftp']);
 			$mot_de_passeloc_ftp = htmlspecialchars($_POST['Localisation']['password_ftp']['first']);
 			$confirmationloc_ftp = htmlspecialchars($_POST['Localisation']['password_ftp']['second']);
@@ -1263,7 +1253,7 @@ public function creationSiteAction($numfresh) {
 				break;
 			}
 			// Récupération de l'entité localisation d'id $id
-			$localisation = $em->getRepository('IpcProgBundle:Localisation')->find($id);
+			$localisation = $this->em->getRepository('IpcProgBundle:Localisation')->find($id);
 			$localisation->setNumeroLocalisation($numeroLocalisation);
 			$localisation->setAdresseIp($adresseIp);
 			$localisation->setAdresseModbus($adresseModbus);
@@ -1280,7 +1270,7 @@ public function creationSiteAction($numfresh) {
 			if ($mot_de_passeloc_ftp) {
 				if ($mot_de_passeloc_ftp != $confirmationloc_ftp) {
 					$this->container->get("session")->getFlashBag()->add('info', "Les mots de passes ne sont pas identiques");
-					$liste_sites = $em->getRepository('IpcProgBundle:Site')->findAll();
+					$liste_sites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 					$dbh = $connexion->disconnect();
 					$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:creationSite.html.twig', array(
 						'liste_sites' => $liste_sites,
@@ -1298,7 +1288,7 @@ public function creationSiteAction($numfresh) {
 				$localisation->setLoginFtp($loginloc_ftp);
 				$localisation->setPasswordFtp($mot_de_passeloc_ftp);
 				// Récupération de la liste des localisations du site
-				$localisations = $em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
+				$localisations = $this->em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
 				$tabLocalisation = array();
 				// Création d'un tableau répertoriant les numéros des localisations et leur adresses IP
 				foreach ($localisations as $tmp_localisation) {
@@ -1313,7 +1303,7 @@ public function creationSiteAction($numfresh) {
 					$this->get("session")->getFlashBag()->add('info', 'Le numéro de localisation existe déjà');
 				} else {
 					// Vérification que le paramètre de configuration 'adressip_frequence_rapport_ftp' existe/ Si il n'existe pas création de celui-ci.
-					$parametreFrequenceRapport = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
+					$parametreFrequenceRapport = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
 					if ($parametreFrequenceRapport === null) {
 						$parametreFrequenceRapport = new Configuration();
 						$parametreFrequenceRapport->setParametre($adresseIp.'_frequence_rapport_ftp');
@@ -1321,16 +1311,17 @@ public function creationSiteAction($numfresh) {
 						$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 						$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 						$parametreFrequenceRapport->setParametreAdmin(true);
-						$em->persist($parametreFrequenceRapport);
-						$em->flush();
+						$parametreFrequenceRapport->setParametreTechnicien(false);
+						$this->em->persist($parametreFrequenceRapport);
+						$this->em->flush();
 					}
-					$em->flush();
+					$this->em->flush();
 					// Retour à la page configuation.html.twig
 					$this->get("session")->getFlashBag()->add('info', 'Modification de la localisation effectuée');
 				}
 			} else {
 				// Récupération de la liste des localisations du site
-				$localisations = $em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
+				$localisations = $this->em->getRepository('IpcProgBundle:Site')->find($id_site)->getLocalisations();
 				$tabLocalisation = array();
 				// Création d'un tableau répertoriant les numéros des localisations et leur adresses IP
 				// On n'inclue pas dans le tableau la localisation en cours de modification
@@ -1346,7 +1337,7 @@ public function creationSiteAction($numfresh) {
 					$this->get("session")->getFlashBag()->add('info', 'Le numéro de localisation existe déjà');
 				} else {
 					// Vérification que le paramètre de configuration 'adressip_frequence_rapport_ftp' existe/ Si il n'existe pas création de celui-ci.
-					$parametreFrequenceRapport = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
+					$parametreFrequenceRapport = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre($adresseIp.'_frequence_rapport_ftp');
 					if ($parametreFrequenceRapport === null) {
 						$parametreFrequenceRapport = new Configuration();
 						$parametreFrequenceRapport->setParametre($adresseIp.'_frequence_rapport_ftp');
@@ -1354,30 +1345,31 @@ public function creationSiteAction($numfresh) {
 						$parametreFrequenceRapport->setValeur($valeurFrequenceRapport);
 						$parametreFrequenceRapport->setDesignation("Fréquence d'envoi des rapports : (dateRapport;MaxRapportAvantEnvoi(-1 pour bloquer,0 pour tous); NombreDeRapport)");
 						$parametreFrequenceRapport->setParametreAdmin(true);
-						$em->persist($parametreFrequenceRapport);
-						$em->flush();
+						$parametreFrequenceRapport->setParametreTechnicien(false);
+						$this->em->persist($parametreFrequenceRapport);
+						$this->em->flush();
 					}
-					$em->flush();
+					$this->em->flush();
 					$this->get("session")->getFlashBag()->add('info', 'Modification de la localisation effectuée');
 				}
 			}
 			break;
 		case 'Supprimer le site':
 			$id	= intval(htmlspecialchars($_POST['idconf']));
-			$site = $em->getRepository('IpcProgBundle:Site')->find($id);
-			$em->remove($site);
+			$site = $this->em->getRepository('IpcProgBundle:Site')->find($id);
+			$this->em->remove($site);
 			try {
-				$em->flush();
+				$this->em->flush();
 			} catch(\Exception $e) {
 				$this->get("session")->getFlashBag()->add('info', 'Suppression du site non autorisée');
 			}
 			break;
 		case 'Supprimer la localisation':
 			$id = intval(htmlspecialchars($_POST['idconfloc']));
-			$localisation = $em->getRepository('IpcProgBundle:Localisation')->find($id);
-			$em->remove($localisation);
+			$localisation = $this->em->getRepository('IpcProgBundle:Localisation')->find($id);
+			$this->em->remove($localisation);
 			try {
-				$em->flush();
+				$this->em->flush();
 			} catch(\Exception $e) {
 				$this->get("session")->getFlashBag()->add('info', 'Suppression de la localisation non autorisée');
 			}
@@ -1394,7 +1386,7 @@ public function creationSiteAction($numfresh) {
 			}
 			$site->SqlActive($dbh);
 			// Modification du titre indiquant le site courant
-			$site = $em->getRepository('IpcProgBundle:Site')->find($id);
+			$site = $this->em->getRepository('IpcProgBundle:Site')->find($id);
 			$new_session_pageTitle['title']	= $site->getAffaire().' : '.$site->getintitule();
 			$this->session->set('pageTitle', $new_session_pageTitle);
    			$this->service_configuration->setInfoLimitePeriode();
@@ -1414,7 +1406,7 @@ public function creationSiteAction($numfresh) {
         	'tabSessions' => $this->session->getTabSessions()
 		)));
 	} else {
-		$liste_sites = $em->getRepository('IpcProgBundle:Site')->findAll();
+		$liste_sites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 		$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:creationSite.html.twig', array(
 			'liste_sites'=> $liste_sites,
 			'form' => $form->createView(),
@@ -1430,18 +1422,18 @@ public function creationSiteAction($numfresh) {
 }
 
 
+// Détermine quels sont les droits d'accès fournis au client
 /**
  * Require ROLE_ADMIN for only this controller method.
  *
  * @Security("is_granted('ROLE_ADMIN')")
 */
 public function autorisationClientAction() {
-	$this->constructeur();
 	$this->initialisation();
 	// Récupération de la liste des genres présents en base
 	$connexion = $this->get('ipc_prog.connectbd');
 	$dbh = $connexion->getDbh();
-	$em = $this->em;
+	$this->em = $this->em;
 	// Récupération de la liste des genres présents en base de données
 	if (count($this->session->get('tabgenres')) == 0) {
 		$tmp_genre = new Genre();
@@ -1472,7 +1464,7 @@ public function autorisationClientAction() {
 			}
 			// Définition de la valeur du paramètre 'autorisation_genres_listing'
 			// Si le paramètre existe : Update Sinon Création
-			$configuration = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_listing');
+			$configuration = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_listing');
 			if (! $configuration) {
 				// Définition de la nouvelle configuration
 				$configuration = new configuration();
@@ -1487,7 +1479,7 @@ public function autorisationClientAction() {
 				$configuration->setValeur($liste_genres_autorises);
 				$configuration->SqlUpdate($dbh);
 			}
-			$configuration = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing');
+			$configuration = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing');
 			if (! $configuration) {
 				$configuration = new configuration();
 				$configuration->setParametre('autorisation_impression_listing');
@@ -1525,7 +1517,7 @@ public function autorisationClientAction() {
 			}
 			// Définition de la valeur du paramètre 'autorisation_genres_graphique'
 			// Si le paramètre existe : Update Sinon Création
-			$configuration = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_graphique');
+			$configuration = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_graphique');
 			if (! $configuration) {
 				// Définition de la nouvelle configuration
 				$configuration = new configuration();
@@ -1538,7 +1530,7 @@ public function autorisationClientAction() {
 				$configuration->setValeur($liste_genres_autorises);
 				$configuration->SqlUpdate($dbh);
 			}
-			$configuration = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_graphique');
+			$configuration = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_graphique');
 			if (! $configuration) {
 				$configuration = new configuration();
 				$configuration->setParametre('autorisation_impression_graphique');
@@ -1562,19 +1554,19 @@ public function autorisationClientAction() {
 	}
 	// Récupération des genres autorisés pour la partie Listing
 	$liste_genres_listing_autorises = null;
-	$configuration_listing = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_listing');
+	$configuration_listing = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_listing');
 	if ($configuration_listing) {
 		$liste_genres_listing_autorises = explode(',', $configuration_listing->getValeur());
 	}
 	// Récupération des genres autorisés pour la partie Graphique
 	$liste_genres_graphique_autorises = null;
-	$configuration_graphique = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_graphique');
+	$configuration_graphique = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_genres_graphique');
 	if ($configuration_graphique) {
 		$liste_genres_graphique_autorises = explode(',', $configuration_graphique->getValeur());
 	}
 	// Récupération de droits d'impression
-	$impression_listing = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing')->getValeur();
-	$impression_graphique = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_graphique')->getValeur();
+	$impression_listing = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_listing')->getValeur();
+	$impression_graphique = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_impression_graphique')->getValeur();
 	$dbh = $connexion->disconnect();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:autorisationClient.html.twig', array(
 		'liste_genres' => $liste_genres,
@@ -1592,13 +1584,11 @@ public function autorisationClientAction() {
 
 //      Mise en place des variables de session datedebut et datefin : FONCTION APPELLEE PAR LE SCRIPT AJAX : getenv("DOCUMENT_ROOT")/app/Resources/views/Prog/defineDates.js
 public function defineDateAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$session_date['datedebut'] = $_POST['datedebut'];
 	$session_date['datefin'] = $_POST['datefin'];
 	$session_limite_periode	= $this->session->get('infoLimitePeriode');
 	// Récupération de la variable de dernière mise en service
-	$em = $this->em;
 	$connexion = $this->get('ipc_prog.connectbd');
 	$dbh = $connexion->getDbh();
 	// Si l'utilisateur est un client la date minimale de recherche autorisée correspond à celle indiquée par la variable 'autorisation_dmes'
@@ -1647,17 +1637,17 @@ public function defineDateAction() {
 					// La recherche ne peut exceder une année : 365 jours : Définie par le paramètre de configuration ecart_max
 					$max_day = null;
 					if ($this->get('security.context')->isGranted('ROLE_SUPERVISEUR')) {
-						$max_day = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('admin_ecart_max');
+						$max_day = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('admin_ecart_max');
 						if (! $max_day) {
 							$message_error = "Ecart maximum autorisé pour le compte admin non trouvé. - Veuillez renseigner la variable admin_ecart_max svp";
 						}
 					} else if ($this->get('security.context')->isGranted('ROLE_TECHNICIEN')) {
-						$max_day = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('ecart_max');
+						$max_day = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('ecart_max');
 						if (! $max_day) {
 							$message_error = "Ecart maximum autorisé non trouvé. - Veuillez renseigner la variable ecart_max svp";
 						}
 					} else if ($this->get('security.context')->isGranted('ROLE_USER')) {
-						$max_day = $em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_ecart_max');
+						$max_day = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('autorisation_ecart_max');
 						if (! $max_day) {
 							$message_error = "Ecart maximum autorisé non trouvé. - Veuillez renseigner la variable autorisation_ecart_max";
 						}
@@ -1704,7 +1694,6 @@ public function defineDateAction() {
 
 // Fonction appelée en AJAX retournant la date de début ou de fin de période si elle est définie. Null sinon
 public function ajaxGetDateAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$session_date = $this->session->get('session_date');
 	if (! empty($session_date)) {
@@ -1724,6 +1713,7 @@ public function ajaxGetDateAction() {
 	}
 	return new Response();
 }
+
 
 //	Fonction qui recoit une date (jj-mm-aaaa) et retourne un tableau contenant l'année et le mois
 function coupeDate($date) {
@@ -1768,7 +1758,7 @@ public function exportationTableAction() {
 		$designationLocalisation = null;
 		$numeroLocalisation = null;
 		if ($idLocalisation != 'allLoc') {
-			$numeroLocalisation	= $this->getDoctrine()->getManager()->getRepository('IpcProgBundle:Localisation')->find($idLocalisation)->getNumeroLocalisation();
+			$numeroLocalisation	= $this->em->getRepository('IpcProgBundle:Localisation')->find($idLocalisation)->getNumeroLocalisation();
 		}
 		$fichierATelecharger = $service_importipc->exportationTableEchange($idLocalisation, $numeroLocalisation);
 		return $fichierATelecharger;
@@ -1778,8 +1768,7 @@ public function exportationTableAction() {
 	// Récupération de la liste des localisations sous la forme d'un tableau : ID - numéro - adresseIp
 	$liste_localisations = null;
 	// Récupération de la liste des sites et de leurs localisations associées
-	$em = $this->getDoctrine()->getManager();
-	$objSites = $em->getRepository('IpcProgBundle:Site')->findAll();
+	$objSites = $this->em->getRepository('IpcProgBundle:Site')->findAll();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:export_table_echange_ipc.html.twig', array(
 		'liste_sites' => $objSites,
 		'sessionCourante' => $this->session->getSessionName(),
@@ -1793,7 +1782,6 @@ public function exportationTableAction() {
 	
 // Fonction qui définie la variable de session pageActive en fonction de la page selectionnée (listing, graphique, configuration etc.)
 public function definePageActiveAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$nom_page = $_POST['pageActive'];
 	$this->session->set('page_active', $nom_page);
@@ -1917,13 +1905,12 @@ protected function newSelection($id_localisation, $id_genre, $intitule_module, $
 // Fonction appelée par AJAX pour retourner une entité
 public function getEntityAction() {
 	$this->constructeur();
-	$em = $this->getDoctrine()->getManager();
 	$entityName = $_POST['entityName'];
 	$entityId = $_POST['entityId'];
 	$tabRetour = array();
 	switch ($entityName) {
 	case 'etat':
-		$entite = $em->getRepository('IpcProgBundle:Etat')->find($entityId);
+		$entite = $this->em->getRepository('IpcProgBundle:Etat')->find($entityId);
 		$tabRetour['intitule'] = $entite->getIntitule();
 		$tabRetour['periodique'] = $entite->getPeriodique();
 		$tabRetour['periode'] = $entite->getPeriode();
@@ -1932,7 +1919,7 @@ public function getEntityAction() {
 		$tabRetour['nb_periode'] = $entite->getNbPeriode();
 		break;
 	case 'calcul':
-		$entite = $em->getRepository('IpcProgBundle:Calcul')->find($entityId);
+		$entite = $this->em->getRepository('IpcProgBundle:Calcul')->find($entityId);
 		$tabRetour['intitule'] = $entite->getIntitule();
 		$tabRetour['type_affichage'] = $entite->getTypeAffichage();
 		$tabRetour['type_calcul'] = $entite->getTypeCalcul();
@@ -1959,25 +1946,23 @@ public function getEntityAction() {
  * @Security("is_granted('ROLE_ADMIN_LTS')")
 */
 public function infosLocalisationAction() {
-	$this->constructeur();
 	$this->initialisation();
-	$em = $this->getDoctrine()->getManager();
 	// Récupération du site courant
 	// Récupération des informations concernants les localisations du site courant
 	$site = new Site();
 	$connexion = $this->get('ipc_prog.connectbd');
 	$dbh = $connexion->getDbh();
 	$id_site_courant = $site->SqlGetIdCourant($dbh);
-	$site_courant = $em->getRepository('IpcProgBundle:Site')->find($id_site_courant);
+	$site_courant = $this->em->getRepository('IpcProgBundle:Site')->find($id_site_courant);
 	$tab_infos = array();
 	$tab_localisation_id = array();
 	foreach ($site_courant->getLocalisations() as $localisation) {
-		$liste_infoLoc = $em->getRepository('IpcProgBundle:InfosLocalisation')->findBy(array('localisation'=>$localisation),array('localisation'=>'ASC'));
+		$liste_infoLoc = $this->em->getRepository('IpcProgBundle:InfosLocalisation')->findBy(array('localisation'=>$localisation),array('localisation'=>'ASC'));
 		foreach ($liste_infoLoc as $infos) {
 			array_push($tab_infos,$infos);
 		}
 	}
-	$liste_mode = $em->getRepository('IpcProgBundle:Mode')->findAll();
+	$liste_mode = $this->em->getRepository('IpcProgBundle:Mode')->findAll();
 	return $this->render('IpcConfigurationBundle:Configuration:modificationLocalisation.html.twig',array(
 		'siteCourant' => $site_courant,
 		'listeMode' => $liste_mode,
@@ -1991,9 +1976,7 @@ public function infosLocalisationAction() {
 
 // Fonction AJAX : Appelée lors d'un clic pour modification de période d'analyse (page modificationLocalisation.html.twig)
 public function majPeriodeAnalyseAction() {
-	$this->constructeur();
 	$this->initialisation();
-	$em = $this->em;
 	// Nouvelle ligne d'info
 	$infoId = $_POST['infoModeId'];
 	// Nouvelle Localisation
@@ -2002,13 +1985,13 @@ public function majPeriodeAnalyseAction() {
 	$infoIdProg	= $_POST['infoProg'];
 	$serviceFillNumber 	= $this->container->get('ipc_prog.fillnumbers');
 	// Entité infoMode
-	$infoMode = $em->getRepository('IpcProgBundle:InfosLocalisation')->find($infoId);
+	$infoMode = $this->em->getRepository('IpcProgBundle:InfosLocalisation')->find($infoId);
 	// Modification des liens localisations / modules
 	if (! empty($infoMode)) {
 		// Recherche de la localisation impactée par le changement de programme
-		$localisation = $em->getRepository('IpcProgBundle:Localisation')->find($infoIdLoc);
+		$localisation = $this->em->getRepository('IpcProgBundle:Localisation')->find($infoIdLoc);
 		// Recherche du nouveau progamme installé / mise en place sur la localisation : si aucun programme n'était désigné, recherche des modules associés à un mode == null
-		$mode = $em->getRepository('IpcProgBundle:Mode')->find($infoIdProg);
+		$mode = $this->em->getRepository('IpcProgBundle:Mode')->find($infoIdProg);
 		// Modification des liens localisations / modules
 		$service_import_ipc = $this->container->get('ipc_prog.importipc');
 		if (empty($mode)) {
@@ -2016,12 +1999,12 @@ public function majPeriodeAnalyseAction() {
 		} else {
 			$service_import_ipc->changeProgramme($localisation, $mode);
 		}
-		$modeLocalisationImpact = $em->getRepository('IpcProgBundle:InfosLocalisation')->findByLocalisation($localisation);
+		$modeLocalisationImpact = $this->em->getRepository('IpcProgBundle:InfosLocalisation')->findByLocalisation($localisation);
 		foreach ($modeLocalisationImpact as $modeLocalisation) {
 			$modeLocalisation->setPeriodeCourante(false);
 		}
 		$infoMode->setPeriodeCourante(true);
-		$em->flush();
+		$this->em->flush();
 	}
 	$this->service_configuration->setInfoLimitePeriode();
 	// Réinitialisation de la variable de session
@@ -2032,14 +2015,13 @@ public function majPeriodeAnalyseAction() {
 // Fonction appelée en AJAX pour obtenir la liste des périodes d'analyse pour les localisations du site courant
 public function getInfosPeriodeAction() {
 	$this->constructeur();
-	$em = $this->getDoctrine()->getManager();
 	// Récupération du tableau de limitation des requêtes en fonction des périodes d'analyse
 	// Récupération du site courant
 	$connexion = $this->get('ipc_prog.connectbd');
 	$dbh = $connexion->getDbh();
 	$site = new Site();
 	$idSiteCourant = $site->SqlGetIdCourant($dbh);
-	$site = $em->getRepository('IpcProgBundle:Site')->find($idSiteCourant);
+	$site = $this->em->getRepository('IpcProgBundle:Site')->find($idSiteCourant);
 	// Récupération des localisations du site courant
 	$liste_localisation = $site->getLocalisations();
 	// Pour chaque localisation : Récupération de la période d'analyse et définition de la variable de session
@@ -2047,7 +2029,7 @@ public function getInfosPeriodeAction() {
 	foreach ($liste_localisation as $localisation) {
 		$tabPeriodeAnalyse[$localisation->getId()]['numero'] = $localisation->getNumeroLocalisation();
 		$tabPeriodeAnalyse[$localisation->getId()]['designation'] = $localisation->getDesignation();
-		$periodeInfo = $em->getRepository('IpcProgBundle:infosLocalisation')->findBy(array('localisation' => $localisation, 'periodeCourante' => 1));
+		$periodeInfo = $this->em->getRepository('IpcProgBundle:infosLocalisation')->findBy(array('localisation' => $localisation, 'periodeCourante' => 1));
 		if (isset($periodeInfo[0])) {
 			if ($periodeInfo[0]->getHorodatageDeb() != null) {
 				$tabPeriodeAnalyse[$localisation->getId()]['dateDeb'] = $periodeInfo[0]->getHorodatageDeb()->format('d/m/Y H:i:s');
@@ -2067,15 +2049,14 @@ public function getInfosPeriodeAction() {
 
 public function checkDeDate($datedeb, $datefin) {
 	$this->constructeur();
-	$em = $this->getDoctrine()->getManager();
 	$connexion = $this->get('ipc_prog.connectbd');
 	$dbh = $connexion->getDbh();
 	$site = new Site();
 	$idSiteCourant = $site->SqlGetIdCourant($dbh);
-	$site = $em->getRepository('IpcProgBundle:Site')->find($idSiteCourant);
+	$site = $this->em->getRepository('IpcProgBundle:Site')->find($idSiteCourant);
 	$liste_localisation = $site->getLocalisations();
 	foreach($liste_localisation as $localisation) {
-		$periodeInfo = $em->getRepository('IpcProgBundle:infosLocalisation')->findBy(array('localisation' => $localisation, 'periodeCourante' => 1));
+		$periodeInfo = $this->em->getRepository('IpcProgBundle:infosLocalisation')->findBy(array('localisation' => $localisation, 'periodeCourante' => 1));
 		if (isset($periodeInfo[0]) ) {
 			if ($periodeInfo[0]->getHorodatageDeb() != null) {
 				if (strtotime($datedeb) < strtotime($periodeInfo[0]->getHorodatageDeb()->format('Y/m/d  H:i:s'))) {
@@ -2097,7 +2078,6 @@ public function checkDeDate($datedeb, $datefin) {
 
 // AJAX : Fonction permettant de retourner les messages des modules contenant la chaine de caractère passée en argument
 public function getMessagesAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$tabToSup = array();
 	// Suppression des espaces de début et de fin de chaine + sécurisation de la chaine passée en paramètre car provenant d'une entrée clavier
@@ -2167,18 +2147,7 @@ public function modbusClotureFtpAction() {
 }
 
 
-//Fonction de cloture Ftp appelée depuis le Cloud
-public function modbusClotureCloudFtpAction() {
-    echo "Cloture";
-	$this->constructeur();
-    $this->writeModbus('closeFtp');
-    return $this->render('IpcConfigurationBundle:Configuration:clotureFtpByCloud.html.twig');
-}
-
-
-
 public function accueilInterventionAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:accueilIntervention.html.twig', array(
 		'sessionCourante' => $this->session->getSessionName(),
@@ -2195,9 +2164,7 @@ public function accueilInterventionAction() {
  * @Security("is_granted('ROLE_ADMIN')")
 */
 public function addTypeGenerateurAction() {
-	$this->constructeur();
 	$this->initialisation();
-	$em = $this->em;
 	$requete = $this->get('request');
 	$typeGenerateur = new TypeGenerateur();
 	$formTypeGenerateur	= $this->createForm(new TypeGenerateurType, $typeGenerateur);
@@ -2205,7 +2172,7 @@ public function addTypeGenerateurAction() {
 		$formTypeGenerateur->handleRequest($requete);
 		if ($formTypeGenerateur->isValid()) {
 			// Si le mode d'exploitation existe déjà : Mise à jour
-			$oldTypeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->findOneByMode($typeGenerateur->getMode());
+			$oldTypeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->findOneByMode($typeGenerateur->getMode());
 			if ($oldTypeGenerateur != null) {
 				$oldTypeGenerateur->setDescription($typeGenerateur->getDescription());
 				foreach ($oldTypeGenerateur->getModulesEnteteLive() as $moduleEntete) {
@@ -2215,12 +2182,12 @@ public function addTypeGenerateurAction() {
 					$oldTypeGenerateur->addModulesEnteteLive($moduleEntete);
 				}
 			} else { 
-				$em->persist($typeGenerateur);
+				$this->em->persist($typeGenerateur);
 			}
-			$em->flush();
+			$this->em->flush();
 		}
 	}
-	$entitiesTypeGenerateur = $em->getRepository('IpcProgBundle:TypeGenerateur')->findAll();
+	$entitiesTypeGenerateur = $this->em->getRepository('IpcProgBundle:TypeGenerateur')->findAll();
 	$response = new Response($this->renderView('IpcConfigurationBundle:Configuration:addTypeGenerateur.html.twig', array(
 		'form' => $formTypeGenerateur->createView(),
 		'entitiesTypeGenerateur' => $entitiesTypeGenerateur,
@@ -2234,15 +2201,12 @@ public function addTypeGenerateurAction() {
 
 
 // Fonction qui permet de modifier la couleur des genres.
-// Fonction qui retourne vers la page de gestion des scripts.
-//  Cette page indique la liste des scripts. Ceux qui sont actif et ceux qui ne le sont pas
 /**
  * Require ROLE_ADMIN for only this controller method.
  *
  * @Security("is_granted('ROLE_ADMIN')")
 */
 public function gestionGenresAction() {
-	$this->constructeur();
 	$this->initialisation();
 	$requete = $this->get('request');
 	// Si le formulaire des différentes couleurs de genre est renvoyé, Mise à jour de la table de genres
@@ -2285,37 +2249,37 @@ private function getIdSiteCourant($dbh) {
 // On vérifie que l'utilisateur peut supprimer la requete : Il en est le createur ou il est administrateur
 public function deleteRequestPersoAction() {
     $this->constructeur();
-	$this->initialisation();
-	// Récupération de la page d'origine de la demande
-	$page = $_GET['page'];
+    $this->initialisation();
+    // Récupération de la page d'origine de la demande
+    $page = $_GET['page'];
     // récupération de la requête à supprimer
     $id_requete = $_GET['id_requete'];
-	if ($id_requete != 0) {
-    	$requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
-		if ( ($requete->getCreateur() == $this->userLabel) || ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) ) { 
-    		// Suppression de la requête personnelle
-    		$this->em->remove($requete);
-    		$this->em->flush();
-    		// Récupération de la page d'origine  pour
-    		// Supprimer la variable de session indiquant la requête selectionnée
-    		// ET
-    		// Retourner sur la bonne page d'accueil (le bon index.html)
-    		if ($page == 'listing') {
-    		    $this->removeListeReq('listing');
-    		    $this->session->set('listing_requete_selected', null);
-    		} else if ($page =='graphique') {
-    		    $this->removeListeReq('graphique');
-    		    $this->session->set('graphique_requete_selected', null);
-    		}
-		} else {
-			$this->getRequest()->getSession()->getFlashBag()->add('info', "Vous n'avez pas les autorisations pour supprimer cette requête");
-		}
-	}
-	if ($page == 'listing') {
-		return $this->redirect($this->generateUrl('ipc_accueilListing'));
-	} else if ($page =='graphique') {
-		return $this->redirect($this->generateUrl('ipc_accueilGraphique'));
-	}
+    	if ($id_requete != 0) {
+       		$requete = $this->em->getRepository('IpcConfigurationBundle:Requete')->find($id_requete);
+           	if ( ($requete->getCreateur() == $this->userLabel) || ($this->get('security.context')->isGranted('ROLE_ADMIN_LTS')) ) {
+               	// Suppression de la requête personnelle
+               	$this->em->remove($requete);
+               	$this->em->flush();
+               	// Récupération de la page d'origine  pour
+               	// Supprimer la variable de session indiquant la requête selectionnée
+               	// ET
+               	// Retourner sur la bonne page d'accueil (le bon index.html)
+               	if ($page == 'listing') {
+                   	$this->removeListeReq('listing');
+                   	$this->session->set('listing_requete_selected', null);
+               	} else if ($page =='graphique') {
+                   	$this->removeListeReq('graphique');
+                   	$this->session->set('graphique_requete_selected', null);
+               	}
+           } else {
+               $this->getRequest()->getSession()->getFlashBag()->add('info', "Vous n'avez pas les autorisations pour supprimer cette requête");
+           }
+       }
+       if ($page == 'listing') {
+               return $this->redirect($this->generateUrl('ipc_accueilListing'));
+       } else if ($page =='graphique') {
+               return $this->redirect($this->generateUrl('ipc_accueilGraphique'));
+       }
 }
 
 public function removeListeReq($page) {
@@ -2326,5 +2290,8 @@ public function removeListeReq($page) {
         $this->session->remove('liste_req_pour_graphique');
     }
 }
+
+
+
 
 }
