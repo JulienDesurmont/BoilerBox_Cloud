@@ -294,7 +294,7 @@ public function indexAction() {
 	$dbh = $this->dbh;
 	$heure_debut = strtotime(date('Y-m-d h:i:s'));
 	$page = 1;
-	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page');
+	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page')->getValeur();
 	$limit_initial = $limit;
 	$request = $this->get('request');
 	$liste_req = $this->session->get('liste_req');
@@ -762,7 +762,7 @@ public function afficheListingAction($page) {
 	// Numéro de page par défaut
 	$page = 1;
 	// Nombre de données par page
-	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page');
+	$limit = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('listing_nb_par_page')->getValeur();
 	$limit_initial = $limit;
 	$session_date = $this->session->get('session_date');
 	$messagePeriode = $this->messagePeriode;
