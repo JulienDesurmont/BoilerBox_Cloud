@@ -447,5 +447,14 @@ public function getLastDataTime() {
     return($message_retour);
 }
 
+// Fonction qui retourne le site parent (boiler-box ou boiler-box-lts)
+public function getSiteParent() {
+    $nom_site_parent = 'boiler-box';
+    $site_parent = $this->em->getRepository('IpcProgBundle:Configuration')->findOneByParametre('site_parent');
+    if ($site_parent) {
+        $nom_site_parent = $site_parent->getValeur();
+    }
+    return $nom_site_parent;
+}
 
 }
