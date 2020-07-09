@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{% block head %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="L'Interface de supervision des Chaudières Industrielles">
+
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	<title>{% block title %}{% if service_session.get('pageTitle').affaire is defined %}{{ service_session.get('pageTitle').affaire }} - {% endif %}{% endblock title %}</title>
+
+    {% stylesheets  filter="cssrewrite, scssphp" output="css/maincommun.css"
+        'bundles/ipcprog/css/calendar.css'
+        'bundles/ipcprog/css/jquery.mCustomScrollbar.css'
+        'bundles/ipcprog/css/jquery-ui.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+    {% endstylesheets %}
+
+
+	{#
+	{% stylesheets  filter="cssrewrite, scssphp" output="css/mainscreen.css" 
+		'bundles/ipcprog/css/screen-export-01.css' 
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+	{% endstylesheets %} 
+	#}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcprog/css/screen-export-01.css') }}" media="screen" />
+
+	{#
+	{% stylesheets  filter="cssrewrite, scssphp" output="css/mainprint.css" 
+		'bundles/ipcprog/css/print-export-01.css' 
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="print" />
+	{% endstylesheets %}
+	#}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ipcprog/css/print-export-01.css') }}" media="print" />
+
+{% endblock head %}
+
+{% block link %}{% endblock link %}
+</head>
+
+<body>
+	<div id='siteIpc'>
+		<div id='headprint'>
+			<div id='pagePrincipaleHeader'>
+				<div id='ping' data-url="{{ path('ipc_ajax_test_ping') }}"></div>
+				<!-- Header : Menu principal - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+				<header>
+					<!--Logo-IBC-->
+                    <div id='logo-IBC'>
+                        <div class='grandScreen'>
+							<img src="{{ asset('bundles/ipcprog/images/ipcWeb/Layout_IPC.png') }}" alt='IPC' />
+							<div class='iconeBoilerbox'>
+								<div class='txt'>
+									<span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL
+								</div>
+							</div>
+						</div>
+						<div id='message_last_data' class='notToBePrinted'></div>
+                        <div class='petitScreen'>
+                            <a href="#" title="Retour au menu principal"><div class='iconeBoilerbox'><div class='txt'><span>I B C</span></div></div></a>
+                        </div>
+                    </div>
+                    <!--Titre de l'affaire-->
+                    <div id='title'>
+                        <div id='enTeteInitial' class='titreBoilerInitial'>
+                            {% include 'IpcProgBundle:Prog:enTete.html.twig' with {'titre_de_la_page' : service_session.get('pageTitle').title} %}
+                        </div>
+                        <div id='enTeteTitre' class='cacher titreBoilerTitre'>
+                            {% include 'IpcProgBundle:Prog:enTeteTitre.html.twig' with {'titre_de_la_page' : service_session.get('pageTitle').title} %}
+                        </div>
+                        {% if is_granted('ROLE_TECHNICIEN') and tabSessions is defined %}
+                            <div id='div_session_ipc' class='sessionIpc notToBePrinted'>
+                                <div>
+									<select id='select_session' name='session' data-url="{{ path('ipc_ajax_change_session') }}" onChange="changeSession();">
+                                    	{% for sessionName in tabSessions %}
+                                    	    <option value="{{ sessionName }}" {% if sessionName == sessionCourante %}selected{% endif %}>{{ sessionName }}</option>
+                                    	{% endfor %}
+                                	</select>
+								</div>
+                            </div>
+                        {% endif %}
+                    </div>
+				</header>
+				<!-- /Header -->
+			</div>
+		</div>
+		<!-- Menu à gauche de la page (Utilisé pour les ETATS) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		{% block left_menu %}
+			<menu_gauche>
+				<div id='menuGauche'>
+					{% block menu_gauche %}
+					{% endblock menu_gauche %}
+				</div>
+			</menu_gauche>
+		{% endblock left_menu %}
+		<!-- /Menu -->
+		<!-- Menu à droite de la page (Utilisé pour les ETATS) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		{% block right_menu %}
+			<menu_droite>
+				{% block menu_droite %}
+				{% endblock menu_droite %}
+				<div id='menuDroite'>
+					{% block choix_validation %}
+					{% endblock choix_validation %}
+				</div>
+			</menu_droite>
+		{% endblock right_menu %}
+		<!-- /Menu -->
+		<!-- Page -->
+		<page class='pageDefaut'>
+            <div id='title_header'>
+                {% block title_header %}
+                {% endblock title_header %}
+            </div>
+
+			<div id='pagePrincipaleBody'>
+				{% spaceless %}
+					{% block body %}
+					{% endblock body %}
+				{% endspaceless %}
+			</div>
+			<div id='lightbox' class='cacher'>
+				{% block popup %}
+				{% endblock popup %}
+			</div>
+			<span id='verificationLoad' class='cacher'></span>
+		</page>
+		<!-- /Page -->
+
+		<!-- Footer - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		<div id='blockPiedDePage'>
+		{% block pied_de_page %}
+			<footer>
+				{% block footer %}
+				{% endblock footer %}
+				<div id='lightboxFooter' class='cacher notToBePrinted'>
+					{% block footerPopup %}
+					{% endblock footerPopup %}
+				</div>
+			</footer>	
+		{% endblock pied_de_page %}
+		</div>
+		<!-- /Footer -->
+	</div>
+
+    {% block bodyjavascript %}
+    {% endblock bodyjavascript %}
+</body>
+</html>
