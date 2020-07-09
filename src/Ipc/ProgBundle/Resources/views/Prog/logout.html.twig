@@ -11,14 +11,14 @@
 
 {% block javascript %}
 <script type='text/javascript'>
-
 	var pathUrl	= {{ app.request.uri|json_encode|raw }};
 	// Vérification de l'url pour savoir si la déconnexion doit être locale ou distante (en cas d'accès VPN)
 	var myRegExp = /^https*?:\/\/192\.168/;
 	if (myRegExp.test(pathUrl)) {
 		window.location.href="/";
 	} else {
-		window.location.href="http://boiler-box.fr";
+		var url_redirection = "http://" + "{{ service_configuration.getSiteParent }}" + '.fr';
+		window.location.href = url_redirection;
 	}
 </script>
 {% endblock javascript %}

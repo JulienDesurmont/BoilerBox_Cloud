@@ -1,0 +1,28 @@
+{# src/Ipc/ConfigurationBundle/Resources/views/Configuration/autorisationClient.html.twig #}
+
+{% extends "IpcConfigurationBundle::secondCloudLayout.html.twig" %}
+
+{% block title %}{{ parent() }}Autorisations{% endblock title %}
+
+{% block title_header %}
+    <h1>Gestion des accès Client</h1>
+{% endblock title_header %}
+
+
+
+{% block body %}
+    {{ parent() }}
+	<b>Cloture Ftp effectuée.</b><br />
+	Merci de raffraichir / relancer votre recherche.<br />
+	<br />
+	<i>Cette fenêtre se fermera dans quelques secondes</i>
+{% endblock body %}
+
+{% block bodyjavascript %}
+<script type='text/javascript'>
+    setTimeout(function() {
+        window.close();
+    }, 5000);
+</script>
+{% endblock bodyjavascript %}
+
