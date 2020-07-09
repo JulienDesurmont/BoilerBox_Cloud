@@ -7,13 +7,15 @@
 
 {#
 // INFO : Les Techniciens LCI n'ont pas accès aux configurations
-	// Si parametreAdmin
-	    Seul Admin LCI peut modifier / supprimer
-	// Si paramètreTechnicien
-	    Admin, AdminLTS et Techniciens LTS peuvent modifier
-	// Si pas parameterAdmin et pas parametreTechnicien
-	    Admin et AdminLTS peuvent modifier
+    // Si parametreAdmin
+        Seul Admin LCI peut modifier / supprimer
+    // Si paramètreTechnicien
+        Admin, AdminLTS et Techniciens LTS peuvent modifier
+    // Si pas parameterAdmin et pas parametreTechnicien
+        Admin et AdminLTS peuvent modifier
 #}
+
+
 
 {% block title_header %}
     <h1>Paramètres Boilerbox</h1>
@@ -29,10 +31,10 @@
             <tr><th>Paramètre</th>
                 <th>Désignation</th>
                 <th>Valeur</th>
-				<th class='small'>{% if is_granted('ROLE_ADMIN_LTS') %}Technicien{% endif %}</th>
-                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Admin.{% endif %}</th>
+				<th class='small'>Technicien</th>
+                <th class='small'>Admin.</th>
                 <th class='small'>Modif.</th>
-                <th class='small'>{% if is_granted('ROLE_ADMIN') %}Supp.{% endif %}</th>
+                <th class='small'>Supp.</th>
             </tr>
 			</thead>
 			<tbody>
@@ -43,14 +45,14 @@
                         <td>{{ liste.valeur }}</td>
                         <td class='small'><input type='checkbox' {% if liste.parametreTechnicien %} checked {% endif %} disabled /></td>
                         <td class='small'><input type='checkbox' {% if liste.parametreAdmin %} checked {% endif %} disabled /></td>
-						{% if liste.parametreAdmin %}
-                        	<td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN') %} disabled {% endif %} /></td>
-						{% elseif liste.parametreTechnicien %}
-							<td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_TECHNICIEN_LTS') %} disabled {% endif %} /></td>
-						{% else %}
-							<td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN_LTS') %} disabled {% endif %} /></td>
-						{% endif %}
-                        <td class='small'><input type='radio' name='supp' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN') %}  disabled {% endif %}/></td>
+                        {% if liste.parametreAdmin %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN') %} disabled {% endif %} /></td>
+                        {% elseif liste.parametreTechnicien %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_TECHNICIEN_LTS') %} disabled {% endif %} /></td>
+                        {% else %}
+                            <td class='small'><input type='radio' name='modif' value={{ liste.id }} {% if not is_granted('ROLE_ADMIN_LTS') %} disabled {% endif %} /></td>
+                        {% endif %}
+                        <td class='small'><input type='radio' name='supp' value={{ liste.id }} disabled /></td>
                     </tr>
             {% endfor %}
 			</tbody>
@@ -58,7 +60,9 @@
    </div>
 {% endblock body %}
 
+	
 
+{# MENU NON AFFICHES SUR LE CLOUD
 {% block menu_droite %}
     <div id="validation">
 		{% if is_granted('ROLE_ADMIN') %}
@@ -77,7 +81,7 @@
         {% endif %}
 	</div>
 {% endblock menu_droite %}
-
+#}
 
 
 {% block footer %}
