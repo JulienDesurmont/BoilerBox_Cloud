@@ -4,10 +4,11 @@
 		</div>
 		<div id='ajout_requete_perso'>
 			<h1>{{ 'label.popup.titre.ajout_requete_personnelle'|trans|upper }}</h1>
-			<div id='ajoutRequete'>
+	
+    		<div id='ajoutRequete'>
 				<div>
 					{{ form_errors(form_requete.appellation) }}
-					{{ form_widget(form_requete.appellation) }}
+        	    	{{ form_widget(form_requete.appellation) }}
 				</div>
 				<div class='zonedetexte'>
 					{{ form_errors(form_requete.description) }}
@@ -16,9 +17,9 @@
 				</div>
 				<div class='listederoulante'>
 					{{ form_label(form_requete.compte) }}
-					{{ form_widget(form_requete.compte) }}
+                	{{ form_widget(form_requete.compte) }}
 				</div>
-			</div>
+    		</div>
 
 			<div class='validationPopupRequete'>
 				{{ form_widget(form_requete.Enregistrer) }}  {{ form_widget(form_requete.Annuler) }}
@@ -29,3 +30,5 @@
 		</div>
 	{{ form_end(form_requete) }}
 {% endblock popup %}
+
+
