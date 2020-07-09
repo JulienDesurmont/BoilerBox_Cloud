@@ -145,13 +145,6 @@
 
 {% block bodyjavascript %}
 	{# Fonctions et variables communes aux index listing et graphique #}
-	{#
-    {% javascripts output='js/listingAndGraphiqueCommun.js' filter='jsqueeze'
-        'bundles/ipcprog/js/listingAndGraphiqueCommun.js'
-    %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-	#}
     <script type="text/javascript" src="{{ asset('bundles/ipcprog/js/listingAndGraphiqueCommun.js') }}"></script>
 
 	<script type='text/javascript'>
@@ -175,9 +168,12 @@
 			/**********************************/
 
 			/* Ré affiche la popup d'ajout de requête si une erreur dans l'enregistrement d'un requête a eu lieu */
-    		if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
-    		    $('#lightboxSmall').removeClass('cacher');
-    		}
+			if ({{ form_requete.appellation.vars.errors }})
+			{
+    			if ({{ form_requete.appellation.vars.errors.form.getErrors(true) | length }}) {
+    			    $('#lightboxSmall').removeClass('cacher');
+    			}
+			}
 			
 			// Fermeture de la popup lors du clic sur Annuler
 			$('#ipc_configurationbundle_requete_Annuler').click(function(){

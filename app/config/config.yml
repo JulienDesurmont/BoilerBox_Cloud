@@ -108,7 +108,7 @@ doctrine:
                 driver:   "%database_driver%"
                 host:     "%database_host%"
                 port:     "%database_port%"
-                dbname:   "boilerbox"
+                dbname:   "boilerbox_c000"
                 user:     "%database_user%"
                 password: "%database_password%"
                 charset:  UTF8
@@ -149,29 +149,11 @@ doctrine:
                 password: "%database_password%"
                 charset:  UTF8
                 unix_socket: "%socket_unix%"
-            boilerbox_c811:
-                driver:   "%database_driver%"
-                host:     "%database_host%"
-                port:     "%database_port%"
-                dbname:   "boilerbox_c811"
-                user:     "%database_user%"
-                password: "%database_password%"
-                charset:  UTF8
-                unix_socket: "%socket_unix%"
             boilerbox_c860:
                 driver:   "%database_driver%"
                 host:     "%database_host%"
                 port:     "%database_port%"
                 dbname:   "boilerbox_c860"
-                user:     "%database_user%"
-                password: "%database_password%"
-                charset:  UTF8
-                unix_socket: "%socket_unix%"
-            boilerbox_c820:
-                driver:   "%database_driver%"
-                host:     "%database_host%"
-                port:     "%database_port%"
-                dbname:   "boilerbox_c820"
                 user:     "%database_user%"
                 password: "%database_password%"
                 charset:  UTF8
@@ -247,22 +229,8 @@ doctrine:
                     IpcProgBundle: ~
                     IpcUserBundle: ~
                     IpcConfigurationBundle: ~
-            boilerbox_c811:
-                connection: boilerbox_c811
-                mappings:
-                    FOSUserBundle: ~
-                    IpcProgBundle: ~
-                    IpcUserBundle: ~
-                    IpcConfigurationBundle: ~
             boilerbox_c860:
                 connection: boilerbox_c860
-                mappings:
-                    FOSUserBundle: ~
-                    IpcProgBundle: ~
-                    IpcUserBundle: ~
-                    IpcConfigurationBundle: ~
-            boilerbox_c820:
-                connection: boilerbox_c820
                 mappings:
                     FOSUserBundle: ~
                     IpcProgBundle: ~

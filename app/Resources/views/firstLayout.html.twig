@@ -787,12 +787,7 @@
     </script>
 
     {% block progJavascript %}
-        {% javascripts output='js/validation_popup.js' filter='jsqueeze'
-            'bundles/ipcprog/js/validation_popup.js'
-        %}
-            <script src="{{ asset_url }}"></script>
-        {% endjavascripts %}
-        {#<script type='text/javascript' src="{{ asset('bundles/ipcprog/js/validation_popup.js') }}"></script>#}
+        <script type='text/javascript' src="{{ asset('bundles/ipcprog/js/validation_popup.js') }}"></script>
     {% endblock progJavascript %}
 
     {% block bodyjavascript %}
