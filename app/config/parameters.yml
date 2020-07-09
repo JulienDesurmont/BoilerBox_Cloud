@@ -45,3 +45,7 @@ parameters:
     transformeTexte.class: Ipc\ProgBundle\Services\TransformeTexte\ServiceTransformeTexte
     transfertftp.class: Ipc\ProgBundle\Services\TransfertFtp\ServiceTransfertFtp
     configuration_cloud.class: Ipc\ConfigurationBundle\Services\ServiceConfigurationCloud
+    detectLogin.class: Ipc\UserBundle\Services\detectLogin
+    detectLoginListener.class: Ipc\UserBundle\Services\detectLoginListener
+    twigExceptionListener.class: Ipc\ProgBundle\Listener\Security\ExceptionListener
+

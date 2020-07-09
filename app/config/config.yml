@@ -54,6 +54,7 @@ twig:
     globals:
         service_js_traductions: "@ipc_prog.traduction"
         service_session: "@ipc_prog.session"
+        service_configuration: "@ipc_prog.configuration"
 
 # Assetic Configuration
 assetic:
