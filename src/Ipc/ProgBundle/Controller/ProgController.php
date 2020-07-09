@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Ipc\ProgBundle\Entity\Site;
 use Ipc\ProgBundle\Entity\Configuration;
 
-use Lci\BoilerBoxBundle\Form\Type\ListeDesSitesType;
-use Lci\BoilerBoxBundle\Entity\Site as SiteBoilerBox;
-
 
 class ProgController extends Controller {
 
@@ -169,35 +166,6 @@ public function gestionLogoutAction() {
 
 public function indexAction(Request $request) {
 	$this->constructeur();
-	/**************************************************************
-	// Partie pour insérer une liste déroulante pour switcher de site 
-    // Création du formulaire pour le choix du site à afficher
-    $frm_liste_des_sites = $this->createForm(new ListeDesSitesType);
-    $requete = $this->get('request');
-	// Connexion au nouveau site 
-    if ($requete->getMethod() == 'POST') {
-		if (isset($_POST['ListeDesSites']['site'])) {
-            // On passe sur la base boilerbox pour récupérer les informations du site de connexion
-            $srv_connexion = $this->get('ipc_prog.connectbd');
-            $base_initiale = $srv_connexion->getBase();
-            $srv_connexion->changementDeBase('boilerbox', $base_initiale);
-            $this->em = $srv_connexion->getManager();
-           	$ent_site = $this->em->getRepository('Lci\BoilerBoxBundle\Entity\Site')->find($_POST['ListeDesSites']['site']);
-           	// On essaye de se connecter à la base du site selectionné. Si echec, on reste sur la base du site d'origine
-			if ($ent_site->getAffaire() == 'C671') {
-           		$srv_connexion->changementDeBase('boilerbox_'.$ent_site->getAffaire().'_dev', $base_initiale);
-			} else {
-				$srv_connexion->changementDeBase('boilerbox_'.$ent_site->getAffaire(), $base_initiale);
-			}
-           	$this->em = $srv_connexion->getManager();
-			// Réinitialisation des variables de session
-			$this->container->get('ipc_prog.session.boilerbox')->reinitialisationSession('session_complete');
-		}
-    }
-	// Partie pour insérer une liste déroulante pour switcher de site
-	// **************************************************************
-	*/
-
     $this->initialisation();
 
 	// Remise à 0 des valeurs de MaxPages des requêtes de listing afin de réeffectuer les requêtes en base tout en gardant les différentes recherches demandées

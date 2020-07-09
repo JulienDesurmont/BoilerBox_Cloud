@@ -106,7 +106,7 @@
 							<div>	<span class='bleu'>I</span><span class='grandScreen'>NDUSTRIAL<br /></span>
 									<span class='bleu'>B</span><span class='grandScreen'>OILER<br /></span>
 									<span class='bleu'>C</span><span class='grandScreen'>ONTROL<br /></span>
-									<span class='version'>{% if service_session.get('pageTitle').version is defined %}{{ service_session.get('pageTitle').version }}{% endif %}</span>
+									<span class='version'>{{ service_configuration.getSiteParent }} {% if service_session.get('pageTitle').version is defined %}{{ service_session.get('pageTitle').version }}{% endif %}</span>
 							</div>
 						</div>
                    	</div>
@@ -145,11 +145,11 @@
 								{% if is_granted('ROLE_ADMIN') %}
 									<span> ( Admin ) </span>
 								{% elseif is_granted('ROLE_ADMIN_LTS') %}
-									<span> ( Administrateur ) </span>
+                                    <span> ( Administrateur ) </span>
 								{% elseif is_granted('ROLE_SUPERVISEUR') %}
 									<span>( Superviseur ) </span>
 								{% elseif is_granted('ROLE_TECHNICIEN_LTS') %}
-									<span> ( Technicien ) </span>
+                                    <span> ( Technicien ) </span>
 								{% elseif is_granted('ROLE_TECHNICIEN') %}
 									<span> ( Tech ) </span>
 								{% else %}
@@ -218,16 +218,22 @@
 						</li>
 						<li></li>
 						{% if is_granted('ROLE_ADMIN') %}
-	                    	<li>
-	                    	   <a href="{{ path('ipc_analyse_bruleurs') }}" id="Bruleurs" title="Bruleurs" onMouseOver="switchActive(this.id,'{{ pageActive }}');"  onMouseOut="switchInactive(this.id,'{{ pageActive }}');" onClick='stopPing();actionMenu(this.href,this.title);return false;'>
-	                    	        {% if pageActive == 'Bruleurs' %}
-	                    	            <div class='img bruleurs-active'></div>
-	                    	            <div class='txt pageactive'>{{ 'entete.menu.bruleur'|trans }}</div>
-	                    	        {% else %}
-	                    	            <div class='img bruleurs'></div>
-	                    	            <div class='txt'>{{ 'entete.menu.bruleur'|trans }}</div>
-	                    	        {% endif %}
-	                    	    </a>
+	                	    <li>
+	                	       <a 	href="{{ path('ipc_analyse_bruleurs') }}" 
+									id="Bruleurs" 
+									title="Bruleurs" 
+									onMouseOver="switchActive(this.id,'{{ pageActive }}');"  
+									onMouseOut="switchInactive(this.id,'{{ pageActive }}');" 
+									onClick='stopPing();actionMenu(this.href,this.title);return false;'
+								>
+	                	            {% if pageActive == 'Bruleurs' %}
+	                	                <div class='img bruleurs-active'></div>
+	               	                 	<div class='txt pageactive'>{{ 'entete.menu.bruleur'|trans }}</div>
+	               	             	{% else %}
+	                                	<div class='img bruleurs'></div>
+	                                	<div class='txt'>{{ 'entete.menu.bruleur'|trans }}</div>
+	                            	{% endif %}
+	                        	</a>
 	                    	</li>
 							<li></li>
 						{% endif %}
@@ -707,7 +713,6 @@
                     return 1;
                 }
                 $nbTimeoutPing = 0;
-                //console.log('..ing');
                 $reponsePing = false;
                 $.ajax({
                     type: 'get',

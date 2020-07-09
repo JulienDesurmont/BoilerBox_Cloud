@@ -32,8 +32,7 @@ class AppKernel extends Kernel
             new Ipc\SupervisionBundle\IpcSupervisionBundle(),
             new Ipc\RapportsBundle\IpcRapportsBundle(),
             new Ipc\OutilsBundle\IpcOutilsBundle(),
-            new Ipc\AnalyseBundle\IpcAnalyseBundle(),
-			new Lci\BoilerBoxBundle\LciBoilerBoxBundle()
+            new Ipc\AnalyseBundle\IpcAnalyseBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
