@@ -841,7 +841,7 @@ public function afficheListingAction($page) {
 	// Définition de la variable de session [ page ] : Numéro de page courante
 	$session_page['page'] = $page;
 	// Définition de l'offset à partir duquel rechercher les données
-	$offset = ($session_page['page']-1)*100;
+	$offset = ($session_page['page']-1) * $limit;
 	// Si le formulaire est validé en cliquant sur le bouton 'Recherche' Ou si c'est une demande d'affichage d'une nouvelle page 
 	if ((isset($submit) && ($submit == "Recherche")) || (isset($_GET["listing"]))) {
 		// Récupération des droits d'impression pour le compte client (Seul le compte client n'hérite pas des droits technicien)
