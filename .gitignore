@@ -5,3 +5,4 @@ web/logs/*
 web/bundles/*
 web/js/
 web/uploads/
+vendor/*
